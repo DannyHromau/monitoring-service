@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+    <Properties>
+        <Property name="comLoggingPath">logs/common_register.log</Property>
+        <Property name="secureLoggingPath">logs/security_register.log</Property>
+    </Properties>
+
+    <appenders>
+        <Console name="console" target="SYSTEM_OUT">
+            <PatternLayout pattern="%d{yyy-MM-dd HH:mm:ss.SSS} [%t] %-5level %logger{36} - %msg%n"/>
+        </Console>
+        <File name="common_register" fileName="${sys:comLoggingPath}">
+            <PatternLayout pattern="%d{yyy-MM-dd HH:mm:ss.SSS} [%t] %-5level %logger{36} - %msg%n"/>
+        </File>
+        <File name="security_register" fileName="${sys:secureLoggingPath}">
+            <PatternLayout pattern="%d{yyy-MM-dd HH:mm:ss.SSS} [%t] %-5level %logger{36} - %msg%n"/>
+        </File>
+    </appenders>
+
+    <loggers>
+        <root level="info">
+            <appender-ref ref="common_register"/>
+        </root>
+        <logger name="com.dannyhromau.monitoring.meter.controller.impl.AuthControllerImpl" level="debug">
+            <appender-ref ref="security_register"/>
+        </logger>
+    </loggers>
+</configuration>
