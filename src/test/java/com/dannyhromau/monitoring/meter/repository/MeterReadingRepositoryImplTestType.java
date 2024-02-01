@@ -1,8 +1,8 @@
-package com.dannyhromau.monitoring.meter;
+package com.dannyhromau.monitoring.meter.repository;
 
 import com.dannyhromau.monitoring.meter.model.MeterReading;
 import com.dannyhromau.monitoring.meter.model.MeterType;
-import com.dannyhromau.monitoring.meter.repository.impl.MeterReadingRepositoryImpl;
+import com.dannyhromau.monitoring.meter.repository.impl.console.MeterReadingRepositoryImpl;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -12,7 +12,7 @@ import java.time.LocalDateTime;
 import java.time.YearMonth;
 
 @DisplayName("Testing of console_meter_reading_repo")
-public class MeterReadingRepositoryImplImplTestType {
+public class MeterReadingRepositoryImplTestType {
     private MeterReadingRepositoryImpl mrRepo = new MeterReadingRepositoryImpl();
     private MeterReading mr = new MeterReading();
     @BeforeEach
@@ -22,7 +22,7 @@ public class MeterReadingRepositoryImplImplTestType {
         mr.setDate(LocalDateTime.now());
         MeterType mrType = new MeterType();
         mrType.setType("HEATING");
-        mr.setMeterReadingType(mrType);
+        mr.setMeterType(mrType);
         mr.setValue(1000);
         mr.setUserId(1);
     }
@@ -30,7 +30,7 @@ public class MeterReadingRepositoryImplImplTestType {
     @Test
     @DisplayName("add meter reading when empty repo")
     void addMeterReadingWhenEmptyRepo(){
-        mrRepo.add(mr);
+        mrRepo.save(mr);
         int expectedSize = 1;
         int actualSize = mrRepo.findAll().size();
         Assertions.assertEquals(expectedSize, actualSize);
@@ -38,9 +38,9 @@ public class MeterReadingRepositoryImplImplTestType {
     @Test
     @DisplayName("check incrementing id when add meter reading")
     void incrementIdWhenAddMeterReading(){
-        mrRepo.add(mr);
+        mrRepo.save(mr);
         MeterReading mrNext = new MeterReading();
-        mrRepo.add(mrNext);
+        mrRepo.save(mrNext);
         long expectedId = 2;
         long actualId = mrRepo.findAll().get(1).getId();
         Assertions.assertEquals(expectedId, actualId);
@@ -51,7 +51,7 @@ public class MeterReadingRepositoryImplImplTestType {
     void findAllMeterReadingsWhenRepoIsNotEmpty(){
       int expectedMrCount = 5;
       for (int i = 0; i < 5; i++){
-          mrRepo.add(new MeterReading());
+          mrRepo.save(new MeterReading());
       }
       int actualMrCount = mrRepo.findAll().size();
       Assertions.assertEquals(expectedMrCount, actualMrCount);
@@ -60,7 +60,7 @@ public class MeterReadingRepositoryImplImplTestType {
     @Test
     @DisplayName("find meter readings by user id when exist")
     void findMeterReadingsByUserIdWhenExist(){
-        mrRepo.add(mr);
+        mrRepo.save(mr);
         int expectedSize = 1;
         int actualSize = mrRepo.findByUserId(mr.getUserId()).size();
         Assertions.assertEquals(expectedSize, actualSize);
@@ -75,39 +75,39 @@ public class MeterReadingRepositoryImplImplTestType {
     @Test
     @DisplayName("find meter reading by user id, data and type when exists")
     void findMeterReadingsByUserIdAndDataAndMeterReadingTypeWhenExists(){
-        mrRepo.add(mr);
+        mrRepo.save(mr);
         YearMonth yearMonth = YearMonth.of(mr.getDate().getYear(), mr.getDate().getMonth());
         MeterReading actualMr = mrRepo.findByUserIdAndMonthAndMeterType(
-                mr.getUserId(), yearMonth, mr.getMeterReadingType()).get();
+                mr.getUserId(), yearMonth, mr.getMeterType().getId()).get();
         Assertions.assertEquals(mr, actualMr);
     }
     @Test
     @DisplayName("find actual meter reading by user id when exists")
     void findActualMeterReadingsByUserIdWhenExists(){
         MeterReading expectedMr = mr;
-        mrRepo.add(expectedMr);
+        mrRepo.save(expectedMr);
         MeterReading oldMr = new MeterReading();
         oldMr.setUserId(expectedMr.getUserId());
         oldMr.setDate(mr.getDate().minusYears(1));
-        oldMr.setMeterReadingType(mr.getMeterReadingType());
-        mrRepo.add(oldMr);
-        MeterReading actualMr = mrRepo.findFirstByOrderByDateDesc(mr.getUserId(), mr.getMeterReadingType()).get();
+        oldMr.setMeterType(mr.getMeterType());
+        mrRepo.save(oldMr);
+        MeterReading actualMr = mrRepo.findFirstByOrderByDateDesc(mr.getUserId(), mr.getMeterType().getId()).get();
         Assertions.assertEquals(expectedMr, actualMr);
     }
 
     @Test
     @DisplayName("find meter reading id when exists")
     void findMeterReadingsByIdWhenExists(){
-        MeterReading expectedMr = mrRepo.add(mr);
+        MeterReading expectedMr = mrRepo.save(mr);
         MeterReading actualMr = mrRepo.findById(mr.getId()).get();
         Assertions.assertEquals(expectedMr, actualMr);
     }
     @Test
     @DisplayName("find meter reading by id and date when exists")
     void findMeterReadingsByIdAndDateWhenExists(){
-        MeterReading expectedMr = mrRepo.add(mr);
+        MeterReading expectedMr = mrRepo.save(mr);
         MeterReading actualMr = mrRepo.findByUserIdAndDateAndMeterType(
-                mr.getUserId(), mr.getDate().toLocalDate(), mr.getMeterReadingType()).get();
+                mr.getUserId(), mr.getDate().toLocalDate(), mr.getMeterType().getId()).get();
         Assertions.assertEquals(expectedMr, actualMr);
     }
 

@@ -1,4 +1,4 @@
-package com.dannyhromau.monitoring.meter;
+package com.dannyhromau.monitoring.meter.service;
 
 import com.dannyhromau.monitoring.meter.core.util.ErrorMessages;
 import com.dannyhromau.monitoring.meter.exception.DuplicateDataException;
@@ -6,38 +6,46 @@ import com.dannyhromau.monitoring.meter.exception.EntityNotFoundException;
 import com.dannyhromau.monitoring.meter.exception.InvalidDataException;
 import com.dannyhromau.monitoring.meter.exception.UnAuthorizedException;
 import com.dannyhromau.monitoring.meter.model.User;
-import com.dannyhromau.monitoring.meter.service.AuthService;
-import com.dannyhromau.monitoring.meter.service.AuthorityService;
-import com.dannyhromau.monitoring.meter.service.UserService;
-import com.dannyhromau.monitoring.meter.service.impl.AuthorityServiceImpl;
 import com.dannyhromau.monitoring.meter.service.impl.ConsoleAuthServiceImpl;
 import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.mockito.Mockito;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
 
-import static org.junit.jupiter.api.Assertions.assertThrows;
+import java.sql.SQLException;
+
+import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.mockito.Mockito.when;
 
+@ExtendWith({MockitoExtension.class})
 @DisplayName("Testing of auth_service")
 public class AuthServiceImplTest {
-    private UserService userService = Mockito.mock(UserService.class);
-    private AuthorityService authorityService = Mockito.mock(AuthorityService.class);
-    private AuthService<User> authService = new ConsoleAuthServiceImpl(userService, authorityService);
+    @Mock
+    private UserService userService;
+    @Mock
+    private AuthorityService authorityService;
+    private AuthService<User> authService;
+
+    @BeforeEach
+    void setUp() {
+        authService = new ConsoleAuthServiceImpl(userService, authorityService);
+    }
+
 
     @Test
     @DisplayName("register user when exists")
-    void registerUserWhenExists() throws DuplicateDataException {
+    void registerUserWhenExists() throws DuplicateDataException, SQLException {
         User user = new User();
         user.setId(100);
         user.setLogin("login");
         user.setPassword("password");
         when(userService.add(user)).thenThrow(new DuplicateDataException(ErrorMessages.DUPLICATED_DATA_MESSAGE.label));
-        Exception exception = assertThrows(DuplicateDataException.class, () ->
-                authService.register(user));
-        String expectedMessage = ErrorMessages.DUPLICATED_DATA_MESSAGE.label;
-        String actualMessage = exception.getMessage();
-        Assertions.assertEquals(expectedMessage, actualMessage);
+        assertThatExceptionOfType(DuplicateDataException.class)
+                .isThrownBy(() -> authService.register(user))
+                .withMessage(ErrorMessages.DUPLICATED_DATA_MESSAGE.label);
     }
 
     @Test
@@ -47,11 +55,9 @@ public class AuthServiceImplTest {
         user.setId(100);
         user.setLogin("lo");
         user.setPassword("password");
-        Exception exception = assertThrows(InvalidDataException.class, () ->
-                authService.register(user));
-        String expectedMessage = ErrorMessages.WRONG_INPUT_FORMAT_MESSAGE.label;
-        String actualMessage = exception.getMessage();
-        Assertions.assertEquals(expectedMessage, actualMessage);
+        assertThatExceptionOfType(InvalidDataException.class)
+                .isThrownBy(() -> authService.register(user))
+                .withMessage(ErrorMessages.WRONG_INPUT_FORMAT_MESSAGE.label);
     }
 
     @Test
@@ -61,16 +67,14 @@ public class AuthServiceImplTest {
         user.setId(100);
         user.setLogin("login");
         user.setPassword("pass");
-        Exception exception = assertThrows(InvalidDataException.class, () ->
-                authService.register(user));
-        String expectedMessage = ErrorMessages.WRONG_INPUT_FORMAT_MESSAGE.label;
-        String actualMessage = exception.getMessage();
-        Assertions.assertEquals(expectedMessage, actualMessage);
+        assertThatExceptionOfType(InvalidDataException.class)
+                .isThrownBy(() -> authService.register(user))
+                .withMessage(ErrorMessages.WRONG_INPUT_FORMAT_MESSAGE.label);
     }
 
     @Test
     @DisplayName("authorize user when not exists")
-    void authorizeUserWhenNotExists() throws EntityNotFoundException {
+    void authorizeUserWhenNotExists() throws EntityNotFoundException, SQLException {
         User user = new User();
         user.setId(100);
         user.setLogin("login");
@@ -78,16 +82,14 @@ public class AuthServiceImplTest {
         when(userService.getUserByLogin(user.getLogin())).thenThrow(new EntityNotFoundException(
                 String.format(ErrorMessages.ENTITY_NOT_FOUND_MESSAGE.label, "login", user.getLogin())
         ));
-        Exception exception = assertThrows(UnAuthorizedException.class, () ->
-                authService.authorize(user));
-        String expectedMessage = ErrorMessages.WRONG_AUTH_MESSAGE.label;
-        String actualMessage = exception.getMessage();
-        Assertions.assertEquals(expectedMessage, actualMessage);
+        assertThatExceptionOfType(UnAuthorizedException.class)
+                .isThrownBy(() -> authService.authorize(user))
+                .withMessage(ErrorMessages.WRONG_AUTH_MESSAGE.label);
     }
 
     @Test
     @DisplayName("authorize user when exists")
-    void authorizeUserWhenExists() throws UnAuthorizedException, EntityNotFoundException {
+    void authorizeUserWhenExists() throws UnAuthorizedException, SQLException, EntityNotFoundException {
         User user = new User();
         user.setId(100);
         user.setLogin("login");

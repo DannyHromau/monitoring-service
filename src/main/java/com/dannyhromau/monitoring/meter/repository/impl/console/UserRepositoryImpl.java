@@ -1,4 +1,4 @@
-package com.dannyhromau.monitoring.meter.repository.impl;
+package com.dannyhromau.monitoring.meter.repository.impl.console;
 
 import com.dannyhromau.monitoring.meter.model.User;
 import com.dannyhromau.monitoring.meter.repository.UserRepository;
@@ -24,7 +24,7 @@ public class UserRepositoryImpl implements UserRepository {
     }
 
     @Override
-    public User add(User user) {
+    public User save(User user) {
         user.setId(generatedId);
         userStorage.put(user.getId(), user);
         generatedId++;

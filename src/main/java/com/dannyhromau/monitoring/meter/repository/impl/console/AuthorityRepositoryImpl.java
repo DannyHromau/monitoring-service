@@ -1,5 +1,7 @@
-package com.dannyhromau.monitoring.meter.repository.impl;
+package com.dannyhromau.monitoring.meter.repository.impl.console;
 
+import com.dannyhromau.monitoring.meter.core.util.ErrorMessages;
+import com.dannyhromau.monitoring.meter.exception.EntityNotFoundException;
 import com.dannyhromau.monitoring.meter.model.Authority;
 import com.dannyhromau.monitoring.meter.repository.AuthorityRepository;
 
@@ -9,6 +11,7 @@ import java.util.Map;
 import java.util.Optional;
 
 public class AuthorityRepositoryImpl implements AuthorityRepository {
+    private static final String ENTITY_NOT_FOUND_MESSAGE = ErrorMessages.ENTITY_NOT_FOUND_MESSAGE.label;
     private static Map<Long, Authority> authStorage = new HashMap<>();
     private static long generatedId = 1;
 
@@ -26,7 +29,7 @@ public class AuthorityRepositoryImpl implements AuthorityRepository {
     }
 
     @Override
-    public Authority add(Authority authority) {
+    public Authority save(Authority authority) {
         authority.setId(generatedId);
         authStorage.put(authority.getId(), authority);
         generatedId++;
@@ -39,9 +42,13 @@ public class AuthorityRepositoryImpl implements AuthorityRepository {
     }
 
     @Override
-    public void deleteById(long id) {
+    public long deleteById(long id) throws EntityNotFoundException {
         if (authStorage.get(id) != null) {
             authStorage.remove(id);
+            return id;
+        }
+        else {
+            throw new EntityNotFoundException(String.format(ENTITY_NOT_FOUND_MESSAGE, "id", id));
         }
     }
 
@@ -53,7 +60,7 @@ public class AuthorityRepositoryImpl implements AuthorityRepository {
     @Override
     public void addAll(List<Authority> authorities) {
         for (Authority authority : authorities) {
-            add(authority);
+            save(authority);
         }
     }
 

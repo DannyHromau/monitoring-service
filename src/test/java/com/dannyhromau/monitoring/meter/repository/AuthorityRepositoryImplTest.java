@@ -1,7 +1,8 @@
-package com.dannyhromau.monitoring.meter;
+package com.dannyhromau.monitoring.meter.repository;
 
+import com.dannyhromau.monitoring.meter.exception.EntityNotFoundException;
 import com.dannyhromau.monitoring.meter.model.Authority;
-import com.dannyhromau.monitoring.meter.repository.impl.AuthorityRepositoryImpl;
+import com.dannyhromau.monitoring.meter.repository.impl.console.AuthorityRepositoryImpl;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -23,7 +24,7 @@ public class AuthorityRepositoryImplTest {
     @Test
     @DisplayName("find authority by id when empty repository")
     void getAuthorityByIdWhenNotExists(){
-        authorityRepository.add(authority);
+        authorityRepository.save(authority);
         int expectedSize = 1;
         int actualSize = authorityRepository.findAll().size();
         Assertions.assertEquals(expectedSize, actualSize);
@@ -31,9 +32,9 @@ public class AuthorityRepositoryImplTest {
     @Test
     @DisplayName("check incrementing id when add authority")
     void incrementIdWhenAddAuthority(){
-        authorityRepository.add(authority);
+        authorityRepository.save(authority);
         Authority authorityNext = new Authority();
-        authorityRepository.add(authorityNext);
+        authorityRepository.save(authorityNext);
         long expectedId = 2;
         long actualId = authorityRepository.findAll().get(1).getId();
         Assertions.assertEquals(expectedId, actualId);
@@ -43,15 +44,15 @@ public class AuthorityRepositoryImplTest {
     @DisplayName("find authority by name when exists")
     void findAuthorityByNameWhenExists(){
         Authority expectedAuthority = authority;
-        authorityRepository.add(authority);
+        authorityRepository.save(authority);
         Authority actualAuthority = authorityRepository.findByName(authority.getName()).get();
         Assertions.assertEquals(expectedAuthority, actualAuthority);
     }
     @Test
     @DisplayName("delete authority when exists")
-    void deleteAuthorityWhenExists(){
-        authorityRepository.add(authority);
-        authorityRepository.add(new Authority());
+    void deleteAuthorityWhenExists() throws EntityNotFoundException {
+        authorityRepository.save(authority);
+        authorityRepository.save(new Authority());
         long id = authorityRepository.findByName(authority.getName()).get().getId();
         authorityRepository.deleteById(id);
         int expectedSize = 1;

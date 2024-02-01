@@ -41,32 +41,35 @@ public class ConsoleClient {
 
 
     public void login() {
-        User user = new User();
-        user = setLogin(user);
-        user = setPassword(user);
-        ResponseEntity<User> re = ac.authorize(user);
-        if (re.getSystemMessage().equals(STATUS_OK)) {
-            System.out.println("Successfully login");
-            openMenu(re.getBody());
-        } else {
-            System.out.println(re.getSystemMessage());
-            login();
+        while (true) {
+            User user = new User();
+            user = setLogin(user);
+            user = setPassword(user);
+            ResponseEntity<User> re = ac.authorize(user);
+            if (re.getSystemMessage().equals(STATUS_OK)) {
+                System.out.println("Successfully login");
+                openMenu(re.getBody());
+                break;
+            } else {
+                System.out.println(re.getSystemMessage());
+            }
         }
     }
 
     public void register() {
-        User user = new User();
-        user = setLogin(user);
-        user = setPassword(user);
-        ResponseEntity<Boolean> re = ac.register(user);
-        if (re.getBody()) {
-            System.out.println("Successfully registered");
-            start();
-        } else {
-            System.out.println(re.getSystemMessage());
-            register();
+        while (true) {
+            User user = new User();
+            user = setLogin(user);
+            user = setPassword(user);
+            ResponseEntity<Boolean> re = ac.register(user);
+            if (re.getBody()) {
+                System.out.println("Successfully registered");
+                start();
+                break;
+            } else {
+                System.out.println(re.getSystemMessage());
+            }
         }
-
     }
 
     private User setPassword(User user) {

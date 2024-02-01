@@ -7,6 +7,7 @@ import com.dannyhromau.monitoring.meter.model.MeterType;
 import com.dannyhromau.monitoring.meter.repository.MeterTypeRepository;
 import com.dannyhromau.monitoring.meter.service.MeterTypeService;
 
+import java.sql.SQLException;
 import java.util.List;
 import java.util.Optional;
 
@@ -20,35 +21,35 @@ public class MeterTypeServiceImpl implements MeterTypeService {
     }
 
     @Override
-    public MeterType getMeterById(long id) throws EntityNotFoundException {
+    public MeterType getMeterById(long id) throws EntityNotFoundException, SQLException {
         return meterTypeRepository.findById(id).orElseThrow(
                 () -> new EntityNotFoundException(String.format(ENTITY_NOT_FOUND_MESSAGE, "id", id)));
     }
 
     @Override
-    public List<MeterType> getAll() {
+    public List<MeterType> getAll() throws SQLException {
         return meterTypeRepository.findAll();
     }
 
     @Override
-    public MeterType add(MeterType meterType) throws DuplicateDataException {
+    public MeterType add(MeterType meterType) throws DuplicateDataException, SQLException {
         Optional<MeterType> meterOpt = meterTypeRepository.findMeterTypeByType(meterType.getType());
         if (meterOpt.isPresent()) {
             throw new DuplicateDataException(DUPLICATE_DATA_MESSAGE);
         } else {
-            meterType = meterTypeRepository.add(meterType);
+            meterType = meterTypeRepository.save(meterType);
         }
         return meterType;
     }
 
     @Override
-    public long deleteMeter(long id) {
+    public long deleteMeter(long id) throws SQLException, EntityNotFoundException {
         meterTypeRepository.deleteById(id);
         return id;
     }
 
     @Override
-    public MeterType getMeterByType(String type) throws EntityNotFoundException {
+    public MeterType getMeterByType(String type) throws EntityNotFoundException, SQLException {
         return meterTypeRepository.findMeterTypeByType(type).orElseThrow(
                 () -> new EntityNotFoundException(String.format(ENTITY_NOT_FOUND_MESSAGE, "type", type)));
     }

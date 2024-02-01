@@ -2,11 +2,12 @@ package com.dannyhromau.monitoring.meter;
 
 import com.dannyhromau.monitoring.meter.context.ApplicationContext;
 
+import java.sql.SQLException;
 import java.util.Scanner;
 
 public class Application {
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws SQLException {
         ApplicationContext applicationContext = ApplicationContext.getInstance();
         applicationContext.initialize();
         while (true) {

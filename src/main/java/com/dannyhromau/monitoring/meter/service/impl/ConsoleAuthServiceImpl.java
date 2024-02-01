@@ -15,6 +15,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -32,23 +33,25 @@ public class ConsoleAuthServiceImpl implements AuthService<User> {
         this.authorityService = authorityService;
     }
 
+    //TODO: implement encoding the password
     @Override
-    public boolean register(User user) throws DuplicateDataException, InvalidDataException {
+    public User register(User user) throws DuplicateDataException, InvalidDataException, SQLException {
         checkValidData(user);
         List<Authority> authorities = new ArrayList<>();
         try {
             Authority authority = authorityService.getAuthorityByName("user");
             authorities.add(authority);
-        } catch (EntityNotFoundException e) {
+        } catch (EntityNotFoundException | SQLException e) {
             logger.log(Level.ERROR, e.getMessage());
         }
         user.setAuthorities(authorities);
         user.setDeleted(false);
-        return userService.add(user) != null;
+        return userService.add(user);
     }
 
+    //TODO: implement matching the password
     @Override
-    public User authorize(User user) throws UnAuthorizedException{
+    public User authorize(User user) throws UnAuthorizedException, SQLException{
         try {
             User authUser = userService.getUserByLogin(user.getLogin());
             if (authUser.getPassword().matches(user.getPassword())) {

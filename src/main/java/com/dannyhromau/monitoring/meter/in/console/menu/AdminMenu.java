@@ -1,6 +1,7 @@
 package com.dannyhromau.monitoring.meter.in.console.menu;
 
 import com.dannyhromau.monitoring.meter.api.ResponseEntity;
+import com.dannyhromau.monitoring.meter.context.ApplicationContext;
 import com.dannyhromau.monitoring.meter.controller.MeterReadingController;
 import com.dannyhromau.monitoring.meter.controller.MeterTypeController;
 import com.dannyhromau.monitoring.meter.core.util.MeterTypesLoader;
@@ -48,11 +49,10 @@ public class AdminMenu implements Menu {
     private void updatesMeterTypes() {
         MeterTypesLoader loader = new MeterTypesLoader();
         boolean answer = loader.load();
-        if (!answer){
+        if (!answer) {
             System.out.println("failed");
             launch();
-        }
-        else {
+        } else {
             System.out.println("ok");
             launch();
         }
@@ -61,16 +61,21 @@ public class AdminMenu implements Menu {
     private void getAllMeterReadings() {
         ResponseEntity<List<MeterReading>> re = mrController.getAll();
         StringBuilder builder = new StringBuilder();
-       if (!re.getBody().isEmpty()){
-           for (MeterReading meterReading: re.getBody()){
-               builder.append("user id = ").append(meterReading.getUserId()).append(": ").append(meterReading).append("\n");
-           }
-           System.out.println(builder.toString().trim());
-           launch();
-       }
-       else {
-           System.out.println("empty history");
-           launch();
-       }
+        if (re.getBody() == null) {
+            System.out.println(re.getSystemMessage());
+            launch();
+        } else if (!re.getBody().isEmpty()) {
+            for (MeterReading meterReading : re.getBody()) {
+                meterReading.setMeterType(meterTypeController.getMeterById(meterReading.getMeterTypeId()).getBody());
+                builder.append("user id = ")
+                        .append(meterReading.getUserId()).append(": ")
+                        .append(meterReading).append("\n");
+            }
+            System.out.println(builder.toString().trim());
+            launch();
+        } else {
+            System.out.println("empty history \n" + re.getSystemMessage());
+            launch();
+        }
     }
 }

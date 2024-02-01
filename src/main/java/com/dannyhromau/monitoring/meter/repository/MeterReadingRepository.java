@@ -1,31 +1,31 @@
 package com.dannyhromau.monitoring.meter.repository;
 
 import com.dannyhromau.monitoring.meter.model.MeterReading;
-import com.dannyhromau.monitoring.meter.model.MeterType;
 
+import java.sql.SQLException;
 import java.time.LocalDate;
 import java.time.YearMonth;
 import java.util.List;
 import java.util.Optional;
 
 public interface MeterReadingRepository {
-    MeterReading add(MeterReading mr);
+    MeterReading save(MeterReading mr) throws SQLException;
 
-    List<MeterReading> findAll();
+    List<MeterReading> findAll() throws SQLException;
 
-    List<MeterReading> findByUserId(long userId);
+    List<MeterReading> findByUserId(long userId) throws SQLException;
 
-    List<MeterReading> findByUserIdAndMeterType(long userId, MeterType mrType);
+    List<MeterReading> findByUserIdAndMeterType(long userId, long meterTypeId) throws SQLException;
 
-    Optional<MeterReading> findById(long id);
+    Optional<MeterReading> findById(long id) throws SQLException;
 
     Optional<MeterReading> findByUserIdAndDateAndMeterType(
-            long userId, LocalDate date, MeterType mrType);
+            long userId, LocalDate date, long meterTypeId) throws SQLException;
 
     Optional<MeterReading> findByUserIdAndMonthAndMeterType(
-            long userId, YearMonth yearMonth, MeterType mrType);
+            long userId, YearMonth yearMonth, long meterTypeId) throws SQLException;
 
     void deleteAll();
 
-    Optional<MeterReading> findFirstByOrderByDateDesc(long userId, MeterType mrType);
+    Optional<MeterReading> findFirstByOrderByDateDesc(long userId, long meterTypeId) throws SQLException;
 }
