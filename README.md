@@ -32,3 +32,4 @@ Hot water
 * after successful starting the postgres container start prepare data from file `init.sql`
 * connection config located in jdbc.properties files (`db` folder)
 * db entities description located in `ddl.sql` file
+
