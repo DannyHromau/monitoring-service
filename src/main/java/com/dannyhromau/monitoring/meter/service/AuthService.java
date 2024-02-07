@@ -1,12 +1,15 @@
 package com.dannyhromau.monitoring.meter.service;
 
 import com.dannyhromau.monitoring.meter.exception.DuplicateDataException;
+import com.dannyhromau.monitoring.meter.exception.EntityNotFoundException;
 import com.dannyhromau.monitoring.meter.exception.InvalidDataException;
 import com.dannyhromau.monitoring.meter.exception.UnAuthorizedException;
 import com.dannyhromau.monitoring.meter.model.User;
 
-public interface AuthService<T> {
-    boolean register(User user) throws DuplicateDataException, InvalidDataException;
+import java.sql.SQLException;
 
-    T authorize(User user) throws UnAuthorizedException;
+public interface AuthService<T> {
+    User register(User user) throws DuplicateDataException, InvalidDataException, SQLException;
+
+    T authorize(User user) throws UnAuthorizedException, SQLException;
 }

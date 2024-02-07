@@ -1,5 +1,7 @@
-package com.dannyhromau.monitoring.meter.repository.impl;
+package com.dannyhromau.monitoring.meter.repository.impl.console;
 
+import com.dannyhromau.monitoring.meter.core.util.ErrorMessages;
+import com.dannyhromau.monitoring.meter.exception.EntityNotFoundException;
 import com.dannyhromau.monitoring.meter.model.MeterType;
 import com.dannyhromau.monitoring.meter.repository.MeterTypeRepository;
 
@@ -9,6 +11,7 @@ import java.util.Map;
 import java.util.Optional;
 
 public class MeterTypeRepositoryImpl implements MeterTypeRepository {
+    private static final String ENTITY_NOT_FOUND_MESSAGE = ErrorMessages.ENTITY_NOT_FOUND_MESSAGE.label;
     private static Map<Long, MeterType> meterStorage = new HashMap<>();
     private static long generatedId = 1;
 
@@ -23,7 +26,7 @@ public class MeterTypeRepositoryImpl implements MeterTypeRepository {
     }
 
     @Override
-    public MeterType add(MeterType meterType) {
+    public MeterType save(MeterType meterType) {
         meterType.setId(generatedId);
         meterStorage.put(meterType.getId(), meterType);
         generatedId++;
@@ -31,9 +34,12 @@ public class MeterTypeRepositoryImpl implements MeterTypeRepository {
     }
 
     @Override
-    public void deleteById(long id) {
+    public long deleteById(long id) throws EntityNotFoundException {
         if (meterStorage.get(id) != null) {
             meterStorage.remove(id);
+            return id;
+        } else {
+            throw new EntityNotFoundException(String.format(ENTITY_NOT_FOUND_MESSAGE, "id", id));
         }
     }
 
@@ -53,7 +59,7 @@ public class MeterTypeRepositoryImpl implements MeterTypeRepository {
     @Override
     public void addAll(List<MeterType> meterTypeList) {
         for (MeterType meterType : meterTypeList) {
-            add(meterType);
+            save(meterType);
         }
     }
 }

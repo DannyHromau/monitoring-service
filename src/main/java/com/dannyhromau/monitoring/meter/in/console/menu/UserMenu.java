@@ -16,6 +16,7 @@ import java.time.format.DateTimeParseException;
 import java.util.List;
 import java.util.Scanner;
 
+//TODO: refactor checking nullable body
 public class UserMenu implements Menu {
     private final User user;
     private final MeterReadingController mrController;
@@ -85,13 +86,15 @@ public class UserMenu implements Menu {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM");
         try {
             YearMonth ym = YearMonth.parse(input, formatter);
-            re = mrController.getMeterReadingByMonthAndMeterType(userId, ym, meterType);
+            re = mrController.getMeterReadingByMonthAndMeterType(userId, ym, meterType.getId());
         } catch (DateTimeParseException e) {
             System.out.println(ErrorMessages.WRONG_INPUT_FORMAT_MESSAGE.label);
             getByMonth(meterType, userId);
         }
         if (re.getSystemMessage().equals("ok")) {
-            System.out.println(re.getBody());
+            MeterReading meterReading = re.getBody();
+            meterReading.setMeterType(meterTypeController.getMeterById(meterReading.getMeterTypeId()).getBody());
+            System.out.println(meterReading);
             chooseMeterType(meterType, userId);
         } else {
             System.out.println(re.getSystemMessage());
@@ -101,9 +104,14 @@ public class UserMenu implements Menu {
     }
 
     private void getHistory(long userId, MeterType meterType) {
-        ResponseEntity<List<MeterReading>> re = mrController.getByUserIdAndMeterType(userId, meterType);
+        ResponseEntity<List<MeterReading>> re = mrController.getByUserIdAndMeterType(userId, meterType.getId());
+        if (re.getBody() == null) {
+            System.out.println(meterTypeController.getAll().getSystemMessage());
+            launch();
+        }
         StringBuilder builder = new StringBuilder();
         for (MeterReading meterReading : re.getBody()) {
+            meterReading.setMeterType(meterTypeController.getMeterById(meterReading.getMeterTypeId()).getBody());
             builder.append(meterReading).append("\n");
         }
         String result = builder.isEmpty() ? "empty history" : builder.toString().trim();
@@ -112,9 +120,15 @@ public class UserMenu implements Menu {
     }
 
     private void getActualMeterReading(MeterType meterType, long userId) {
-        ResponseEntity<MeterReading> re = mrController.getActualMeterReading(userId, meterType);
+        ResponseEntity<MeterReading> re = mrController.getActualMeterReading(userId, meterType.getId());
+        if (re.getBody() == null) {
+            System.out.println(meterTypeController.getAll().getSystemMessage());
+            launch();
+        }
         if (re.getSystemMessage().equals("ok")) {
-            System.out.println(re.getBody());
+            MeterReading meterReading = re.getBody();
+            meterReading.setMeterType(meterTypeController.getMeterById(meterReading.getMeterTypeId()).getBody());
+            System.out.println(meterReading);
             chooseMeterType(meterType, userId);
         } else {
             System.out.println(re.getSystemMessage());
@@ -124,8 +138,9 @@ public class UserMenu implements Menu {
 
     private void addMeterReading(MeterType meterType, long userId) {
         MeterReading mr = new MeterReading();
-        mr.setMeterReadingType(meterType);
+        mr.setMeterType(meterType);
         mr.setUserId(userId);
+        mr.setMeterTypeId(meterType.getId());
         Scanner in = new Scanner(System.in);
         System.out.println("Enter the meter reading or enter back to return");
         String input = in.nextLine();
@@ -140,7 +155,7 @@ public class UserMenu implements Menu {
             input = in.nextLine();
             mr.setDate(LocalDateTime.now());
             switch (input) {
-                case "1" -> System.out.println(mrController.add(mr).getSystemMessage());
+                case "1" -> {System.out.println(mrController.add(mr).getSystemMessage());}
                 case "0" -> chooseMeterType(meterType, userId);
                 default -> {
                     System.out.println("Undefined command");
@@ -156,6 +171,10 @@ public class UserMenu implements Menu {
 
     public String getMeterReadingsText() {
         StringBuilder builder = new StringBuilder();
+        if (meterTypeController.getAll().getBody() == null) {
+            System.out.println(meterTypeController.getAll().getSystemMessage());
+            client.start();
+        }
         for (MeterType meterType : meterTypeController.getAll().getBody()) {
             builder.append(meterType.getId()).append(" - ").append(meterType.getType()).append("\n");
         }

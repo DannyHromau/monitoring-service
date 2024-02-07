@@ -4,12 +4,13 @@ import com.dannyhromau.monitoring.meter.exception.DuplicateDataException;
 import com.dannyhromau.monitoring.meter.exception.EntityNotFoundException;
 import com.dannyhromau.monitoring.meter.model.MeterType;
 
+import java.sql.SQLException;
 import java.util.List;
 
 public interface MeterTypeService {
-    MeterType getMeterById(long id) throws EntityNotFoundException;
-    List<MeterType> getAll();
-    MeterType add(MeterType meterType) throws DuplicateDataException;
-    long deleteMeter(long id);
-    MeterType getMeterByType(String type) throws EntityNotFoundException;
+    MeterType getMeterById(long id) throws EntityNotFoundException, SQLException;
+    List<MeterType> getAll() throws SQLException;
+    MeterType add(MeterType meterType) throws DuplicateDataException, SQLException;
+    long deleteMeter(long id) throws SQLException, EntityNotFoundException;
+    MeterType getMeterByType(String type) throws EntityNotFoundException, SQLException;
 }

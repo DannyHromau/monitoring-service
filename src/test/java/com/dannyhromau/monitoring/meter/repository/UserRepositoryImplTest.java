@@ -1,7 +1,7 @@
-package com.dannyhromau.monitoring.meter;
+package com.dannyhromau.monitoring.meter.repository;
 
 import com.dannyhromau.monitoring.meter.model.User;
-import com.dannyhromau.monitoring.meter.repository.impl.UserRepositoryImpl;
+import com.dannyhromau.monitoring.meter.repository.impl.console.UserRepositoryImpl;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -24,7 +24,7 @@ public class UserRepositoryImplTest {
     @Test
     @DisplayName("find user by id when empty repository")
     void getUserByIdWhenNotExists(){
-        userRepository.add(user);
+        userRepository.save(user);
         int expectedSize = 1;
         int actualSize = userRepository.findAll().size();
         Assertions.assertEquals(expectedSize, actualSize);
@@ -32,9 +32,9 @@ public class UserRepositoryImplTest {
     @Test
     @DisplayName("check incrementing id when add user")
     void incrementIdWhenAddUser(){
-        userRepository.add(user);
+        userRepository.save(user);
         User userNext = new User();
-        userRepository.add(userNext);
+        userRepository.save(userNext);
         long expectedId = 2;
         long actualId = userRepository.findAll().get(1).getId();
         Assertions.assertEquals(expectedId, actualId);
@@ -44,15 +44,15 @@ public class UserRepositoryImplTest {
     @DisplayName("find user by login when exists")
     void findUserByLoginWhenExists(){
         User expectedUser = user;
-        userRepository.add(user);
+        userRepository.save(user);
         User actualUser = userRepository.findUserByLogin(user.getLogin()).get();
         Assertions.assertEquals(expectedUser, actualUser);
     }
     @Test
     @DisplayName("delete user when exists")
     void deleteUserWhenExists(){
-        userRepository.add(user);
-        userRepository.add(new User());
+        userRepository.save(user);
+        userRepository.save(new User());
         long id = userRepository.findUserByLogin(user.getLogin()).get().getId();
         userRepository.deleteById(id);
         User actualUser = userRepository.findById(id).get();

@@ -5,6 +5,7 @@ import com.dannyhromau.monitoring.meter.model.Authority;
 import com.dannyhromau.monitoring.meter.model.User;
 import com.dannyhromau.monitoring.meter.repository.AuthorityRepository;
 
+import java.sql.SQLException;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Optional;
@@ -30,13 +31,13 @@ public class ApplicationContext {
         return contextHolder;
     }
 
-    public void initialize() {
+    public void initialize() throws SQLException {
         contextHolder.setupContext();
         prepareUserData(contextHolder.getAuthorityRepository());
         prepareMeterTypes();
     }
 
-    public void prepareUserData(AuthorityRepository ar) {
+    public void prepareUserData(AuthorityRepository ar) throws SQLException {
         List<Authority> authorities = new LinkedList<>();
         Authority adminAuthority = new Authority();
         adminAuthority.setName("admin");
@@ -45,14 +46,15 @@ public class ApplicationContext {
         authorities.add(adminAuthority);
         authorities.add(userAuthority);
         ar.addAll(authorities);
+        authorities = ar.findAll();
         User admin = new User();
         admin.setLogin("admin");
         admin.setPassword("admin");
         admin.setAuthorities(authorities);
         admin.setDeleted(false);
         Optional<User> adminOpt = contextHolder.getUserRepository().findUserByLogin(admin.getLogin());
-        adminOpt.ifPresent(user -> contextHolder.getUserRepository().deleteById(user.getId()));
-        contextHolder.getUserRepository().add(admin);
+        if (adminOpt.isEmpty()){
+        contextHolder.getUserRepository().save(admin);}
     }
 
     public void prepareMeterTypes() {

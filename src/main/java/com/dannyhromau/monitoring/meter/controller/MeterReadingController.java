@@ -14,12 +14,12 @@ public interface MeterReadingController {
     ResponseEntity<List<MeterReading>> getAll();
 
     ResponseEntity<List<MeterReading>> getByUserId(long userId);
-    ResponseEntity<List<MeterReading>> getByUserIdAndMeterType(long userId, MeterType meterType);
+    ResponseEntity<List<MeterReading>> getByUserIdAndMeterType(long userId, long meterTypeId);
 
     ResponseEntity<MeterReading> getById(long id);
 
-    ResponseEntity<MeterReading> getActualMeterReading(long userId, MeterType mrType);
+    ResponseEntity<MeterReading> getActualMeterReading(long userId, long meterTypeId);
 
-    ResponseEntity<MeterReading> getMeterReadingByDateAndMeterType(long userId, LocalDate date, MeterType mrType);
-    ResponseEntity<MeterReading> getMeterReadingByMonthAndMeterType(long userId, YearMonth yearMonth, MeterType mrType);
+    ResponseEntity<MeterReading> getMeterReadingByDateAndMeterType(long userId, LocalDate date, long meterTypeId);
+    ResponseEntity<MeterReading> getMeterReadingByMonthAndMeterType(long userId, YearMonth yearMonth, long meterTypeId);
 }

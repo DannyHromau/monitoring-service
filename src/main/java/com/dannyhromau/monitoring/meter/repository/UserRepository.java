@@ -2,20 +2,21 @@ package com.dannyhromau.monitoring.meter.repository;
 
 import com.dannyhromau.monitoring.meter.model.User;
 
+import java.sql.SQLException;
 import java.util.List;
 import java.util.Optional;
 
 public interface UserRepository {
 
-    Optional<User> findById(long id);
+    Optional<User> findById(long id) throws SQLException;
 
-    List<User> findAll();
+    List<User> findAll() throws SQLException;
 
-    User add(User user);
+    User save(User user) throws SQLException;
 
     void deleteById(long id);
 
-    Optional<User> findUserByLogin(String login);
+    Optional<User> findUserByLogin(String login) throws SQLException;
 
     void deleteAll();
 }
