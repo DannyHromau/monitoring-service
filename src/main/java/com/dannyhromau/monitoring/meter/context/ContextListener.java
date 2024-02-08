@@ -9,8 +9,6 @@ import com.dannyhromau.monitoring.meter.controller.impl.MeterReadingControllerIm
 import com.dannyhromau.monitoring.meter.controller.impl.MeterTypeControllerImpl;
 import com.dannyhromau.monitoring.meter.core.config.LiquibaseConfig;
 import com.dannyhromau.monitoring.meter.core.util.JdbcUtil;
-import com.dannyhromau.monitoring.meter.core.util.MeterTypesLoader;
-import com.dannyhromau.monitoring.meter.db.migration.LiquibaseRunner;
 import com.dannyhromau.monitoring.meter.facade.AuthFacade;
 import com.dannyhromau.monitoring.meter.facade.MeterReadingFacade;
 import com.dannyhromau.monitoring.meter.facade.MeterTypeFacade;
@@ -25,6 +23,7 @@ import com.dannyhromau.monitoring.meter.repository.AuthorityRepository;
 import com.dannyhromau.monitoring.meter.repository.MeterReadingRepository;
 import com.dannyhromau.monitoring.meter.repository.MeterTypeRepository;
 import com.dannyhromau.monitoring.meter.repository.UserRepository;
+import com.dannyhromau.monitoring.meter.repository.impl.console.AuthorityRepositoryImpl;
 import com.dannyhromau.monitoring.meter.repository.impl.jdbc.JdbcAuthorityRepository;
 import com.dannyhromau.monitoring.meter.repository.impl.jdbc.JdbcMeterReadingRepository;
 import com.dannyhromau.monitoring.meter.repository.impl.jdbc.JdbcMeterTypeRepository;
@@ -55,19 +54,13 @@ public class ContextListener implements ServletContextListener {
     private AuthController<AuthDto> authController;
     private AuthorityRepository authorityRepository;
     private AuthorityService authorityService;
-    private JdbcUtil jdbcLiquibaseUtil;
-    private JdbcUtil jdbcUtil;
-    private JdbcUtil auditJdbcUtil;
-    private MeterTypesLoader meterTypesLoader;
 
     @Override
     public void contextInitialized(ServletContextEvent sce) {
         final ServletContext servletContext = sce.getServletContext();
         liquibaseConfig = new LiquibaseConfig();
-         jdbcUtil = new JdbcUtil(liquibaseConfig
+        JdbcUtil jdbcUtil = new JdbcUtil(liquibaseConfig
                 .getProperty(LiquibaseConfig.SCHEMA_MAIN, "db/liquibase.properties"));
-        auditJdbcUtil = new JdbcUtil(liquibaseConfig
-                .getProperty(LiquibaseConfig.SCHEMA_AUDIT, "db/liquibase.properties"));
         meterTypeRepository = new JdbcMeterTypeRepository(jdbcUtil);
         meterTypeService = new MeterTypeServiceImpl(meterTypeRepository);
         meterTypeFacade = new MeterTypeFacadeImpl(meterTypeService, MeterTypeMapper.INSTANCE);
@@ -83,16 +76,9 @@ public class ContextListener implements ServletContextListener {
         authService = new ConsoleAuthServiceImpl(userService, authorityService);
         authFacade = new AuthFacadeImpl(authService, UserMapper.INSTANCE);
         authController = new AuthControllerImpl(authFacade);
-        meterTypesLoader = new MeterTypesLoader(meterTypeRepository);
-        jdbcLiquibaseUtil = new JdbcUtil(liquibaseConfig
-                .getProperty(LiquibaseConfig.SCHEMA_SYSTEM, "db/liquibase.properties"));
-        LiquibaseRunner runner = new LiquibaseRunner(jdbcLiquibaseUtil);
-        runner.run(liquibaseConfig.getProperty(LiquibaseConfig.MASTER_PATH, "db/liquibase.properties"));
-        meterTypesLoader.load();
         servletContext.setAttribute("meterTypeController", meterTypeController);
         servletContext.setAttribute("meterReadingController", meterReadingController);
         servletContext.setAttribute("authController", authController);
-        servletContext.setAttribute("liquibaseConfig", liquibaseConfig);
     }
 
     @Override

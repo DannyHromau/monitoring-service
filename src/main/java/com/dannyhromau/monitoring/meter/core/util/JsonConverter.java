@@ -1,6 +1,5 @@
 package com.dannyhromau.monitoring.meter.core.util;
 
-import com.dannyhromau.monitoring.meter.api.dto.AuthDto;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import javax.servlet.http.HttpServletRequest;
@@ -24,16 +23,14 @@ public class JsonConverter {
         out.print(res);
         out.flush();
     }
-
-    public static Object fromJson(HttpServletRequest req) throws IOException {
+    public static <T> T fromJson(HttpServletRequest req, T t) throws IOException {
         StringBuilder buffer = new StringBuilder();
         BufferedReader reader = req.getReader();
-        String line;
-        while ((line = reader.readLine()) != null) {
-            buffer.append(line);
+        while (reader.readLine() != null) {
+            buffer.append(reader.readLine());
         }
         String json = buffer.toString();
         ObjectMapper mapper = new ObjectMapper();
-        return mapper.readValue(json, AuthDto.class);
+        return (T) mapper.readValue(json, t.getClass());
     }
 }

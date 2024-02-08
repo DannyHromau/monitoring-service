@@ -1,14 +1,11 @@
 package com.dannyhromau.monitoring.meter.controller.impl;
 
-import com.dannyhromau.monitoring.meter.annotation.Auditable;
-import com.dannyhromau.monitoring.meter.annotation.AspectLogging;
 import com.dannyhromau.monitoring.meter.api.ResponseEntity;
 import com.dannyhromau.monitoring.meter.api.dto.MeterReadingDto;
 import com.dannyhromau.monitoring.meter.controller.MeterReadingController;
 import com.dannyhromau.monitoring.meter.core.util.ErrorStatusBuilder;
 import com.dannyhromau.monitoring.meter.exception.DuplicateDataException;
 import com.dannyhromau.monitoring.meter.exception.EntityNotFoundException;
-import com.dannyhromau.monitoring.meter.exception.InvalidDataException;
 import com.dannyhromau.monitoring.meter.facade.MeterReadingFacade;
 import lombok.RequiredArgsConstructor;
 import org.apache.logging.log4j.Level;
@@ -20,7 +17,7 @@ import java.time.LocalDate;
 import java.time.YearMonth;
 import java.util.List;
 
-@AspectLogging
+//TODO: refactor logging
 @RequiredArgsConstructor
 public class MeterReadingControllerImpl implements MeterReadingController {
 
@@ -28,7 +25,6 @@ public class MeterReadingControllerImpl implements MeterReadingController {
     private static final String STATUS_OK = "ok";
     private static final Logger logger = LogManager.getLogger(MeterReadingControllerImpl.class);
 
-    @Auditable
     @Override
     public ResponseEntity<MeterReadingDto> add(MeterReadingDto mr) {
         String loggingTheme = "called add MR status: ";
@@ -41,7 +37,7 @@ public class MeterReadingControllerImpl implements MeterReadingController {
                     + " "
                     + mr.getMeterTypeId() + mr.getValue());
             return ResponseEntity.of(mr, STATUS_OK);
-        } catch (DuplicateDataException | SQLException | InvalidDataException e) {
+        } catch (DuplicateDataException | SQLException e) {
             logger.log(Level.ERROR, loggingTheme + e.getMessage());
             return ResponseEntity.of(mr, ErrorStatusBuilder.getStatus(e));
         }
@@ -59,7 +55,6 @@ public class MeterReadingControllerImpl implements MeterReadingController {
         }
     }
 
-    @Auditable
     @Override
     public ResponseEntity<List<MeterReadingDto>> getByUserId(long userId) {
         String loggingTheme = "called history status: ";
@@ -72,7 +67,6 @@ public class MeterReadingControllerImpl implements MeterReadingController {
         }
     }
 
-    @Auditable
     @Override
     public ResponseEntity<List<MeterReadingDto>> getByUserIdAndMeterType(long userId, long meterTypeId) {
         String loggingTheme = "called history status: ";
@@ -97,7 +91,6 @@ public class MeterReadingControllerImpl implements MeterReadingController {
         }
     }
 
-    @Auditable
     @Override
     public ResponseEntity<MeterReadingDto> getActualMeterReading(long userId, long mrTypeId) {
         String loggingTheme = "called actual MR status: ";
@@ -110,7 +103,6 @@ public class MeterReadingControllerImpl implements MeterReadingController {
         }
     }
 
-    @Auditable
     @Override
     public ResponseEntity<MeterReadingDto> getMeterReadingByDateAndMeterType(
             long userId, LocalDate date, long mrTypeId) {

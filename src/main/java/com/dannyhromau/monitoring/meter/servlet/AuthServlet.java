@@ -1,7 +1,5 @@
 package com.dannyhromau.monitoring.meter.servlet;
 
-import com.dannyhromau.monitoring.meter.annotation.AspectLogging;
-import com.dannyhromau.monitoring.meter.api.ResponseEntity;
 import com.dannyhromau.monitoring.meter.api.dto.AuthDto;
 import com.dannyhromau.monitoring.meter.controller.AuthController;
 import com.dannyhromau.monitoring.meter.core.util.ErrorStatusBuilder;
@@ -12,10 +10,8 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
 import java.io.IOException;
 
-@AspectLogging
 @WebServlet(name = "MeterTypeServlet", urlPatterns = {"/api/v1/auth/*"})
 public class AuthServlet extends HttpServlet {
 
@@ -47,17 +43,11 @@ public class AuthServlet extends HttpServlet {
             }
         }
         if (pathInfo.equals("/login")) {
-            ResponseEntity<AuthDto> re = authController.authorize(authDto);
-            resp = ErrorStatusBuilder.setHttpStatus(resp, re.getSystemMessage());
-            if (re.getBody() != null){
-                HttpSession session = req.getSession();
-                session.setAttribute("authorities", re.getBody().getAuthorities());
-            }
-            JsonConverter.sendAsJson(resp, re.getBody());
+            resp = ErrorStatusBuilder.setHttpStatus(resp, authController.authorize(authDto).getSystemMessage());
+            JsonConverter.sendAsJson(resp, authController.authorize(authDto));
         } else if (pathInfo.equals("/register")) {
-            ResponseEntity<Boolean> re = authController.register(authDto);
-            resp = ErrorStatusBuilder.setHttpStatus(resp, re.getSystemMessage());
-            JsonConverter.sendAsJson(resp, re.getBody());
+            resp = ErrorStatusBuilder.setHttpStatus(resp, authController.register(authDto).getSystemMessage());
+            JsonConverter.sendAsJson(resp, authController.register(authDto));
         }
     }
 

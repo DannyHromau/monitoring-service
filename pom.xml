@@ -32,10 +32,9 @@
         <org.eclipse.jetty.server.version>9.3.7.v20160115</org.eclipse.jetty.server.version>
         <org.eclipse.jetty.webapp.version>9.4.33.v20201020</org.eclipse.jetty.webapp.version>
         <javax.xml.bind.jaxb.api.version>2.2.11</javax.xml.bind.jaxb.api.version>
-        <com.fasterxml.jackson.databind.version>2.12.5</com.fasterxml.jackson.databind.version>
+        <com.fasterxml.jackson.dataformat.xml.version>2.0.0</com.fasterxml.jackson.dataformat.xml.version>
         <maven.war.plugin.version>3.4.0</maven.war.plugin.version>
         <org.eclipse.jetty.maven.version>10.0.7</org.eclipse.jetty.maven.version>
-        <org.aspectj.aspectjrt.version>1.9.7</org.aspectj.aspectjrt.version>
 
     </properties>
 
@@ -76,10 +75,6 @@
                 <configuration>
                     <source>${maven.compiler.source}</source>
                     <target>${maven.compiler.target}</target>
-                        <compilerArgs>
-                            <arg>-d</arg>
-                            <arg>${project.build.directory}/unwoven-classes</arg>
-                        </compilerArgs>
                     <annotationProcessorPaths>
                         <path>
                             <groupId>org.mapstruct</groupId>
@@ -108,32 +103,6 @@
                 <groupId>org.eclipse.jetty</groupId>
                 <artifactId>jetty-maven-plugin</artifactId>
                 <version>${org.eclipse.jetty.maven.version}</version>
-            </plugin>
-            <plugin>
-                <groupId>org.codehaus.mojo</groupId>
-                <artifactId>aspectj-maven-plugin</artifactId>
-                <version>1.14.0</version>
-                <configuration>
-                    <complianceLevel>16</complianceLevel>
-                    <source>16</source>
-                    <target>16</target>
-                    <showWeaveInfo>true</showWeaveInfo>
-                    <verbose>false</verbose>
-                    <Xlint>ignore</Xlint>
-                    <encoding>UTF-8</encoding>
-                    <forceAjcCompile>true</forceAjcCompile>
-                    <sources/>
-                    <weaveDirectories>
-                        <weaveDirectory>${project.build.directory}/unwoven-classes</weaveDirectory>
-                    </weaveDirectories>
-                </configuration>
-                <executions>
-                    <execution>
-                        <goals>
-                            <goal>compile</goal>
-                        </goals>
-                    </execution>
-                </executions>
             </plugin>
         </plugins>
     </build>
@@ -228,14 +197,9 @@
             <version>${javax.xml.bind.jaxb.api.version}</version>
         </dependency>
         <dependency>
-            <groupId>com.fasterxml.jackson.core</groupId>
-            <artifactId>jackson-databind</artifactId>
-            <version>${com.fasterxml.jackson.databind.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.aspectj</groupId>
-            <artifactId>aspectjrt</artifactId>
-            <version>${org.aspectj.aspectjrt.version}</version>
+            <groupId>com.fasterxml.jackson.dataformat</groupId>
+            <artifactId>jackson-dataformat-xml</artifactId>
+            <version>${com.fasterxml.jackson.dataformat.xml.version}</version>
         </dependency>
     </dependencies>
 </project>

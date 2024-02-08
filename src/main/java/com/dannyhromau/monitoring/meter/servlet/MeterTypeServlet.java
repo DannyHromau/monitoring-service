@@ -1,7 +1,5 @@
 package com.dannyhromau.monitoring.meter.servlet;
 
-import com.dannyhromau.monitoring.meter.annotation.AspectLogging;
-import com.dannyhromau.monitoring.meter.api.ResponseEntity;
 import com.dannyhromau.monitoring.meter.api.dto.MeterTypeDto;
 import com.dannyhromau.monitoring.meter.controller.MeterTypeController;
 import com.dannyhromau.monitoring.meter.core.util.ErrorStatusBuilder;
@@ -13,9 +11,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.util.List;
 
-@AspectLogging
 @WebServlet(name = "MeterTypeServlet", urlPatterns = {"/api/v1/meter/type/*"})
 public class MeterTypeServlet extends HttpServlet {
 
@@ -32,20 +28,18 @@ public class MeterTypeServlet extends HttpServlet {
         if (pathInfo == null || pathInfo.equals("/")) {
             JsonConverter.sendAsJson(resp, "");
         } else if (pathInfo.equals("/all")) {
-            ResponseEntity<List<MeterTypeDto>> re = meterTypeController.getAll();
-            resp = ErrorStatusBuilder.setHttpStatus(resp, re.getSystemMessage());
-            JsonConverter.sendAsJson(resp, re.getBody());
+            resp = ErrorStatusBuilder.setHttpStatus(resp, meterTypeController.getAll().getSystemMessage());
+            JsonConverter.sendAsJson(resp, meterTypeController.getAll().getBody());
         } else {
             pathInfo = pathInfo.replaceFirst("/", "");
             try {
                 long id = Long.parseLong(pathInfo);
-                ResponseEntity<MeterTypeDto> re = meterTypeController.getMeterById(id);
-                resp = ErrorStatusBuilder.setHttpStatus(resp, re.getSystemMessage());
-                JsonConverter.sendAsJson(resp, re.getBody());
+                resp = ErrorStatusBuilder.setHttpStatus(resp, meterTypeController.getMeterById(id).getSystemMessage());
+                JsonConverter.sendAsJson(resp, meterTypeController.getMeterById(id).getBody());
             } catch (NumberFormatException e) {
-                ResponseEntity<MeterTypeDto> re = meterTypeController.getMeterByType(pathInfo);
-                resp = ErrorStatusBuilder.setHttpStatus(resp, re.getSystemMessage());
-                JsonConverter.sendAsJson(resp, re.getBody());
+                resp = ErrorStatusBuilder.setHttpStatus(resp, meterTypeController
+                        .getMeterByType(pathInfo).getSystemMessage());
+                JsonConverter.sendAsJson(resp, meterTypeController.getMeterByType(pathInfo).getBody());
             }
         }
     }
@@ -57,11 +51,10 @@ public class MeterTypeServlet extends HttpServlet {
             try {
                 Object o = JsonConverter.fromJson(req);
                 MeterTypeDto meterTypeDto = (MeterTypeDto) o;
-                ResponseEntity<MeterTypeDto> re = meterTypeController.add(meterTypeDto);
-                meterTypeDto = re.getBody();
-                resp = ErrorStatusBuilder.setHttpStatus(resp, re.getSystemMessage());
+                meterTypeDto = meterTypeController.add(meterTypeDto).getBody();
+                resp = ErrorStatusBuilder.setHttpStatus(resp, meterTypeController.add(meterTypeDto).getSystemMessage());
                 JsonConverter.sendAsJson(resp, meterTypeDto);
-            } catch (ClassCastException e) {
+            } catch (ClassCastException e){
                 resp.setStatus(HttpServletResponse.SC_BAD_REQUEST);
                 JsonConverter.sendAsJson(resp, null);
             }

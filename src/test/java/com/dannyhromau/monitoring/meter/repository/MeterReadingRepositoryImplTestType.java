@@ -22,11 +22,9 @@ public class MeterReadingRepositoryImplTestType {
         mr.setDate(LocalDateTime.now());
         MeterType mrType = new MeterType();
         mrType.setType("HEATING");
-        mrType.setId(1L);
         mr.setMeterType(mrType);
         mr.setValue(1000);
         mr.setUserId(1L);
-        mr.setMeterTypeId(mrType.getId());
     }
 
     @Test

@@ -1,8 +1,7 @@
 package com.dannyhromau.monitoring.meter.repository.impl.jdbc;
 
-import com.dannyhromau.monitoring.meter.annotation.AspectLogging;
 import com.dannyhromau.monitoring.meter.core.util.JdbcUtil;
-import com.dannyhromau.monitoring.meter.model.audit.Audit;
+import com.dannyhromau.monitoring.meter.model.audit.UserAudit;
 import com.dannyhromau.monitoring.meter.repository.AuditRepository;
 import lombok.RequiredArgsConstructor;
 
@@ -11,25 +10,24 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Optional;
 
-@AspectLogging
 @RequiredArgsConstructor
-public class JdbcUserAuditRepository implements AuditRepository<Audit> {
+public class JdbcUserAuditRepository implements AuditRepository<UserAudit> {
     private final JdbcUtil jdbcUtil;
 
     @Override
-    public Optional<Audit> findById(long id) throws SQLException {
+    public Optional<UserAudit> findById(long id) throws SQLException {
         String sql = "SELECT * FROM ms_audit_user WHERE id = ?";
-        Audit audit = null;
+        UserAudit audit = null;
         try (Connection connection = jdbcUtil.getConnection();
              PreparedStatement stmt = connection.prepareStatement(sql)) {
             stmt.setLong(1, id);
             stmt.executeUpdate();
             ResultSet rs = stmt.executeQuery();
             while (rs.next()) {
-                audit = Audit.builder()
+                audit = UserAudit.builder()
                         .id(rs.getLong("id"))
                         .timestamp(rs.getTimestamp("timestamp").toLocalDateTime())
-                        .auditingArgs(rs.getString("auditing_args"))
+                        .auditingEntityId(rs.getLong("user_id"))
                         .action(rs.getString("action"))
                         .build();
             }
@@ -42,17 +40,17 @@ public class JdbcUserAuditRepository implements AuditRepository<Audit> {
     }
 
     @Override
-    public List<Audit> findAll() throws SQLException {
+    public List<UserAudit> findAll() throws SQLException {
         String sql = "SELECT * FROM ms_audit_user";
-        List<Audit> audits = new LinkedList<>();
+        List<UserAudit> audits = new LinkedList<>();
         try (Connection connection = jdbcUtil.getConnection();
              PreparedStatement stmt = connection.prepareStatement(sql)) {
             ResultSet rs = stmt.executeQuery();
             while (rs.next()) {
-                Audit audit = Audit.builder()
+                UserAudit audit = UserAudit.builder()
                         .id(rs.getLong("id"))
                         .timestamp(rs.getTimestamp("timestamp").toLocalDateTime())
-                        .auditingArgs(rs.getString("auditing_args"))
+                        .auditingEntityId(rs.getLong("user_id"))
                         .action(rs.getString("action"))
                         .build();
                 audits.add(audit);
@@ -62,12 +60,12 @@ public class JdbcUserAuditRepository implements AuditRepository<Audit> {
     }
 
     @Override
-    public Audit save(Audit audit) throws SQLException {
-        String sql = "INSERT INTO ms_audit_user (timestamp, auditing_args, action) VALUES (?,?,?)";
+    public UserAudit save(UserAudit audit) throws SQLException {
+        String sql = "INSERT INTO ms_audit_user (timestamp, auditing_entity_id, action) VALUES (?,?,?)";
         try (Connection connection = jdbcUtil.getConnection();
              PreparedStatement stmt = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
             stmt.setTimestamp(1, Timestamp.valueOf(audit.getTimestamp()));
-            stmt.setString(2, audit.getAuditingArgs());
+            stmt.setLong(2, audit.getAuditingEntityId());
             stmt.setString(3, audit.getAction());
             stmt.executeUpdate();
             ResultSet generatedKeys = stmt.getGeneratedKeys();

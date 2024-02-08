@@ -2,6 +2,8 @@ package com.dannyhromau.monitoring.meter.controller;
 
 import com.dannyhromau.monitoring.meter.api.ResponseEntity;
 import com.dannyhromau.monitoring.meter.api.dto.MeterReadingDto;
+import com.dannyhromau.monitoring.meter.model.MeterReading;
+import com.dannyhromau.monitoring.meter.model.MeterType;
 
 import java.time.LocalDate;
 import java.time.YearMonth;

@@ -7,7 +7,6 @@ import com.dannyhromau.monitoring.meter.exception.InvalidDataException;
 import com.dannyhromau.monitoring.meter.exception.UnAuthorizedException;
 import com.dannyhromau.monitoring.meter.model.User;
 import com.dannyhromau.monitoring.meter.service.impl.ConsoleAuthServiceImpl;
-import org.apache.commons.codec.digest.DigestUtils;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -91,19 +90,13 @@ public class AuthServiceImplTest {
     @Test
     @DisplayName("authorize user when exists")
     void authorizeUserWhenExists() throws UnAuthorizedException, SQLException, EntityNotFoundException {
-        String password = "password";
-        String login = "login";
-        User authUser = new User();
-        authUser.setId(100L);
-        authUser.setLogin(login);
-        authUser.setPassword(DigestUtils.md5Hex(password));
         User user = new User();
         user.setId(100L);
-        user.setLogin(login);
-        user.setPassword(password);
-        when(userService.getUserByLogin(authUser.getLogin())).thenReturn(authUser);
+        user.setLogin("login");
+        user.setPassword("password");
+        when(userService.getUserByLogin(user.getLogin())).thenReturn(user);
         User actualUser = authService.authorize(user);
-        Assertions.assertEquals(authUser, actualUser);
+        Assertions.assertEquals(user, actualUser);
     }
 
 }

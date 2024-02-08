@@ -1,10 +1,8 @@
 package com.dannyhromau.monitoring.meter.facade.impl;
 
-import com.dannyhromau.monitoring.meter.annotation.AspectLogging;
 import com.dannyhromau.monitoring.meter.api.dto.MeterReadingDto;
 import com.dannyhromau.monitoring.meter.exception.DuplicateDataException;
 import com.dannyhromau.monitoring.meter.exception.EntityNotFoundException;
-import com.dannyhromau.monitoring.meter.exception.InvalidDataException;
 import com.dannyhromau.monitoring.meter.facade.MeterReadingFacade;
 import com.dannyhromau.monitoring.meter.mapper.MeterReadingMapper;
 import com.dannyhromau.monitoring.meter.model.MeterReading;
@@ -16,7 +14,6 @@ import java.time.LocalDate;
 import java.time.YearMonth;
 import java.util.List;
 
-@AspectLogging
 @RequiredArgsConstructor
 public class MeterReadingFacadeImpl implements MeterReadingFacade {
 
@@ -25,8 +22,7 @@ public class MeterReadingFacadeImpl implements MeterReadingFacade {
 
 
     @Override
-    public MeterReadingDto add(MeterReadingDto meterReadingDto)
-            throws DuplicateDataException, SQLException, InvalidDataException {
+    public MeterReadingDto add(MeterReadingDto meterReadingDto) throws DuplicateDataException, SQLException {
         MeterReading meterReading = service.add(mapper.mapToMeterReading(meterReadingDto));
         return mapper.mapToDto(meterReading);
     }
@@ -52,19 +48,20 @@ public class MeterReadingFacadeImpl implements MeterReadingFacade {
     }
 
     @Override
-    public MeterReadingDto getActualMeterReading(long userId, long mrTypeId) throws SQLException, EntityNotFoundException {
+    public MeterReadingDto getActualMeterReading(long userId, long mrTypeId)
+            throws EntityNotFoundException, SQLException {
         return mapper.mapToDto(service.getActualMeterReading(userId, mrTypeId));
     }
 
     @Override
     public MeterReadingDto getMeterReadingByDateAndMeterType(long userId, LocalDate date, long mrTypeId)
-            throws SQLException, EntityNotFoundException {
+            throws EntityNotFoundException, SQLException {
         return mapper.mapToDto(service.getMeterReadingByDateAndMeterType(userId, date, mrTypeId));
     }
 
     @Override
     public MeterReadingDto getMeterReadingByMonthAndMeterType(long userId, YearMonth yearMonth, long mrTypeId)
-            throws SQLException, EntityNotFoundException {
+            throws EntityNotFoundException, SQLException {
         return mapper.mapToDto(service.getMeterReadingByMonthAndMeterType(userId, yearMonth, mrTypeId));
     }
 }

@@ -1,18 +1,17 @@
 package com.dannyhromau.monitoring.meter.model.audit;
 
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import java.time.LocalDateTime;
 
 @Getter
 @Setter
-@Builder
-@NoArgsConstructor
 @AllArgsConstructor
-public class Audit {
+@NoArgsConstructor
+public abstract class Audit {
     private long id;
     private LocalDateTime timestamp;
-    private String auditingArgs;
-    private String action;
-
 }

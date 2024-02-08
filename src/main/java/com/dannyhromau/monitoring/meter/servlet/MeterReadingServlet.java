@@ -1,7 +1,5 @@
 package com.dannyhromau.monitoring.meter.servlet;
 
-import com.dannyhromau.monitoring.meter.annotation.AspectLogging;
-import com.dannyhromau.monitoring.meter.api.ResponseEntity;
 import com.dannyhromau.monitoring.meter.api.dto.MeterReadingDto;
 import com.dannyhromau.monitoring.meter.controller.MeterReadingController;
 import com.dannyhromau.monitoring.meter.core.util.ErrorStatusBuilder;
@@ -17,9 +15,7 @@ import java.time.DateTimeException;
 import java.time.LocalDate;
 import java.time.YearMonth;
 import java.time.format.DateTimeFormatter;
-import java.util.List;
 
-@AspectLogging
 @WebServlet(name = "MeterReadingServlet", urlPatterns = {"/api/v1/meter/reading/*"})
 public class MeterReadingServlet extends HttpServlet {
 
@@ -50,8 +46,7 @@ public class MeterReadingServlet extends HttpServlet {
     private void sendById(String pathInfo, HttpServletResponse resp) throws IOException {
         try {
             long id = Long.parseLong(pathInfo);
-            ResponseEntity<MeterReadingDto> re = meterReadingController.getById(id);
-            resp = ErrorStatusBuilder.setHttpStatus(resp, re.getSystemMessage());
+            resp = ErrorStatusBuilder.setHttpStatus(resp, meterReadingController.getById(id).getSystemMessage());
             JsonConverter.sendAsJson(resp, meterReadingController.getById(id).getBody());
         } catch (NumberFormatException e) {
             resp = ErrorStatusBuilder.setHttpStatus(resp, ErrorStatusBuilder.getStatus(e));
@@ -67,10 +62,11 @@ public class MeterReadingServlet extends HttpServlet {
             try {
                 long userId = Long.parseLong(req.getParameter("userId"));
                 long meterTypeId = Long.parseLong(req.getParameter("meterTypeId"));
-                ResponseEntity<MeterReadingDto> re = meterReadingController.getActualMeterReading(userId, meterTypeId);
                 resp = ErrorStatusBuilder
-                        .setHttpStatus(resp, re.getSystemMessage());
-                JsonConverter.sendAsJson(resp, re.getBody());
+                        .setHttpStatus(resp, meterReadingController
+                                .getActualMeterReading(userId, meterTypeId)
+                                .getSystemMessage());
+                JsonConverter.sendAsJson(resp, meterReadingController.getActualMeterReading(userId, meterTypeId));
             } catch (NumberFormatException e) {
                 resp.setStatus(HttpServletResponse.SC_BAD_REQUEST);
                 JsonConverter.sendAsJson(resp, null);
@@ -86,11 +82,11 @@ public class MeterReadingServlet extends HttpServlet {
             try {
                 long userId = Long.parseLong(req.getParameter("userId"));
                 long meterTypeId = Long.parseLong(req.getParameter("meterTypeId"));
-                ResponseEntity<List<MeterReadingDto>> re = meterReadingController
-                        .getByUserIdAndMeterType(userId, meterTypeId);
                 resp = ErrorStatusBuilder
-                        .setHttpStatus(resp, re.getSystemMessage());
-                JsonConverter.sendAsJson(resp, re);
+                        .setHttpStatus(resp, meterReadingController
+                                .getByUserIdAndMeterType(userId, meterTypeId)
+                                .getSystemMessage());
+                JsonConverter.sendAsJson(resp, meterReadingController.getByUserIdAndMeterType(userId, meterTypeId));
             } catch (NumberFormatException e) {
                 resp.setStatus(HttpServletResponse.SC_BAD_REQUEST);
                 JsonConverter.sendAsJson(resp, null);
@@ -107,11 +103,11 @@ public class MeterReadingServlet extends HttpServlet {
                 long userId = Long.parseLong(req.getParameter("userId"));
                 LocalDate date = LocalDate.parse(req.getParameter("date"));
                 long meterTypeId = Long.parseLong(req.getParameter("meterTypeId"));
-                ResponseEntity<MeterReadingDto> re = meterReadingController
-                        .getMeterReadingByDateAndMeterType(userId, date, meterTypeId);
                 resp = ErrorStatusBuilder
-                        .setHttpStatus(resp, re.getSystemMessage());
-                JsonConverter.sendAsJson(resp, re);
+                        .setHttpStatus(resp, meterReadingController
+                                .getMeterReadingByDateAndMeterType(userId, date, meterTypeId)
+                                .getSystemMessage());
+                JsonConverter.sendAsJson(resp, meterReadingController.getByUserIdAndMeterType(userId, meterTypeId));
             } catch (NumberFormatException | DateTimeException e) {
                 resp.setStatus(HttpServletResponse.SC_BAD_REQUEST);
                 JsonConverter.sendAsJson(resp, null);
@@ -129,10 +125,11 @@ public class MeterReadingServlet extends HttpServlet {
                 long userId = Long.parseLong(req.getParameter("userId"));
                 YearMonth yearMonth = YearMonth.parse(req.getParameter("yearMonth"), formatter);
                 long meterTypeId = Long.parseLong(req.getParameter("meterTypeId"));
-                ResponseEntity<MeterReadingDto> re = meterReadingController
-                        .getMeterReadingByMonthAndMeterType(userId, yearMonth, meterTypeId);
-                resp = ErrorStatusBuilder.setHttpStatus(resp, re.getSystemMessage());
-                JsonConverter.sendAsJson(resp, re);
+                resp = ErrorStatusBuilder
+                        .setHttpStatus(resp, meterReadingController
+                                .getMeterReadingByMonthAndMeterType(userId, yearMonth, meterTypeId)
+                                .getSystemMessage());
+                JsonConverter.sendAsJson(resp, meterReadingController.getByUserIdAndMeterType(userId, meterTypeId));
             } catch (NumberFormatException | DateTimeException e) {
                 resp.setStatus(HttpServletResponse.SC_BAD_REQUEST);
                 JsonConverter.sendAsJson(resp, null);
@@ -141,9 +138,8 @@ public class MeterReadingServlet extends HttpServlet {
     }
 
     private void sendAll(HttpServletResponse resp) throws IOException {
-        ResponseEntity<List<MeterReadingDto>> re = meterReadingController.getAll();
-        resp = ErrorStatusBuilder.setHttpStatus(resp, re.getSystemMessage());
-        JsonConverter.sendAsJson(resp, re.getBody());
+        resp = ErrorStatusBuilder.setHttpStatus(resp, meterReadingController.getAll().getSystemMessage());
+        JsonConverter.sendAsJson(resp, meterReadingController.getAll().getBody());
     }
 
     @Override
@@ -153,9 +149,9 @@ public class MeterReadingServlet extends HttpServlet {
             try {
                 Object o = JsonConverter.fromJson(req);
                 MeterReadingDto meterReadingDto = (MeterReadingDto) o;
-                ResponseEntity<MeterReadingDto> re = meterReadingController.add(meterReadingDto);
-                meterReadingDto = re.getBody();
-                resp = ErrorStatusBuilder.setHttpStatus(resp, re.getSystemMessage());
+                meterReadingDto = meterReadingController.add(meterReadingDto).getBody();
+                resp = ErrorStatusBuilder
+                        .setHttpStatus(resp, meterReadingController.add(meterReadingDto).getSystemMessage());
                 JsonConverter.sendAsJson(resp, meterReadingDto);
             } catch (ClassCastException e) {
                 resp.setStatus(HttpServletResponse.SC_BAD_REQUEST);

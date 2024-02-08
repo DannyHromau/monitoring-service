@@ -1,9 +1,8 @@
 package com.dannyhromau.monitoring.meter.service.impl;
 
-import com.dannyhromau.monitoring.meter.annotation.AspectLogging;
 import com.dannyhromau.monitoring.meter.core.util.ErrorMessages;
 import com.dannyhromau.monitoring.meter.exception.EntityNotFoundException;
-import com.dannyhromau.monitoring.meter.model.audit.Audit;
+import com.dannyhromau.monitoring.meter.model.audit.UserAudit;
 import com.dannyhromau.monitoring.meter.repository.AuditRepository;
 import com.dannyhromau.monitoring.meter.service.AuditService;
 import lombok.RequiredArgsConstructor;
@@ -12,27 +11,27 @@ import java.sql.SQLException;
 import java.time.LocalDateTime;
 import java.util.List;
 
-@AspectLogging
+//TODO implement correct writing user_id when register
 @RequiredArgsConstructor
-public class AuditServiceImpl implements AuditService<Audit> {
-    private final AuditRepository<Audit> auditRepository;
+public class AuditServiceImpl implements AuditService<UserAudit> {
+    private final AuditRepository<UserAudit> auditRepository;
     private static final String ENTITY_NOT_FOUND_MESSAGE = ErrorMessages.ENTITY_NOT_FOUND_MESSAGE.label;
     @Override
-    public Audit getById(long id) throws EntityNotFoundException, SQLException {
+    public UserAudit getById(long id) throws EntityNotFoundException, SQLException {
         return auditRepository.findById(id).orElseThrow(
                 () -> new EntityNotFoundException(String.format(ENTITY_NOT_FOUND_MESSAGE, "id", id)));
     }
 
     @Override
-    public List<Audit> getAll() throws SQLException {
+    public List<UserAudit> getAll() throws SQLException {
         return auditRepository.findAll();
     }
 
     @Override
-    public Audit add(Audit audit) throws SQLException {
-        audit.setTimestamp(LocalDateTime.now());
-            audit = auditRepository.save(audit);
-        return audit;
+    public UserAudit add(UserAudit userAudit) throws SQLException {
+        userAudit.setTimestamp(LocalDateTime.now());
+            userAudit = auditRepository.save(userAudit);
+        return userAudit;
     }
 
     @Override
