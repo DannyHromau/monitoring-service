@@ -48,20 +48,19 @@ public class MeterReadingFacadeImpl implements MeterReadingFacade {
     }
 
     @Override
-    public MeterReadingDto getActualMeterReading(long userId, long mrTypeId)
-            throws EntityNotFoundException, SQLException {
+    public MeterReadingDto getActualMeterReading(long userId, long mrTypeId) throws SQLException, EntityNotFoundException {
         return mapper.mapToDto(service.getActualMeterReading(userId, mrTypeId));
     }
 
     @Override
     public MeterReadingDto getMeterReadingByDateAndMeterType(long userId, LocalDate date, long mrTypeId)
-            throws EntityNotFoundException, SQLException {
+            throws SQLException, EntityNotFoundException {
         return mapper.mapToDto(service.getMeterReadingByDateAndMeterType(userId, date, mrTypeId));
     }
 
     @Override
     public MeterReadingDto getMeterReadingByMonthAndMeterType(long userId, YearMonth yearMonth, long mrTypeId)
-            throws EntityNotFoundException, SQLException {
+            throws SQLException, EntityNotFoundException {
         return mapper.mapToDto(service.getMeterReadingByMonthAndMeterType(userId, yearMonth, mrTypeId));
     }
 }
