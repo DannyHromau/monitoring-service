@@ -36,7 +36,7 @@ public class UserServiceImplTest {
     @DisplayName("add user when exists")
     void addUserWhenExists() throws SQLException {
         User user = new User();
-        user.setId(100);
+        user.setId(100L);
         user.setLogin("login");
         user.setPassword("password");
         when(userRepository.findUserByLogin(user.getLogin()))

@@ -39,7 +39,7 @@ public class AuthServiceImplTest {
     @DisplayName("register user when exists")
     void registerUserWhenExists() throws DuplicateDataException, SQLException {
         User user = new User();
-        user.setId(100);
+        user.setId(100L);
         user.setLogin("login");
         user.setPassword("password");
         when(userService.add(user)).thenThrow(new DuplicateDataException(ErrorMessages.DUPLICATED_DATA_MESSAGE.label));
@@ -52,7 +52,7 @@ public class AuthServiceImplTest {
     @DisplayName("register user when invalid login format")
     void registerUserWhenInvalidLoginFormat() {
         User user = new User();
-        user.setId(100);
+        user.setId(100L);
         user.setLogin("lo");
         user.setPassword("password");
         assertThatExceptionOfType(InvalidDataException.class)
@@ -64,7 +64,7 @@ public class AuthServiceImplTest {
     @DisplayName("register user when invalid password format")
     void registerUserWhenInvalidPasswordFormat() {
         User user = new User();
-        user.setId(100);
+        user.setId(100L);
         user.setLogin("login");
         user.setPassword("pass");
         assertThatExceptionOfType(InvalidDataException.class)
@@ -76,7 +76,7 @@ public class AuthServiceImplTest {
     @DisplayName("authorize user when not exists")
     void authorizeUserWhenNotExists() throws EntityNotFoundException, SQLException {
         User user = new User();
-        user.setId(100);
+        user.setId(100L);
         user.setLogin("login");
         user.setPassword("password");
         when(userService.getUserByLogin(user.getLogin())).thenThrow(new EntityNotFoundException(
@@ -91,7 +91,7 @@ public class AuthServiceImplTest {
     @DisplayName("authorize user when exists")
     void authorizeUserWhenExists() throws UnAuthorizedException, SQLException, EntityNotFoundException {
         User user = new User();
-        user.setId(100);
+        user.setId(100L);
         user.setLogin("login");
         user.setPassword("password");
         when(userService.getUserByLogin(user.getLogin())).thenReturn(user);

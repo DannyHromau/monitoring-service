@@ -1,5 +1,6 @@
 package com.dannyhromau.monitoring.meter.service.impl;
 
+import com.dannyhromau.monitoring.meter.annotation.AspectLogging;
 import com.dannyhromau.monitoring.meter.core.util.ErrorMessages;
 import com.dannyhromau.monitoring.meter.exception.DuplicateDataException;
 import com.dannyhromau.monitoring.meter.exception.EntityNotFoundException;
@@ -11,6 +12,7 @@ import java.sql.SQLException;
 import java.util.List;
 import java.util.Optional;
 
+@AspectLogging
 public class MeterTypeServiceImpl implements MeterTypeService {
     private final MeterTypeRepository meterTypeRepository;
     private static final String ENTITY_NOT_FOUND_MESSAGE = ErrorMessages.ENTITY_NOT_FOUND_MESSAGE.label;

@@ -2,6 +2,7 @@ package com.dannyhromau.monitoring.meter.service;
 
 import com.dannyhromau.monitoring.meter.exception.DuplicateDataException;
 import com.dannyhromau.monitoring.meter.exception.EntityNotFoundException;
+import com.dannyhromau.monitoring.meter.exception.InvalidDataException;
 import com.dannyhromau.monitoring.meter.model.MeterReading;
 
 import java.sql.SQLException;
@@ -10,7 +11,7 @@ import java.time.YearMonth;
 import java.util.List;
 
 public interface MeterReadingService {
-    MeterReading add(MeterReading mr) throws DuplicateDataException, SQLException;
+    MeterReading add(MeterReading mr) throws DuplicateDataException, SQLException, InvalidDataException;
 
     List<MeterReading> getAll() throws SQLException;
 

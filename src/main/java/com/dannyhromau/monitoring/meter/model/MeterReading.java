@@ -13,13 +13,13 @@ import java.time.format.DateTimeFormatter;
 @NoArgsConstructor
 @AllArgsConstructor
 public class MeterReading {
-    private long id;
+    private Long id;
     //TODO: implement getting meterType from db
     private MeterType meterType;
     private LocalDateTime date;
     private int value;
-    private long userId;
-    private long meterTypeId;
+    private Long userId;
+    private Long meterTypeId;
 
     @Override
     public String toString() {

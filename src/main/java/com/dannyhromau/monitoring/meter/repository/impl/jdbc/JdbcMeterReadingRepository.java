@@ -1,5 +1,6 @@
 package com.dannyhromau.monitoring.meter.repository.impl.jdbc;
 
+import com.dannyhromau.monitoring.meter.annotation.AspectLogging;
 import com.dannyhromau.monitoring.meter.core.util.JdbcUtil;
 import com.dannyhromau.monitoring.meter.model.MeterReading;
 import com.dannyhromau.monitoring.meter.model.MeterType;
@@ -14,6 +15,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Optional;
 
+@AspectLogging
 @RequiredArgsConstructor
 public class JdbcMeterReadingRepository implements MeterReadingRepository {
     private final JdbcUtil jdbcUtil;
@@ -41,8 +43,8 @@ public class JdbcMeterReadingRepository implements MeterReadingRepository {
         String sql = "SELECT * FROM ms_meter_reading";
         List<MeterReading> mrList = new LinkedList<>();
         try (Connection connection = jdbcUtil.getConnection();
-             PreparedStatement stmt = connection.prepareStatement(sql)) {
-            ResultSet rs = stmt.executeQuery();
+             PreparedStatement stmt = connection.prepareStatement(sql);
+            ResultSet rs = stmt.executeQuery()) {
             while (rs.next()) {
                 MeterReading meterReading = new MeterReading(rs.getLong("id"),
                         new MeterType(),
@@ -63,15 +65,16 @@ public class JdbcMeterReadingRepository implements MeterReadingRepository {
         try (Connection connection = jdbcUtil.getConnection();
              PreparedStatement stmt = connection.prepareStatement(sql)) {
             stmt.setLong(1, userId);
-            ResultSet rs = stmt.executeQuery();
-            while (rs.next()) {
-                MeterReading meterReading = new MeterReading(rs.getLong("id"),
-                        new MeterType(),
-                        rs.getTimestamp("date").toLocalDateTime(),
-                        rs.getInt("value"),
-                        rs.getLong("user_id"),
-                        rs.getLong("meter_type_id"));
-                mrList.add(meterReading);
+            try (ResultSet rs = stmt.executeQuery()) {
+                while (rs.next()) {
+                    MeterReading meterReading = new MeterReading(rs.getLong("id"),
+                            new MeterType(),
+                            rs.getTimestamp("date").toLocalDateTime(),
+                            rs.getInt("value"),
+                            rs.getLong("user_id"),
+                            rs.getLong("meter_type_id"));
+                    mrList.add(meterReading);
+                }
             }
         }
         return mrList;
@@ -85,14 +88,15 @@ public class JdbcMeterReadingRepository implements MeterReadingRepository {
         try (Connection connection = jdbcUtil.getConnection();
              PreparedStatement stmt = connection.prepareStatement(sql)) {
             stmt.setLong(1, id);
-            ResultSet rs = stmt.executeQuery();
-            while (rs.next()) {
-                meterReading = new MeterReading(rs.getLong("id"),
-                        new MeterType(),
-                        rs.getTimestamp("date").toLocalDateTime(),
-                        rs.getInt("value"),
-                        rs.getLong("user_id"),
-                        rs.getLong("meter_type_id"));
+            try (ResultSet rs = stmt.executeQuery()) {
+                while (rs.next()) {
+                    meterReading = new MeterReading(rs.getLong("id"),
+                            new MeterType(),
+                            rs.getTimestamp("date").toLocalDateTime(),
+                            rs.getInt("value"),
+                            rs.getLong("user_id"),
+                            rs.getLong("meter_type_id"));
+                }
             }
         }
         if (meterReading != null) {
@@ -110,15 +114,16 @@ public class JdbcMeterReadingRepository implements MeterReadingRepository {
              PreparedStatement stmt = connection.prepareStatement(sql)) {
             stmt.setLong(1, userId);
             stmt.setLong(2, mrTypeId);
-            ResultSet rs = stmt.executeQuery();
-            while (rs.next()) {
-                MeterReading meterReading = new MeterReading(rs.getLong("id"),
-                        new MeterType(),
-                        rs.getTimestamp("date").toLocalDateTime(),
-                        rs.getInt("value"),
-                        rs.getLong("user_id"),
-                        rs.getLong("meter_type_id"));
-                mrList.add(meterReading);
+            try (ResultSet rs = stmt.executeQuery()) {
+                while (rs.next()) {
+                    MeterReading meterReading = new MeterReading(rs.getLong("id"),
+                            new MeterType(),
+                            rs.getTimestamp("date").toLocalDateTime(),
+                            rs.getInt("value"),
+                            rs.getLong("user_id"),
+                            rs.getLong("meter_type_id"));
+                    mrList.add(meterReading);
+                }
             }
         }
         return mrList;
@@ -133,14 +138,15 @@ public class JdbcMeterReadingRepository implements MeterReadingRepository {
             stmt.setLong(1, userId);
             stmt.setDate(2, java.sql.Date.valueOf(date));
             stmt.setLong(3, meterTypeId);
-            ResultSet rs = stmt.executeQuery();
-            while (rs.next()) {
-                meterReading = new MeterReading(rs.getLong("id"),
-                        new MeterType(),
-                        rs.getTimestamp("date").toLocalDateTime(),
-                        rs.getInt("value"),
-                        rs.getLong("user_id"),
-                        rs.getLong("meter_type_id"));
+            try (ResultSet rs = stmt.executeQuery()) {
+                while (rs.next()) {
+                    meterReading = new MeterReading(rs.getLong("id"),
+                            new MeterType(),
+                            rs.getTimestamp("date").toLocalDateTime(),
+                            rs.getInt("value"),
+                            rs.getLong("user_id"),
+                            rs.getLong("meter_type_id"));
+                }
             }
         }
         if (meterReading != null) {
@@ -166,15 +172,15 @@ public class JdbcMeterReadingRepository implements MeterReadingRepository {
             stmt.setInt(2, yearMonth.getYear());
             stmt.setInt(3, yearMonth.getMonthValue());
             stmt.setLong(4, meterTypeId);
-            ResultSet rs = stmt.executeQuery();
-            while (rs.next()) {
-                meterReading = new MeterReading(rs.getLong("id"),
-                        new MeterType(),
-                        rs.getTimestamp("date") == null ? LocalDateTime.now()
-                                : rs.getTimestamp("date").toLocalDateTime(),
-                        rs.getInt("value"),
-                        rs.getLong("user_id"),
-                        rs.getLong("meter_type_id"));
+            try (ResultSet rs = stmt.executeQuery()) {
+                while (rs.next()) {
+                    meterReading = new MeterReading(rs.getLong("id"),
+                            new MeterType(),
+                            rs.getTimestamp("date").toLocalDateTime(),
+                            rs.getInt("value"),
+                            rs.getLong("user_id"),
+                            rs.getLong("meter_type_id"));
+                }
             }
         }
         if (meterReading != null) {
@@ -191,18 +197,25 @@ public class JdbcMeterReadingRepository implements MeterReadingRepository {
 
     @Override
     public Optional<MeterReading> findFirstByOrderByDateDesc(long userId, long meterTypeId) throws SQLException {
-        String sql = "SELECT * FROM ms_meter_reading ORDER BY date DESC LIMIT 1";
+        String sql = "SELECT * " +
+                "FROM ms_meter_reading " +
+                "WHERE user_id = ? " +
+                "AND meter_type_id = ? " +
+                "ORDER BY date DESC LIMIT 1";
         MeterReading meterReading = null;
         try (Connection connection = jdbcUtil.getConnection();
              PreparedStatement stmt = connection.prepareStatement(sql)) {
-            ResultSet rs = stmt.executeQuery();
-            while (rs.next()) {
-                meterReading = new MeterReading(rs.getLong("id"),
-                        new MeterType(),
-                        rs.getTimestamp("date").toLocalDateTime(),
-                        rs.getInt("value"),
-                        rs.getLong("user_id"),
-                        rs.getLong("meter_type_id"));
+            stmt.setLong(1, userId);
+            stmt.setLong(2, meterTypeId);
+            try (ResultSet rs = stmt.executeQuery()) {
+                while (rs.next()) {
+                    meterReading = new MeterReading(rs.getLong("id"),
+                            new MeterType(),
+                            rs.getTimestamp("date").toLocalDateTime(),
+                            rs.getInt("value"),
+                            rs.getLong("user_id"),
+                            rs.getLong("meter_type_id"));
+                }
             }
         }
         if (meterReading != null) {

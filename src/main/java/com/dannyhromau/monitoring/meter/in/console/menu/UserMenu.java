@@ -1,12 +1,12 @@
 package com.dannyhromau.monitoring.meter.in.console.menu;
 
 import com.dannyhromau.monitoring.meter.api.ResponseEntity;
+import com.dannyhromau.monitoring.meter.api.dto.AuthDto;
+import com.dannyhromau.monitoring.meter.api.dto.MeterReadingDto;
+import com.dannyhromau.monitoring.meter.api.dto.MeterTypeDto;
 import com.dannyhromau.monitoring.meter.controller.MeterReadingController;
 import com.dannyhromau.monitoring.meter.controller.MeterTypeController;
 import com.dannyhromau.monitoring.meter.core.util.ErrorMessages;
-import com.dannyhromau.monitoring.meter.model.MeterReading;
-import com.dannyhromau.monitoring.meter.model.MeterType;
-import com.dannyhromau.monitoring.meter.model.User;
 import com.dannyhromau.monitoring.meter.in.console.ConsoleClient;
 
 import java.time.LocalDateTime;
@@ -18,12 +18,12 @@ import java.util.Scanner;
 
 //TODO: refactor checking nullable body
 public class UserMenu implements Menu {
-    private final User user;
+    private final AuthDto user;
     private final MeterReadingController mrController;
     private final ConsoleClient client;
     private final MeterTypeController meterTypeController;
 
-    public UserMenu(User user,
+    public UserMenu(AuthDto user,
                     MeterReadingController mrController,
                     ConsoleClient client,
                     MeterTypeController meterTypeController) {
@@ -39,8 +39,8 @@ public class UserMenu implements Menu {
         System.out.println("Meter reading menu" + "\n" + "Choose MR type");
         System.out.println(getMeterReadingsText());
         String input = in.nextLine();
-        MeterType meterType = new MeterType();
-        List<MeterType> meterTypeList = meterTypeController.getAll().getBody();
+        MeterTypeDto meterType = new MeterTypeDto();
+        List<MeterTypeDto> meterTypeList = meterTypeController.getAll().getBody();
         for (int i = 1; i <= meterTypeList.size(); i++) {
             if (input.equals(String.valueOf(i))) {
                 meterType = meterTypeController.getAll().getBody().get(i - 1);
@@ -57,7 +57,7 @@ public class UserMenu implements Menu {
         }
     }
 
-    private void chooseMeterType(MeterType mrType, long userId) {
+    private void chooseMeterType(MeterTypeDto mrType, long userId) {
         Scanner in = new Scanner(System.in);
         System.out.println("Meter reading menu" + " (" + mrType.getType() + ")" + "\n" + "Press any key");
         System.out.println("1 - add new MR; 2 - get actual MR; 3 - all history; 4 - MR by month; 0 - back");
@@ -75,14 +75,14 @@ public class UserMenu implements Menu {
         }
     }
 
-    private void getByMonth(MeterType meterType, long userId) {
+    private void getByMonth(MeterTypeDto meterType, long userId) {
         Scanner in = new Scanner(System.in);
         System.out.println("Enter the data or enter the back to return. (format example: 2024-01)");
         String input = in.nextLine();
         if (input.equals("back")) {
             chooseMeterType(meterType, userId);
         }
-        ResponseEntity<MeterReading> re = new ResponseEntity<>();
+        ResponseEntity<MeterReadingDto> re = new ResponseEntity<>();
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM");
         try {
             YearMonth ym = YearMonth.parse(input, formatter);
@@ -92,7 +92,7 @@ public class UserMenu implements Menu {
             getByMonth(meterType, userId);
         }
         if (re.getSystemMessage().equals("ok")) {
-            MeterReading meterReading = re.getBody();
+            MeterReadingDto meterReading = re.getBody();
             meterReading.setMeterType(meterTypeController.getMeterById(meterReading.getMeterTypeId()).getBody());
             System.out.println(meterReading);
             chooseMeterType(meterType, userId);
@@ -103,14 +103,14 @@ public class UserMenu implements Menu {
 
     }
 
-    private void getHistory(long userId, MeterType meterType) {
-        ResponseEntity<List<MeterReading>> re = mrController.getByUserIdAndMeterType(userId, meterType.getId());
+    private void getHistory(long userId, MeterTypeDto meterType) {
+        ResponseEntity<List<MeterReadingDto>> re = mrController.getByUserIdAndMeterType(userId, meterType.getId());
         if (re.getBody() == null) {
             System.out.println(meterTypeController.getAll().getSystemMessage());
             launch();
         }
         StringBuilder builder = new StringBuilder();
-        for (MeterReading meterReading : re.getBody()) {
+        for (MeterReadingDto meterReading : re.getBody()) {
             meterReading.setMeterType(meterTypeController.getMeterById(meterReading.getMeterTypeId()).getBody());
             builder.append(meterReading).append("\n");
         }
@@ -119,14 +119,14 @@ public class UserMenu implements Menu {
         chooseMeterType(meterType, userId);
     }
 
-    private void getActualMeterReading(MeterType meterType, long userId) {
-        ResponseEntity<MeterReading> re = mrController.getActualMeterReading(userId, meterType.getId());
+    private void getActualMeterReading(MeterTypeDto meterType, long userId) {
+        ResponseEntity<MeterReadingDto> re = mrController.getActualMeterReading(userId, meterType.getId());
         if (re.getBody() == null) {
             System.out.println(meterTypeController.getAll().getSystemMessage());
             launch();
         }
         if (re.getSystemMessage().equals("ok")) {
-            MeterReading meterReading = re.getBody();
+            MeterReadingDto meterReading = re.getBody();
             meterReading.setMeterType(meterTypeController.getMeterById(meterReading.getMeterTypeId()).getBody());
             System.out.println(meterReading);
             chooseMeterType(meterType, userId);
@@ -136,8 +136,8 @@ public class UserMenu implements Menu {
         }
     }
 
-    private void addMeterReading(MeterType meterType, long userId) {
-        MeterReading mr = new MeterReading();
+    private void addMeterReading(MeterTypeDto meterType, long userId) {
+        MeterReadingDto mr = new MeterReadingDto();
         mr.setMeterType(meterType);
         mr.setUserId(userId);
         mr.setMeterTypeId(meterType.getId());
@@ -175,7 +175,7 @@ public class UserMenu implements Menu {
             System.out.println(meterTypeController.getAll().getSystemMessage());
             client.start();
         }
-        for (MeterType meterType : meterTypeController.getAll().getBody()) {
+        for (MeterTypeDto meterType : meterTypeController.getAll().getBody()) {
             builder.append(meterType.getId()).append(" - ").append(meterType.getType()).append("\n");
         }
         builder.append("0").append(" - ").append("back");

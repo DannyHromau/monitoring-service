@@ -24,7 +24,7 @@ public class MeterReadingRepositoryImplTestType {
         mrType.setType("HEATING");
         mr.setMeterType(mrType);
         mr.setValue(1000);
-        mr.setUserId(1);
+        mr.setUserId(1L);
     }
 
     @Test

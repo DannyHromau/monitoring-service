@@ -1,25 +1,25 @@
 package com.dannyhromau.monitoring.meter.in.console;
 
 import com.dannyhromau.monitoring.meter.api.ResponseEntity;
+import com.dannyhromau.monitoring.meter.api.dto.AuthDto;
 import com.dannyhromau.monitoring.meter.controller.AuthController;
-import com.dannyhromau.monitoring.meter.controller.MeterTypeController;
 import com.dannyhromau.monitoring.meter.controller.MeterReadingController;
+import com.dannyhromau.monitoring.meter.controller.MeterTypeController;
 import com.dannyhromau.monitoring.meter.in.console.menu.AdminMenu;
 import com.dannyhromau.monitoring.meter.in.console.menu.Menu;
 import com.dannyhromau.monitoring.meter.in.console.menu.UserMenu;
 import com.dannyhromau.monitoring.meter.model.Authority;
-import com.dannyhromau.monitoring.meter.model.User;
 
 import java.util.Optional;
 import java.util.Scanner;
 
 public class ConsoleClient {
-    private final AuthController<User> ac;
+    private final AuthController<AuthDto> ac;
     private final MeterReadingController mrc;
     private final MeterTypeController mr;
     private static final String STATUS_OK = "ok";
 
-    public ConsoleClient(AuthController<User> ac, MeterReadingController mrc, MeterTypeController mr) {
+    public ConsoleClient(AuthController<AuthDto> ac, MeterReadingController mrc, MeterTypeController mr) {
         this.ac = ac;
         this.mrc = mrc;
         this.mr = mr;
@@ -42,10 +42,10 @@ public class ConsoleClient {
 
     public void login() {
         while (true) {
-            User user = new User();
+            AuthDto user = new AuthDto();
             user = setLogin(user);
             user = setPassword(user);
-            ResponseEntity<User> re = ac.authorize(user);
+            ResponseEntity<AuthDto> re = ac.authorize(user);
             if (re.getSystemMessage().equals(STATUS_OK)) {
                 System.out.println("Successfully login");
                 openMenu(re.getBody());
@@ -58,7 +58,7 @@ public class ConsoleClient {
 
     public void register() {
         while (true) {
-            User user = new User();
+            AuthDto user = new AuthDto();
             user = setLogin(user);
             user = setPassword(user);
             ResponseEntity<Boolean> re = ac.register(user);
@@ -72,7 +72,7 @@ public class ConsoleClient {
         }
     }
 
-    private User setPassword(User user) {
+    private AuthDto setPassword(AuthDto user) {
         Scanner in = new Scanner(System.in);
         System.out.println("Enter the password or press 0 to back. The password must have greater than 7 symbols");
         String input = in.nextLine();
@@ -84,7 +84,7 @@ public class ConsoleClient {
         return user;
     }
 
-    public User setLogin(User user) {
+    public AuthDto setLogin(AuthDto user) {
         Scanner in = new Scanner(System.in);
         System.out.println("Enter the login or press 0 to back. The login must have greater than 2 symbols");
         String input = in.nextLine();
@@ -96,7 +96,7 @@ public class ConsoleClient {
         return user;
     }
 
-    private void openMenu(User user) {
+    private void openMenu(AuthDto user) {
         Optional<Authority> authority = user.getAuthorities()
                 .stream()
                 .filter(a -> a.getName().equals("admin"))

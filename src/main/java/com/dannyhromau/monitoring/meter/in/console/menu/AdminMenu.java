@@ -1,25 +1,23 @@
 package com.dannyhromau.monitoring.meter.in.console.menu;
 
 import com.dannyhromau.monitoring.meter.api.ResponseEntity;
-import com.dannyhromau.monitoring.meter.context.ApplicationContext;
+import com.dannyhromau.monitoring.meter.api.dto.AuthDto;
+import com.dannyhromau.monitoring.meter.api.dto.MeterReadingDto;
 import com.dannyhromau.monitoring.meter.controller.MeterReadingController;
 import com.dannyhromau.monitoring.meter.controller.MeterTypeController;
 import com.dannyhromau.monitoring.meter.core.util.MeterTypesLoader;
-import com.dannyhromau.monitoring.meter.model.MeterReading;
-import com.dannyhromau.monitoring.meter.model.MeterType;
-import com.dannyhromau.monitoring.meter.model.User;
 import com.dannyhromau.monitoring.meter.in.console.ConsoleClient;
 
 import java.util.List;
 import java.util.Scanner;
 
 public class AdminMenu implements Menu {
-    private final User user;
+    private final AuthDto user;
     private final MeterReadingController mrController;
     private final ConsoleClient client;
     private final MeterTypeController meterTypeController;
 
-    public AdminMenu(User user,
+    public AdminMenu(AuthDto user,
                      MeterReadingController mrController,
                      ConsoleClient client,
                      MeterTypeController meterTypeController) {
@@ -59,13 +57,13 @@ public class AdminMenu implements Menu {
     }
 
     private void getAllMeterReadings() {
-        ResponseEntity<List<MeterReading>> re = mrController.getAll();
+        ResponseEntity<List<MeterReadingDto>> re = mrController.getAll();
         StringBuilder builder = new StringBuilder();
         if (re.getBody() == null) {
             System.out.println(re.getSystemMessage());
             launch();
         } else if (!re.getBody().isEmpty()) {
-            for (MeterReading meterReading : re.getBody()) {
+            for (MeterReadingDto meterReading : re.getBody()) {
                 meterReading.setMeterType(meterTypeController.getMeterById(meterReading.getMeterTypeId()).getBody());
                 builder.append("user id = ")
                         .append(meterReading.getUserId()).append(": ")
