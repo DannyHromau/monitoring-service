@@ -22,10 +22,11 @@ public class JdbcMeterTypeRepository implements MeterTypeRepository {
         try (Connection connection = jdbcUtil.getConnection();
              PreparedStatement stmt = connection.prepareStatement(sql)) {
             stmt.setLong(1, id);
-            ResultSet rs = stmt.executeQuery();
-            while (rs.next()) {
-                meterType = new MeterType(rs.getLong("id"),
-                        rs.getString("type"));
+            try (ResultSet rs = stmt.executeQuery()) {
+                while (rs.next()) {
+                    meterType = new MeterType(rs.getLong("id"),
+                            rs.getString("type"));
+                }
             }
         }
         if (meterType != null) {
@@ -40,8 +41,8 @@ public class JdbcMeterTypeRepository implements MeterTypeRepository {
         String sql = "SELECT * FROM ms_meter_type";
         List<MeterType> meterTypes = new LinkedList<>();
         try (Connection connection = jdbcUtil.getConnection();
-             PreparedStatement stmt = connection.prepareStatement(sql)) {
-            ResultSet rs = stmt.executeQuery();
+             PreparedStatement stmt = connection.prepareStatement(sql);
+            ResultSet rs = stmt.executeQuery()) {
             while (rs.next()) {
                 MeterType meterType = new MeterType(rs.getLong("id"),
                         rs.getString("type"));
@@ -58,9 +59,10 @@ public class JdbcMeterTypeRepository implements MeterTypeRepository {
              PreparedStatement stmt = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
             stmt.setString(1, meterType.getType());
             stmt.executeUpdate();
-            ResultSet generatedKeys = stmt.getGeneratedKeys();
-            if (generatedKeys.next()) {
-                meterType.setId((generatedKeys.getLong(1)));
+            try (ResultSet generatedKeys = stmt.getGeneratedKeys()) {
+                if (generatedKeys.next()) {
+                    meterType.setId((generatedKeys.getLong(1)));
+                }
             }
             return meterType;
         }
@@ -84,10 +86,11 @@ public class JdbcMeterTypeRepository implements MeterTypeRepository {
         try (Connection connection = jdbcUtil.getConnection();
              PreparedStatement stmt = connection.prepareStatement(sql)) {
             stmt.setString(1, type);
-            ResultSet rs = stmt.executeQuery();
-            while (rs.next()) {
-                meterType = new MeterType(rs.getLong("id"),
-                        rs.getString("type"));
+            try (ResultSet rs = stmt.executeQuery()) {
+                while (rs.next()) {
+                    meterType = new MeterType(rs.getLong("id"),
+                            rs.getString("type"));
+                }
             }
         }
         if (meterType != null) {

@@ -19,4 +19,11 @@ public class ResponseEntity<T> {
     public void setSystemMessage(String systemMessage) {
         this.systemMessage = systemMessage;
     }
+
+    public static <T> ResponseEntity<T> of(T t, String systemMessage) {
+        ResponseEntity<T> re = new ResponseEntity<>();
+        re.setBody(t);
+        re.setSystemMessage(systemMessage);
+        return re;
+    }
 }

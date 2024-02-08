@@ -49,7 +49,7 @@ public class MeterTypeReadingServiceImplTest {
         LocalDateTime date = LocalDateTime.now();
         for (int i = 0; i < expectedSize; i++) {
             MeterReading mr = new MeterReading();
-            mr.setUserId(i * 100);
+            mr.setUserId(i * 100L);
             MeterType mrType = new MeterType();
             mrType.setType("HEATING");
             mr.setMeterType(mrType);
@@ -72,7 +72,7 @@ public class MeterTypeReadingServiceImplTest {
     @DisplayName("add meter reading when exists")
     void addMeterReadingWhenExists() throws SQLException {
         MeterReading mr = new MeterReading();
-        mr.setUserId(100);
+        mr.setUserId(100L);
         MeterType mrType = new MeterType();
         mrType.setType("HEATING");
         mr.setMeterType(mrType);
@@ -90,7 +90,7 @@ public class MeterTypeReadingServiceImplTest {
     @DisplayName("get meter readings by user id when exist")
     void getMeterReadingsByUserIdWhenExist() throws SQLException {
         MeterReading mr = new MeterReading();
-        mr.setUserId(100);
+        mr.setUserId(100L);
         MeterType mrType = new MeterType();
         mrType.setType("HEATING");
         mr.setMeterType(mrType);
@@ -105,8 +105,8 @@ public class MeterTypeReadingServiceImplTest {
     @DisplayName("get actual meter reading when not exists")
     void getActualMeterReadingWhenNotExists() throws SQLException {
         MeterReading mr = new MeterReading();
-        mr.setId(1);
-        mr.setUserId(100);
+        mr.setId(1L);
+        mr.setUserId(100L);
         MeterType mrType = new MeterType();
         mrType.setType("HEATING");
         mr.setMeterType(mrType);
@@ -122,8 +122,8 @@ public class MeterTypeReadingServiceImplTest {
     @DisplayName("get meter reading by id when not exists")
     void getMeterReadingByIdWhenNotExists() throws SQLException {
         MeterReading mr = new MeterReading();
-        mr.setId(1);
-        mr.setUserId(100);
+        mr.setId(1L);
+        mr.setUserId(100L);
         MeterType mrType = new MeterType();
         mrType.setType("HEATING");
         mr.setMeterType(mrType);
@@ -138,8 +138,8 @@ public class MeterTypeReadingServiceImplTest {
     @DisplayName("get meter reading by id when exists")
     void getMeterReadingByIdWhenExists() throws EntityNotFoundException, SQLException {
         MeterReading mr = new MeterReading();
-        mr.setId(1);
-        mr.setUserId(100);
+        mr.setId(1L);
+        mr.setUserId(100L);
         MeterType mrType = new MeterType();
         mrType.setType("HEATING");
         mr.setMeterType(mrType);
@@ -153,7 +153,7 @@ public class MeterTypeReadingServiceImplTest {
     @DisplayName("get meter reading by user id and date when exists")
     void getMeterReadingWhenByUserIdAndDateExists() throws EntityNotFoundException, SQLException {
         MeterReading expectedMr = new MeterReading();
-        expectedMr.setUserId(100);
+        expectedMr.setUserId(100L);
         MeterType mrType = new MeterType();
         mrType.setType("HEATING");
         expectedMr.setMeterType(mrType);
@@ -170,8 +170,8 @@ public class MeterTypeReadingServiceImplTest {
     @DisplayName("get meter reading by user id and date when not exists")
     void getMeterReadingWhenByUserIdAndDateNotExists() throws SQLException {
         MeterReading mr = new MeterReading();
-        mr.setId(1);
-        mr.setUserId(100);
+        mr.setId(1L);
+        mr.setUserId(100L);
         MeterType mrType = new MeterType();
         mrType.setType("HEATING");
         mr.setMeterType(mrType);

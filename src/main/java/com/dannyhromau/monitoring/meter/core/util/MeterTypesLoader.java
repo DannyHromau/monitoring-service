@@ -13,7 +13,6 @@ import java.nio.file.Path;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 public class MeterTypesLoader {
     private static String fileTypesPath= System.getenv("METERS_FILE_PATH");
@@ -22,7 +21,7 @@ public class MeterTypesLoader {
     public boolean load() {
         boolean result = false;
         if (fileTypesPath == null){
-            fileTypesPath = "/meters.txt";
+            fileTypesPath = "meters.txt";
         }
         try {
             MeterTypeRepository mr = ApplicationContext.getInstance().getContextHolder().getMeterTypeRepository();

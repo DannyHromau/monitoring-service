@@ -1,21 +1,17 @@
-package com.dannyhromau.monitoring.meter.model;
+package com.dannyhromau.monitoring.meter.api.dto;
 
-import lombok.AllArgsConstructor;
+import com.dannyhromau.monitoring.meter.model.Authority;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.util.List;
 
 @Getter
 @Setter
-@NoArgsConstructor
-@AllArgsConstructor
-public class User {
+public class AuthDto {
     private Long id;
     private String login;
     private String password;
     private boolean isDeleted;
     private List<Authority> authorities;
-
 }

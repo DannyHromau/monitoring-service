@@ -33,7 +33,7 @@ public class ApplicationContext {
 
     public void initialize() throws SQLException {
         contextHolder.setupContext();
-        prepareUserData(contextHolder.getAuthorityRepository());
+//        prepareUserData(contextHolder.getAuthorityRepository());
         prepareMeterTypes();
     }
 
@@ -61,4 +61,5 @@ public class ApplicationContext {
         MeterTypesLoader loader = new MeterTypesLoader();
         loader.load();
     }
+
 }

@@ -1,4 +1,4 @@
-package com.dannyhromau.monitoring.meter.model;
+package com.dannyhromau.monitoring.meter.model.audit;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

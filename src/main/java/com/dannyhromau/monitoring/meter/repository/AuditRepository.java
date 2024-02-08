@@ -1,7 +1,5 @@
 package com.dannyhromau.monitoring.meter.repository;
 
-import com.dannyhromau.monitoring.meter.model.Audit;
-
 import java.sql.SQLException;
 import java.util.List;
 import java.util.Optional;
