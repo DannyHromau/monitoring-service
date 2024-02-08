@@ -19,4 +19,5 @@ public class UserAudit extends Audit {
         this.auditingArgs = auditingArgs;
         this.action = action;
     }
+
 }

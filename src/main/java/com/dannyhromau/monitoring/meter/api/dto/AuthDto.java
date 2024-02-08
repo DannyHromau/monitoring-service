@@ -2,10 +2,8 @@ package com.dannyhromau.monitoring.meter.api.dto;
 
 import com.dannyhromau.monitoring.meter.model.Authority;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
+import org.apache.logging.log4j.core.config.plugins.validation.constraints.NotBlank;
 
 import java.util.List;
 
@@ -15,9 +13,14 @@ import java.util.List;
 @AllArgsConstructor
 public class AuthDto {
     private Long id;
+    @NonNull
+    @NotBlank(message = "Login must not be blank")
     private String login;
+    @NonNull
+    @NotBlank(message = "Password must not be blank")
     private String password;
-    @JsonProperty("isDeleted")
+        @JsonProperty("isDeleted")
+        @NotBlank(message = "Boolean value must not be null")
     private boolean isDeleted;
     private List<Authority> authorities;
 }

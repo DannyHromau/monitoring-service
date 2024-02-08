@@ -4,6 +4,7 @@ import com.dannyhromau.monitoring.meter.annotation.AspectLogging;
 import com.dannyhromau.monitoring.meter.api.dto.MeterReadingDto;
 import com.dannyhromau.monitoring.meter.exception.DuplicateDataException;
 import com.dannyhromau.monitoring.meter.exception.EntityNotFoundException;
+import com.dannyhromau.monitoring.meter.exception.InvalidDataException;
 import com.dannyhromau.monitoring.meter.facade.MeterReadingFacade;
 import com.dannyhromau.monitoring.meter.mapper.MeterReadingMapper;
 import com.dannyhromau.monitoring.meter.model.MeterReading;
@@ -24,7 +25,8 @@ public class MeterReadingFacadeImpl implements MeterReadingFacade {
 
 
     @Override
-    public MeterReadingDto add(MeterReadingDto meterReadingDto) throws DuplicateDataException, SQLException {
+    public MeterReadingDto add(MeterReadingDto meterReadingDto)
+            throws DuplicateDataException, SQLException, InvalidDataException {
         MeterReading meterReading = service.add(mapper.mapToMeterReading(meterReadingDto));
         return mapper.mapToDto(meterReading);
     }

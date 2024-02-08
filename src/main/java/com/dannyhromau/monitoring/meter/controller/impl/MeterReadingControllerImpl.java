@@ -8,6 +8,7 @@ import com.dannyhromau.monitoring.meter.controller.MeterReadingController;
 import com.dannyhromau.monitoring.meter.core.util.ErrorStatusBuilder;
 import com.dannyhromau.monitoring.meter.exception.DuplicateDataException;
 import com.dannyhromau.monitoring.meter.exception.EntityNotFoundException;
+import com.dannyhromau.monitoring.meter.exception.InvalidDataException;
 import com.dannyhromau.monitoring.meter.facade.MeterReadingFacade;
 import lombok.RequiredArgsConstructor;
 import org.apache.logging.log4j.Level;
@@ -40,7 +41,7 @@ public class MeterReadingControllerImpl implements MeterReadingController {
                     + " "
                     + mr.getMeterTypeId() + mr.getValue());
             return ResponseEntity.of(mr, STATUS_OK);
-        } catch (DuplicateDataException | SQLException e) {
+        } catch (DuplicateDataException | SQLException | InvalidDataException e) {
             logger.log(Level.ERROR, loggingTheme + e.getMessage());
             return ResponseEntity.of(mr, ErrorStatusBuilder.getStatus(e));
         }
