@@ -3,15 +3,12 @@ package com.dannyhromau.monitoring.meter.service.impl;
 import com.dannyhromau.monitoring.meter.core.util.ErrorMessages;
 import com.dannyhromau.monitoring.meter.exception.DuplicateDataException;
 import com.dannyhromau.monitoring.meter.exception.EntityNotFoundException;
-import com.dannyhromau.monitoring.meter.model.JdbcUserAudit;
 import com.dannyhromau.monitoring.meter.model.User;
 import com.dannyhromau.monitoring.meter.repository.UserRepository;
-import com.dannyhromau.monitoring.meter.service.AuditService;
 import com.dannyhromau.monitoring.meter.service.UserService;
 import lombok.RequiredArgsConstructor;
 
 import java.sql.SQLException;
-import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
