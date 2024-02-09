@@ -1,5 +1,6 @@
 package com.dannyhromau.monitoring.meter.facade.impl;
 
+import com.dannyhromau.monitoring.meter.annotation.AspectLogging;
 import com.dannyhromau.monitoring.meter.api.dto.MeterReadingDto;
 import com.dannyhromau.monitoring.meter.exception.DuplicateDataException;
 import com.dannyhromau.monitoring.meter.exception.EntityNotFoundException;
@@ -14,6 +15,7 @@ import java.time.LocalDate;
 import java.time.YearMonth;
 import java.util.List;
 
+@AspectLogging
 @RequiredArgsConstructor
 public class MeterReadingFacadeImpl implements MeterReadingFacade {
 

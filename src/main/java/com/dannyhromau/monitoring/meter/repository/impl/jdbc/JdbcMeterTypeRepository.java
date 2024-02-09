@@ -1,5 +1,6 @@
 package com.dannyhromau.monitoring.meter.repository.impl.jdbc;
 
+import com.dannyhromau.monitoring.meter.annotation.AspectLogging;
 import com.dannyhromau.monitoring.meter.core.util.JdbcUtil;
 import com.dannyhromau.monitoring.meter.model.MeterType;
 import com.dannyhromau.monitoring.meter.repository.MeterTypeRepository;
@@ -10,6 +11,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Optional;
 
+@AspectLogging
 @RequiredArgsConstructor
 public class JdbcMeterTypeRepository implements MeterTypeRepository {
 

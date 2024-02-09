@@ -1,7 +1,7 @@
 version: '3'
 services:
   postgres:
-    image: postgres:latest
+    image: postgres:14.2
     restart: always
     ports:
       - 5432:5432
@@ -10,4 +10,4 @@ services:
       POSTGRES_PASSWORD: postgres
       POSTGRES_DB: postgres
     volumes:
-      - G:/volumes:/var/lib/postgresql/data
+      - D:/Hromau/vol/postgresy:/var/lib/postgresql/data

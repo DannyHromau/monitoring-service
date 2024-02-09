@@ -30,12 +30,16 @@ public class ErrorStatusBuilder {
         switch (systemMessage) {
             case (STATUS_SERVER_ERROR):
                 resp.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+                break;
             case (STATUS_CONFLICT):
                 resp.setStatus(HttpServletResponse.SC_CONFLICT);
+                break;
             case (STATUS_BED_REQUEST):
                 resp.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+                break;
             default:
                 resp.setStatus(HttpServletResponse.SC_OK);
+                break;
         }
         return resp;
     }

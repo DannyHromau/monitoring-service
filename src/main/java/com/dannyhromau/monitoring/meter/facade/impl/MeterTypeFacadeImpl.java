@@ -1,5 +1,6 @@
 package com.dannyhromau.monitoring.meter.facade.impl;
 
+import com.dannyhromau.monitoring.meter.annotation.AspectLogging;
 import com.dannyhromau.monitoring.meter.api.dto.MeterTypeDto;
 import com.dannyhromau.monitoring.meter.exception.DuplicateDataException;
 import com.dannyhromau.monitoring.meter.exception.EntityNotFoundException;
@@ -12,6 +13,7 @@ import lombok.RequiredArgsConstructor;
 import java.sql.SQLException;
 import java.util.List;
 
+@AspectLogging
 @RequiredArgsConstructor
 public class MeterTypeFacadeImpl implements MeterTypeFacade {
     private final MeterTypeService service;

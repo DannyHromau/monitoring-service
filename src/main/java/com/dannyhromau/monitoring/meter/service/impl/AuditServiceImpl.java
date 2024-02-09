@@ -1,5 +1,6 @@
 package com.dannyhromau.monitoring.meter.service.impl;
 
+import com.dannyhromau.monitoring.meter.annotation.AspectLogging;
 import com.dannyhromau.monitoring.meter.core.util.ErrorMessages;
 import com.dannyhromau.monitoring.meter.exception.EntityNotFoundException;
 import com.dannyhromau.monitoring.meter.model.audit.UserAudit;
@@ -11,7 +12,7 @@ import java.sql.SQLException;
 import java.time.LocalDateTime;
 import java.util.List;
 
-//TODO implement correct writing user_id when register
+@AspectLogging
 @RequiredArgsConstructor
 public class AuditServiceImpl implements AuditService<UserAudit> {
     private final AuditRepository<UserAudit> auditRepository;

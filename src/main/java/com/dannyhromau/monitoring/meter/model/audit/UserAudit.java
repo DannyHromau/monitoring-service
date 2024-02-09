@@ -11,12 +11,12 @@ import java.time.LocalDateTime;
 @Setter
 @NoArgsConstructor
 public class UserAudit extends Audit {
-    private long auditingEntityId;
+    private String auditingArgs;
     private String action;
     @Builder
-    public UserAudit(long id, LocalDateTime timestamp, long auditingEntityId, String action) {
+    public UserAudit(long id, LocalDateTime timestamp, String auditingArgs, String action) {
         super(id, timestamp);
-        this.auditingEntityId = auditingEntityId;
+        this.auditingArgs = auditingArgs;
         this.action = action;
     }
 }

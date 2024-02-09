@@ -1,5 +1,6 @@
 package com.dannyhromau.monitoring.meter.service.impl;
 
+import com.dannyhromau.monitoring.meter.annotation.AspectLogging;
 import com.dannyhromau.monitoring.meter.core.util.ErrorMessages;
 import com.dannyhromau.monitoring.meter.exception.DuplicateDataException;
 import com.dannyhromau.monitoring.meter.exception.EntityNotFoundException;
@@ -12,15 +13,14 @@ import com.dannyhromau.monitoring.meter.service.AuthorityService;
 import com.dannyhromau.monitoring.meter.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.codec.digest.DigestUtils;
-import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-
 
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
+@AspectLogging
 @RequiredArgsConstructor
 public class ConsoleAuthServiceImpl implements AuthService<User> {
     private final UserService userService;
@@ -33,15 +33,12 @@ public class ConsoleAuthServiceImpl implements AuthService<User> {
 
 
     @Override
-    public User register(User user) throws DuplicateDataException, InvalidDataException, SQLException {
+    public User register(User user)
+            throws DuplicateDataException, InvalidDataException, SQLException, EntityNotFoundException {
         checkValidData(user);
         List<Authority> authorities = new ArrayList<>();
-        try {
-            Authority authority = authorityService.getAuthorityByName("user");
-            authorities.add(authority);
-        } catch (EntityNotFoundException | SQLException e) {
-            logger.log(Level.ERROR, e.getMessage());
-        }
+        Authority authority = authorityService.getAuthorityByName("user");
+        authorities.add(authority);
         user.setAuthorities(authorities);
         user.setDeleted(false);
         user.setPassword(DigestUtils.md5Hex(user.getPassword()));
