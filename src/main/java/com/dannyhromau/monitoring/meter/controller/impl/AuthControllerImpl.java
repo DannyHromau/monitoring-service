@@ -1,10 +1,13 @@
 package com.dannyhromau.monitoring.meter.controller.impl;
 
+import com.dannyhromau.monitoring.meter.annotation.AspectAuditLogging;
+import com.dannyhromau.monitoring.meter.annotation.AspectLogging;
 import com.dannyhromau.monitoring.meter.api.ResponseEntity;
 import com.dannyhromau.monitoring.meter.api.dto.AuthDto;
 import com.dannyhromau.monitoring.meter.controller.AuthController;
 import com.dannyhromau.monitoring.meter.core.util.ErrorStatusBuilder;
 import com.dannyhromau.monitoring.meter.exception.DuplicateDataException;
+import com.dannyhromau.monitoring.meter.exception.EntityNotFoundException;
 import com.dannyhromau.monitoring.meter.exception.InvalidDataException;
 import com.dannyhromau.monitoring.meter.exception.UnAuthorizedException;
 import com.dannyhromau.monitoring.meter.facade.AuthFacade;
@@ -15,6 +18,7 @@ import org.apache.logging.log4j.Logger;
 
 import java.sql.SQLException;
 
+@AspectLogging
 @RequiredArgsConstructor
 public class AuthControllerImpl implements AuthController<AuthDto> {
     private final AuthFacade<AuthDto> authFacade;
@@ -22,6 +26,7 @@ public class AuthControllerImpl implements AuthController<AuthDto> {
     private static final Logger logger = LogManager.getLogger(AuthControllerImpl.class);
 
 
+   @AspectAuditLogging
     @Override
     public ResponseEntity<Boolean> register(AuthDto authDto) {
         String loggingTheme = "called register status: ";
@@ -29,12 +34,13 @@ public class AuthControllerImpl implements AuthController<AuthDto> {
             authDto = authFacade.register(authDto);
             logger.log(Level.INFO, loggingTheme + STATUS_OK+ " user: " + authDto.getId());
             return ResponseEntity.of(true, STATUS_OK);
-        } catch (InvalidDataException | DuplicateDataException | SQLException e) {
+        } catch (InvalidDataException | DuplicateDataException | SQLException | EntityNotFoundException e) {
             logger.log(Level.INFO, loggingTheme + ErrorStatusBuilder.getStatus(e) + " user: " + authDto.getId());
             return ResponseEntity.of(false, ErrorStatusBuilder.getStatus(e));
         }
     }
 
+    @AspectAuditLogging
     @Override
     public ResponseEntity<AuthDto> authorize(AuthDto authDto) {
         String loggingTheme = "called login status: ";

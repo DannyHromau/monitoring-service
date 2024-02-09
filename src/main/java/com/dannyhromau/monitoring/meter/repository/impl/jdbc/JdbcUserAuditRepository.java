@@ -1,5 +1,6 @@
 package com.dannyhromau.monitoring.meter.repository.impl.jdbc;
 
+import com.dannyhromau.monitoring.meter.annotation.AspectLogging;
 import com.dannyhromau.monitoring.meter.core.util.JdbcUtil;
 import com.dannyhromau.monitoring.meter.model.audit.UserAudit;
 import com.dannyhromau.monitoring.meter.repository.AuditRepository;
@@ -10,6 +11,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Optional;
 
+@AspectLogging
 @RequiredArgsConstructor
 public class JdbcUserAuditRepository implements AuditRepository<UserAudit> {
     private final JdbcUtil jdbcUtil;
@@ -27,7 +29,7 @@ public class JdbcUserAuditRepository implements AuditRepository<UserAudit> {
                 audit = UserAudit.builder()
                         .id(rs.getLong("id"))
                         .timestamp(rs.getTimestamp("timestamp").toLocalDateTime())
-                        .auditingEntityId(rs.getLong("user_id"))
+                        .auditingArgs(rs.getString("auditing_args"))
                         .action(rs.getString("action"))
                         .build();
             }
@@ -50,7 +52,7 @@ public class JdbcUserAuditRepository implements AuditRepository<UserAudit> {
                 UserAudit audit = UserAudit.builder()
                         .id(rs.getLong("id"))
                         .timestamp(rs.getTimestamp("timestamp").toLocalDateTime())
-                        .auditingEntityId(rs.getLong("user_id"))
+                        .auditingArgs(rs.getString("auditing_args"))
                         .action(rs.getString("action"))
                         .build();
                 audits.add(audit);
@@ -65,7 +67,7 @@ public class JdbcUserAuditRepository implements AuditRepository<UserAudit> {
         try (Connection connection = jdbcUtil.getConnection();
              PreparedStatement stmt = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
             stmt.setTimestamp(1, Timestamp.valueOf(audit.getTimestamp()));
-            stmt.setLong(2, audit.getAuditingEntityId());
+            stmt.setString(2, audit.getAuditingArgs());
             stmt.setString(3, audit.getAction());
             stmt.executeUpdate();
             ResultSet generatedKeys = stmt.getGeneratedKeys();

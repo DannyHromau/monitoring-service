@@ -13,7 +13,7 @@ import java.util.List;
 import java.util.Optional;
 
 @AspectLogging
-@WebFilter(urlPatterns = "/api/v1/meter/reading/all")
+@WebFilter(urlPatterns = "/*auth")
 public class AuthorizationFilter implements Filter {
 
     @Override

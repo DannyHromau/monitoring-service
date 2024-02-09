@@ -1,5 +1,7 @@
 package com.dannyhromau.monitoring.meter.controller.impl;
 
+import com.dannyhromau.monitoring.meter.annotation.AspectAuditLogging;
+import com.dannyhromau.monitoring.meter.annotation.AspectLogging;
 import com.dannyhromau.monitoring.meter.api.ResponseEntity;
 import com.dannyhromau.monitoring.meter.api.dto.MeterReadingDto;
 import com.dannyhromau.monitoring.meter.controller.MeterReadingController;
@@ -17,7 +19,7 @@ import java.time.LocalDate;
 import java.time.YearMonth;
 import java.util.List;
 
-//TODO: refactor logging
+@AspectLogging
 @RequiredArgsConstructor
 public class MeterReadingControllerImpl implements MeterReadingController {
 
@@ -25,6 +27,7 @@ public class MeterReadingControllerImpl implements MeterReadingController {
     private static final String STATUS_OK = "ok";
     private static final Logger logger = LogManager.getLogger(MeterReadingControllerImpl.class);
 
+    @AspectAuditLogging
     @Override
     public ResponseEntity<MeterReadingDto> add(MeterReadingDto mr) {
         String loggingTheme = "called add MR status: ";
@@ -55,6 +58,7 @@ public class MeterReadingControllerImpl implements MeterReadingController {
         }
     }
 
+    @AspectAuditLogging
     @Override
     public ResponseEntity<List<MeterReadingDto>> getByUserId(long userId) {
         String loggingTheme = "called history status: ";
@@ -67,6 +71,7 @@ public class MeterReadingControllerImpl implements MeterReadingController {
         }
     }
 
+    @AspectAuditLogging
     @Override
     public ResponseEntity<List<MeterReadingDto>> getByUserIdAndMeterType(long userId, long meterTypeId) {
         String loggingTheme = "called history status: ";
@@ -91,6 +96,7 @@ public class MeterReadingControllerImpl implements MeterReadingController {
         }
     }
 
+    @AspectAuditLogging
     @Override
     public ResponseEntity<MeterReadingDto> getActualMeterReading(long userId, long mrTypeId) {
         String loggingTheme = "called actual MR status: ";
@@ -103,6 +109,7 @@ public class MeterReadingControllerImpl implements MeterReadingController {
         }
     }
 
+    @AspectAuditLogging
     @Override
     public ResponseEntity<MeterReadingDto> getMeterReadingByDateAndMeterType(
             long userId, LocalDate date, long mrTypeId) {

@@ -1,5 +1,6 @@
 package com.dannyhromau.monitoring.meter.controller.impl;
 
+import com.dannyhromau.monitoring.meter.annotation.AspectLogging;
 import com.dannyhromau.monitoring.meter.api.ResponseEntity;
 import com.dannyhromau.monitoring.meter.api.dto.MeterTypeDto;
 import com.dannyhromau.monitoring.meter.controller.MeterTypeController;
@@ -12,7 +13,7 @@ import lombok.RequiredArgsConstructor;
 import java.sql.SQLException;
 import java.util.List;
 
-//TODO: add logging
+@AspectLogging
 @RequiredArgsConstructor
 public class MeterTypeControllerImpl implements MeterTypeController {
     private final MeterTypeFacade meterTypeFacade;
