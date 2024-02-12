@@ -4,6 +4,7 @@ package com.dannyhromau.monitoring.meter.service;
 import com.dannyhromau.monitoring.meter.core.util.ErrorMessages;
 import com.dannyhromau.monitoring.meter.exception.DuplicateDataException;
 import com.dannyhromau.monitoring.meter.exception.EntityNotFoundException;
+import com.dannyhromau.monitoring.meter.exception.InvalidDataException;
 import com.dannyhromau.monitoring.meter.model.MeterReading;
 import com.dannyhromau.monitoring.meter.model.MeterType;
 import com.dannyhromau.monitoring.meter.repository.MeterReadingRepository;
@@ -43,7 +44,7 @@ public class MeterTypeReadingServiceImplTest {
 
     @Test
     @DisplayName("add meter readings when not exist")
-    void addMeterReadingsWhenNotExist() throws DuplicateDataException, SQLException {
+    void addMeterReadingsWhenNotExist() throws DuplicateDataException, SQLException, InvalidDataException {
         int expectedSize = 5;
         List<MeterReading> mrList = new LinkedList<>();
         LocalDateTime date = LocalDateTime.now();

@@ -1,6 +1,7 @@
 package com.dannyhromau.monitoring.meter.context;
 
 import com.dannyhromau.monitoring.meter.api.dto.AuthDto;
+import com.dannyhromau.monitoring.meter.aspect.AuditAspect;
 import com.dannyhromau.monitoring.meter.controller.AuthController;
 import com.dannyhromau.monitoring.meter.controller.MeterReadingController;
 import com.dannyhromau.monitoring.meter.controller.MeterTypeController;
@@ -20,14 +21,9 @@ import com.dannyhromau.monitoring.meter.mapper.MeterReadingMapper;
 import com.dannyhromau.monitoring.meter.mapper.MeterTypeMapper;
 import com.dannyhromau.monitoring.meter.mapper.UserMapper;
 import com.dannyhromau.monitoring.meter.model.User;
-import com.dannyhromau.monitoring.meter.repository.AuthorityRepository;
-import com.dannyhromau.monitoring.meter.repository.MeterReadingRepository;
-import com.dannyhromau.monitoring.meter.repository.MeterTypeRepository;
-import com.dannyhromau.monitoring.meter.repository.UserRepository;
-import com.dannyhromau.monitoring.meter.repository.impl.jdbc.JdbcAuthorityRepository;
-import com.dannyhromau.monitoring.meter.repository.impl.jdbc.JdbcMeterReadingRepository;
-import com.dannyhromau.monitoring.meter.repository.impl.jdbc.JdbcMeterTypeRepository;
-import com.dannyhromau.monitoring.meter.repository.impl.jdbc.JdbcUserRepository;
+import com.dannyhromau.monitoring.meter.model.audit.UserAudit;
+import com.dannyhromau.monitoring.meter.repository.*;
+import com.dannyhromau.monitoring.meter.repository.impl.jdbc.*;
 import com.dannyhromau.monitoring.meter.service.*;
 import com.dannyhromau.monitoring.meter.service.impl.*;
 
@@ -35,6 +31,7 @@ import javax.servlet.ServletContext;
 import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContextListener;
 import javax.servlet.annotation.WebListener;
+import java.lang.reflect.Proxy;
 
 @WebListener
 public class ContextListener implements ServletContextListener {
@@ -55,13 +52,20 @@ public class ContextListener implements ServletContextListener {
     private AuthorityRepository authorityRepository;
     private AuthorityService authorityService;
     private JdbcUtil jdbcLiquibaseUtil;
+    private AuditAspect auditAspect;
+    private AuditService<UserAudit> auditService;
+    private AuditRepository<UserAudit> auditRepository;
+    private JdbcUtil jdbcUtil;
+    private JdbcUtil auditJdbcUtil;
 
     @Override
     public void contextInitialized(ServletContextEvent sce) {
         final ServletContext servletContext = sce.getServletContext();
         liquibaseConfig = new LiquibaseConfig();
-        JdbcUtil jdbcUtil = new JdbcUtil(liquibaseConfig
+         jdbcUtil = new JdbcUtil(liquibaseConfig
                 .getProperty(LiquibaseConfig.SCHEMA_MAIN, "db/liquibase.properties"));
+        auditJdbcUtil = new JdbcUtil(liquibaseConfig
+                .getProperty(LiquibaseConfig.SCHEMA_AUDIT, "db/liquibase.properties"));
         meterTypeRepository = new JdbcMeterTypeRepository(jdbcUtil);
         meterTypeService = new MeterTypeServiceImpl(meterTypeRepository);
         meterTypeFacade = new MeterTypeFacadeImpl(meterTypeService, MeterTypeMapper.INSTANCE);
@@ -81,6 +85,9 @@ public class ContextListener implements ServletContextListener {
                 .getProperty(LiquibaseConfig.SCHEMA_SYSTEM, "db/liquibase.properties"));
         LiquibaseRunner runner = new LiquibaseRunner(jdbcLiquibaseUtil);
         runner.run(liquibaseConfig.getProperty(LiquibaseConfig.MASTER_PATH, "db/liquibase.properties"));
+//        auditRepository = new JdbcUserAuditRepository(auditJdbcUtil);
+//        auditService = new AuditServiceImpl(auditRepository);
+//        auditAspect = new AuditAspect(auditService);
         servletContext.setAttribute("meterTypeController", meterTypeController);
         servletContext.setAttribute("meterReadingController", meterReadingController);
         servletContext.setAttribute("authController", authController);

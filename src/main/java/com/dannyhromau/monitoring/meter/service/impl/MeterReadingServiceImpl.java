@@ -4,6 +4,7 @@ import com.dannyhromau.monitoring.meter.annotation.AspectLogging;
 import com.dannyhromau.monitoring.meter.core.util.ErrorMessages;
 import com.dannyhromau.monitoring.meter.exception.DuplicateDataException;
 import com.dannyhromau.monitoring.meter.exception.EntityNotFoundException;
+import com.dannyhromau.monitoring.meter.exception.InvalidDataException;
 import com.dannyhromau.monitoring.meter.model.MeterReading;
 import com.dannyhromau.monitoring.meter.repository.MeterReadingRepository;
 import com.dannyhromau.monitoring.meter.service.MeterReadingService;
@@ -21,6 +22,7 @@ public class MeterReadingServiceImpl implements MeterReadingService {
     private static final String DUPLICATE_DATA_MESSAGE = ErrorMessages.DUPLICATED_DATA_MESSAGE.label;
     private static final String NO_ACTUAL_METER_READING_MESSAGE = ErrorMessages.NO_ACTUAL_DATA_MESSAGE.label;
     private static final String ENTITY_NOT_FOUND_MESSAGE = ErrorMessages.ENTITY_NOT_FOUND_MESSAGE.label;
+    private static final String WRONG_VALUE_MESSAGE = ErrorMessages.WRONG_VALUE_MESSAGE.label;
 
     public MeterReadingServiceImpl(MeterReadingRepository mrRepo) {
         this.mrRepo = mrRepo;
@@ -28,10 +30,18 @@ public class MeterReadingServiceImpl implements MeterReadingService {
 
     //TODO: check adding entity before saving
     @Override
-    public MeterReading add(MeterReading mr) throws DuplicateDataException, SQLException {
+    public MeterReading add(MeterReading mr) throws DuplicateDataException, SQLException, InvalidDataException {
         YearMonth yearMonth = YearMonth.of(mr.getDate().getYear(), mr.getDate().getMonth());
         Optional<MeterReading> mrOpt = mrRepo.findByUserIdAndMonthAndMeterType(
                 mr.getUserId(), yearMonth, mr.getMeterTypeId());
+        try {
+            MeterReading actual = getActualMeterReading(mr.getUserId(), mr.getMeterTypeId());
+            if (actual.getValue() > mr.getValue()){
+                throw new InvalidDataException(String.format(WRONG_VALUE_MESSAGE, mr.getValue()));
+            }
+        } catch (EntityNotFoundException e) {
+            throw new RuntimeException(e);
+        }
         if (mrOpt.isEmpty()) {
             mrRepo.save(mr);
         } else {

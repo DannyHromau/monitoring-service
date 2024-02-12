@@ -63,7 +63,7 @@ public class JdbcUserAuditRepository implements AuditRepository<UserAudit> {
 
     @Override
     public UserAudit save(UserAudit audit) throws SQLException {
-        String sql = "INSERT INTO ms_audit_user (timestamp, auditing_entity_id, action) VALUES (?,?,?)";
+        String sql = "INSERT INTO ms_audit_user (timestamp, auditing_args, action) VALUES (?,?,?)";
         try (Connection connection = jdbcUtil.getConnection();
              PreparedStatement stmt = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
             stmt.setTimestamp(1, Timestamp.valueOf(audit.getTimestamp()));
