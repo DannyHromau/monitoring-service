@@ -10,13 +10,16 @@
 * PostgreSQL
 * Docker
 * Lombok
+* Servlet
+* AspectJ
+* MapStruct
+* RESTful API
+* Jackson
 
 # Building:
 1. Go to project folder and run command `mvn clean install`
-2. run command `mvn clean compile assembly:single`
-3. create system environment `METERS_FILE_PATH` with `meters.txt` file location 
-4. go to target folder `cd target` (if you haven't target folder check the correct result of step 1 and 2)
-5. run the command `java -jar monitoring-service-1.0-SNAPSHOT-jar-with-dependencies.jar`(in this version application can't start without connection to database, if you want to use in-memory go to console branch)
+2. create system environment `METERS_FILE_PATH` with `meters.txt` file location 
+3. go to target folder `cd target` (if you haven't target folder check the correct result of step 1 and 2)
 
 # Admin settings:
 For adding the list of meter types create file `meters.txt` in target directory and write types according the example:
@@ -32,4 +35,20 @@ Hot water
 * after successful starting the postgres container start prepare data from file `init.sql`
 * connection config located in jdbc.properties files (`db` folder)
 * db entities description located in `ddl.sql` file
+
+# Running Intellij Idea:
+1. Open project in IntelliJ, it will create an `.idea`.
+2. Use *File* > *Project Structure* to confirm Java 17 is used.
+3. Create *Edit Configuration* (if not exist Add new *Maven* configuration) or check build and run options(must be specified Java 17 SDK for 'monitoring-service' module).
+4. 4. Use the *Maven* tools window to:
+   * *Toggle "Skip Tests" Mode* (if You won't to testing the application)
+   * *Execute Maven Goal*: `clean install`
+   * check the target directory (You should see an archive there named *monitoring-service-1.0-SNAPSHOT.war*)
+   * Start the app with command *jetty:run*
+
+# Deploying with Apache Tomcat:
+1. Go to target folder and find *monitoring-service-1.0-SNAPSHOT.war*
+2. Copy *monitoring-service-1.0-SNAPSHOT.war* to *webapps* folder in Tomcat
+3. Configure Tomcat with Java 17
+4. Restart tomcat
 
