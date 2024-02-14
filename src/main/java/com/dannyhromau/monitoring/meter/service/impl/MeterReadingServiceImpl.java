@@ -42,7 +42,7 @@ public class MeterReadingServiceImpl implements MeterReadingService {
                 throw new InvalidDataException(String.format(WRONG_VALUE_MESSAGE, mr.getValue()));
             }
         } catch (EntityNotFoundException e) {
-            throw new RuntimeException(e);
+            mrOpt = Optional.empty();
         }
         if (mrOpt.isEmpty()) {
             mrRepo.save(mr);
