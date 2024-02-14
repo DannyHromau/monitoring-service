@@ -1,6 +1,6 @@
 package com.dannyhromau.monitoring.meter.controller.impl;
 
-import com.dannyhromau.monitoring.meter.annotation.AspectAuditLogging;
+import com.dannyhromau.monitoring.meter.annotation.Auditable;
 import com.dannyhromau.monitoring.meter.annotation.AspectLogging;
 import com.dannyhromau.monitoring.meter.api.ResponseEntity;
 import com.dannyhromau.monitoring.meter.api.dto.AuthDto;
@@ -26,7 +26,7 @@ public class AuthControllerImpl implements AuthController<AuthDto> {
     private static final Logger logger = LogManager.getLogger(AuthControllerImpl.class);
 
 
-   @AspectAuditLogging
+   @Auditable
     @Override
     public ResponseEntity<Boolean> register(AuthDto authDto) {
         String loggingTheme = "called register status: ";
@@ -40,7 +40,7 @@ public class AuthControllerImpl implements AuthController<AuthDto> {
         }
     }
 
-    @AspectAuditLogging
+    @Auditable
     @Override
     public ResponseEntity<AuthDto> authorize(AuthDto authDto) {
         String loggingTheme = "called login status: ";

@@ -3,7 +3,7 @@ package com.dannyhromau.monitoring.meter.service.impl;
 import com.dannyhromau.monitoring.meter.annotation.AspectLogging;
 import com.dannyhromau.monitoring.meter.core.util.ErrorMessages;
 import com.dannyhromau.monitoring.meter.exception.EntityNotFoundException;
-import com.dannyhromau.monitoring.meter.model.audit.UserAudit;
+import com.dannyhromau.monitoring.meter.model.audit.Audit;
 import com.dannyhromau.monitoring.meter.repository.AuditRepository;
 import com.dannyhromau.monitoring.meter.service.AuditService;
 import lombok.RequiredArgsConstructor;
@@ -14,25 +14,25 @@ import java.util.List;
 
 @AspectLogging
 @RequiredArgsConstructor
-public class AuditServiceImpl implements AuditService<UserAudit> {
-    private final AuditRepository<UserAudit> auditRepository;
+public class AuditServiceImpl implements AuditService<Audit> {
+    private final AuditRepository<Audit> auditRepository;
     private static final String ENTITY_NOT_FOUND_MESSAGE = ErrorMessages.ENTITY_NOT_FOUND_MESSAGE.label;
     @Override
-    public UserAudit getById(long id) throws EntityNotFoundException, SQLException {
+    public Audit getById(long id) throws EntityNotFoundException, SQLException {
         return auditRepository.findById(id).orElseThrow(
                 () -> new EntityNotFoundException(String.format(ENTITY_NOT_FOUND_MESSAGE, "id", id)));
     }
 
     @Override
-    public List<UserAudit> getAll() throws SQLException {
+    public List<Audit> getAll() throws SQLException {
         return auditRepository.findAll();
     }
 
     @Override
-    public UserAudit add(UserAudit userAudit) throws SQLException {
-        userAudit.setTimestamp(LocalDateTime.now());
-            userAudit = auditRepository.save(userAudit);
-        return userAudit;
+    public Audit add(Audit audit) throws SQLException {
+        audit.setTimestamp(LocalDateTime.now());
+            audit = auditRepository.save(audit);
+        return audit;
     }
 
     @Override

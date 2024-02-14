@@ -61,7 +61,7 @@ public class MeterTypeServlet extends HttpServlet {
                 meterTypeDto = re.getBody();
                 resp = ErrorStatusBuilder.setHttpStatus(resp, re.getSystemMessage());
                 JsonConverter.sendAsJson(resp, meterTypeDto);
-            } catch (ClassCastException e){
+            } catch (ClassCastException e) {
                 resp.setStatus(HttpServletResponse.SC_BAD_REQUEST);
                 JsonConverter.sendAsJson(resp, null);
             }
