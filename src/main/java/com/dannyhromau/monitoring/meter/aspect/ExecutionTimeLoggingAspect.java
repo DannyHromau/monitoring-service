@@ -14,17 +14,6 @@ public class ExecutionTimeLoggingAspect {
     private static Logger logger = LogManager.getLogger(ExecutionTimeLoggingAspect.class);
     private long startTime;
 
-    //    @Around("@annotation(com.dannyhromau.monitoring.meter.annotation.AspectLogging)")
-//    public Object logExecutionTime(ProceedingJoinPoint joinPoint) throws Throwable {
-//        long startTime = System.currentTimeMillis();
-//        long endTime = System.currentTimeMillis();
-//        long executionTime = endTime - startTime;
-//        String methodName = joinPoint.getSignature().getName();
-//        String logMessage = String
-//                .format("Method %s executed in %d ms", methodName, executionTime);
-//        logger.log(Level.INFO, logMessage);
-//        return joinPoint.proceed();
-//    }
     @Before("@annotation(com.dannyhromau.monitoring.meter.annotation.AspectLogging)")
     public void logBefore(JoinPoint joinPoint) {
         startTime = System.currentTimeMillis();

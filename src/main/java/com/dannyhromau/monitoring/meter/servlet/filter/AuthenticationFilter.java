@@ -10,7 +10,7 @@ import javax.servlet.http.HttpSession;
 import java.io.IOException;
 
 @AspectLogging
-@WebFilter(urlPatterns = "/auth")
+@WebFilter(urlPatterns = "/*")
 public class AuthenticationFilter implements Filter {
 
     @Override

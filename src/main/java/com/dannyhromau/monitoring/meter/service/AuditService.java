@@ -1,6 +1,5 @@
 package com.dannyhromau.monitoring.meter.service;
 
-import com.dannyhromau.monitoring.meter.exception.DuplicateDataException;
 import com.dannyhromau.monitoring.meter.exception.EntityNotFoundException;
 
 import java.sql.SQLException;

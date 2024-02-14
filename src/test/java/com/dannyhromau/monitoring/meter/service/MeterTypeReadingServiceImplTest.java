@@ -26,6 +26,7 @@ import java.util.List;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
+import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.when;
 
 @ExtendWith({MockitoExtension.class})
@@ -52,13 +53,16 @@ public class MeterTypeReadingServiceImplTest {
             MeterReading mr = new MeterReading();
             mr.setUserId(i * 100L);
             MeterType mrType = new MeterType();
+            mrType.setId(1L);
             mrType.setType("HEATING");
             mr.setMeterType(mrType);
             mr.setDate(date);
+            mr.setMeterTypeId(mrType.getId());
             YearMonth yearMonth = YearMonth.of(mr.getDate().getYear(), mr.getDate().getMonth());
-            when(mrRepo.findByUserIdAndMonthAndMeterType(
-                    mr.getUserId(), yearMonth, mr.getMeterType().getId()))
-                    .thenReturn(Optional.empty());
+            doReturn(Optional.empty())
+                    .when(mrRepo)
+                    .findByUserIdAndMonthAndMeterType(
+                            mr.getUserId(), yearMonth, mr.getMeterType().getId());
             when(mrRepo.save(mr)).thenReturn(mr);
             mrService.add(mr);
             mrList.add(mr);
@@ -75,13 +79,16 @@ public class MeterTypeReadingServiceImplTest {
         MeterReading mr = new MeterReading();
         mr.setUserId(100L);
         MeterType mrType = new MeterType();
+        mrType.setId(1L);
         mrType.setType("HEATING");
         mr.setMeterType(mrType);
         mr.setDate(LocalDateTime.now());
+        mr.setMeterTypeId(mrType.getId());
         YearMonth yearMonth = YearMonth.of(mr.getDate().getYear(), mr.getDate().getMonth());
         when(mrRepo.findByUserIdAndMonthAndMeterType(
                 mr.getUserId(), yearMonth, mr.getMeterType().getId()))
                 .thenReturn(Optional.of(mr));
+        when(mrRepo.findFirstByOrderByDateDesc(mr.getUserId(), mr.getMeterTypeId())).thenReturn(Optional.of(mr));
         assertThatExceptionOfType(DuplicateDataException.class)
                 .isThrownBy(() -> mrService.add(mr))
                 .withMessage(ErrorMessages.DUPLICATED_DATA_MESSAGE.label);
@@ -109,9 +116,11 @@ public class MeterTypeReadingServiceImplTest {
         mr.setId(1L);
         mr.setUserId(100L);
         MeterType mrType = new MeterType();
+        mrType.setId(1L);
         mrType.setType("HEATING");
         mr.setMeterType(mrType);
         mr.setDate(LocalDateTime.now());
+        mr.setMeterTypeId(mrType.getId());
         when(mrRepo.findFirstByOrderByDateDesc(mr.getUserId(), mr.getMeterType().getId()))
                 .thenReturn(Optional.empty());
         assertThatExceptionOfType(EntityNotFoundException.class)
@@ -156,12 +165,12 @@ public class MeterTypeReadingServiceImplTest {
         MeterReading expectedMr = new MeterReading();
         expectedMr.setUserId(100L);
         MeterType mrType = new MeterType();
+        mrType.setId(1L);
         mrType.setType("HEATING");
         expectedMr.setMeterType(mrType);
         expectedMr.setDate(LocalDateTime.now());
-        when(mrRepo.findByUserIdAndDateAndMeterType(
-                expectedMr.getUserId(), expectedMr.getDate().toLocalDate(), expectedMr.getMeterType().getId()))
-                .thenReturn(Optional.of(expectedMr));
+        doReturn(Optional.of(expectedMr)).when(mrRepo).findByUserIdAndDateAndMeterType(
+                expectedMr.getUserId(), expectedMr.getDate().toLocalDate(), expectedMr.getMeterType().getId());
         MeterReading actualMr = mrService.getMeterReadingByDateAndMeterType(
                 expectedMr.getUserId(), expectedMr.getDate().toLocalDate(), expectedMr.getMeterType().getId());
         Assertions.assertEquals(expectedMr, actualMr);
@@ -175,8 +184,10 @@ public class MeterTypeReadingServiceImplTest {
         mr.setUserId(100L);
         MeterType mrType = new MeterType();
         mrType.setType("HEATING");
+        mrType.setId(1L);
         mr.setMeterType(mrType);
         mr.setDate(LocalDateTime.now());
+        mr.setMeterTypeId(mrType.getId());
         when(mrRepo.findByUserIdAndDateAndMeterType(mr.getUserId(),
                 mr.getDate().toLocalDate(),
                 mr.getMeterType().getId()))

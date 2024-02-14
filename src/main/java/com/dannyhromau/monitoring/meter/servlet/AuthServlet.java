@@ -1,6 +1,5 @@
 package com.dannyhromau.monitoring.meter.servlet;
 
-import com.dannyhromau.monitoring.meter.annotation.AspectAuditLogging;
 import com.dannyhromau.monitoring.meter.annotation.AspectLogging;
 import com.dannyhromau.monitoring.meter.api.ResponseEntity;
 import com.dannyhromau.monitoring.meter.api.dto.AuthDto;
