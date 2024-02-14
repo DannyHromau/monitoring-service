@@ -28,7 +28,6 @@ public class MeterReadingServiceImpl implements MeterReadingService {
         this.mrRepo = mrRepo;
     }
 
-    //TODO: check adding entity before saving
     @Override
     public MeterReading add(MeterReading mr) throws DuplicateDataException, SQLException, InvalidDataException {
         YearMonth yearMonth = YearMonth.of(mr.getDate().getYear(), mr.getDate().getMonth());

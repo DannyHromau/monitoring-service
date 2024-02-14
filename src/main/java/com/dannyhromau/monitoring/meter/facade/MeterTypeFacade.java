@@ -7,6 +7,13 @@ import com.dannyhromau.monitoring.meter.exception.EntityNotFoundException;
 import java.sql.SQLException;
 import java.util.List;
 
+/**
+ * @author Daniil Hromau
+ *
+ * Facade is using as converting layer between controller and service to separate the logic of working with
+ * dto and entity and mapper's injection
+ *
+ */
 public interface MeterTypeFacade {
     MeterTypeDto getMeterById(long id) throws EntityNotFoundException, SQLException;
     List<MeterTypeDto> getAll() throws SQLException;
