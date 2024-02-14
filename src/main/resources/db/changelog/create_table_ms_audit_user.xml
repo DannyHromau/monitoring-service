@@ -12,7 +12,7 @@
             <column name="timestamp" type="TIMESTAMP">
                 <constraints nullable="false"/>
             </column>
-            <column name="auditing_entity_id" type="BIGINT">
+            <column name="auditing_args" type="VARCHAR(255)">
                 <constraints nullable="false"/>
             </column>
             <column name="action" type="VARCHAR(255)">

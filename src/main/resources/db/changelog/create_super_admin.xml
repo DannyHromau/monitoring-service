@@ -11,7 +11,7 @@
 
         <insert tableName="ms_user" schemaName="monitoring_service">
             <column name="login" value="admin"/>
-            <column name="password" value="admin"/>
+            <column name="password" value="21232f297a57a5a743894a0e4a801fc3"/>
             <column name="is_deleted" valueBoolean="false"/>
         </insert>
         <insert tableName="ms_user_authority" schemaName="monitoring_service">

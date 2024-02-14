@@ -4,6 +4,7 @@ package com.dannyhromau.monitoring.meter.service;
 import com.dannyhromau.monitoring.meter.core.util.ErrorMessages;
 import com.dannyhromau.monitoring.meter.exception.DuplicateDataException;
 import com.dannyhromau.monitoring.meter.exception.EntityNotFoundException;
+import com.dannyhromau.monitoring.meter.exception.InvalidDataException;
 import com.dannyhromau.monitoring.meter.model.MeterReading;
 import com.dannyhromau.monitoring.meter.model.MeterType;
 import com.dannyhromau.monitoring.meter.repository.MeterReadingRepository;
@@ -25,6 +26,7 @@ import java.util.List;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
+import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.when;
 
 @ExtendWith({MockitoExtension.class})
@@ -43,21 +45,24 @@ public class MeterTypeReadingServiceImplTest {
 
     @Test
     @DisplayName("add meter readings when not exist")
-    void addMeterReadingsWhenNotExist() throws DuplicateDataException, SQLException {
+    void addMeterReadingsWhenNotExist() throws DuplicateDataException, SQLException, InvalidDataException {
         int expectedSize = 5;
         List<MeterReading> mrList = new LinkedList<>();
         LocalDateTime date = LocalDateTime.now();
         for (int i = 0; i < expectedSize; i++) {
             MeterReading mr = new MeterReading();
-            mr.setUserId(i * 100);
+            mr.setUserId(i * 100L);
             MeterType mrType = new MeterType();
+            mrType.setId(1L);
             mrType.setType("HEATING");
             mr.setMeterType(mrType);
             mr.setDate(date);
+            mr.setMeterTypeId(mrType.getId());
             YearMonth yearMonth = YearMonth.of(mr.getDate().getYear(), mr.getDate().getMonth());
-            when(mrRepo.findByUserIdAndMonthAndMeterType(
-                    mr.getUserId(), yearMonth, mr.getMeterType().getId()))
-                    .thenReturn(Optional.empty());
+            doReturn(Optional.empty())
+                    .when(mrRepo)
+                    .findByUserIdAndMonthAndMeterType(
+                            mr.getUserId(), yearMonth, mr.getMeterType().getId());
             when(mrRepo.save(mr)).thenReturn(mr);
             mrService.add(mr);
             mrList.add(mr);
@@ -72,15 +77,18 @@ public class MeterTypeReadingServiceImplTest {
     @DisplayName("add meter reading when exists")
     void addMeterReadingWhenExists() throws SQLException {
         MeterReading mr = new MeterReading();
-        mr.setUserId(100);
+        mr.setUserId(100L);
         MeterType mrType = new MeterType();
+        mrType.setId(1L);
         mrType.setType("HEATING");
         mr.setMeterType(mrType);
         mr.setDate(LocalDateTime.now());
+        mr.setMeterTypeId(mrType.getId());
         YearMonth yearMonth = YearMonth.of(mr.getDate().getYear(), mr.getDate().getMonth());
         when(mrRepo.findByUserIdAndMonthAndMeterType(
                 mr.getUserId(), yearMonth, mr.getMeterType().getId()))
                 .thenReturn(Optional.of(mr));
+        when(mrRepo.findFirstByOrderByDateDesc(mr.getUserId(), mr.getMeterTypeId())).thenReturn(Optional.of(mr));
         assertThatExceptionOfType(DuplicateDataException.class)
                 .isThrownBy(() -> mrService.add(mr))
                 .withMessage(ErrorMessages.DUPLICATED_DATA_MESSAGE.label);
@@ -90,7 +98,7 @@ public class MeterTypeReadingServiceImplTest {
     @DisplayName("get meter readings by user id when exist")
     void getMeterReadingsByUserIdWhenExist() throws SQLException {
         MeterReading mr = new MeterReading();
-        mr.setUserId(100);
+        mr.setUserId(100L);
         MeterType mrType = new MeterType();
         mrType.setType("HEATING");
         mr.setMeterType(mrType);
@@ -105,12 +113,14 @@ public class MeterTypeReadingServiceImplTest {
     @DisplayName("get actual meter reading when not exists")
     void getActualMeterReadingWhenNotExists() throws SQLException {
         MeterReading mr = new MeterReading();
-        mr.setId(1);
-        mr.setUserId(100);
+        mr.setId(1L);
+        mr.setUserId(100L);
         MeterType mrType = new MeterType();
+        mrType.setId(1L);
         mrType.setType("HEATING");
         mr.setMeterType(mrType);
         mr.setDate(LocalDateTime.now());
+        mr.setMeterTypeId(mrType.getId());
         when(mrRepo.findFirstByOrderByDateDesc(mr.getUserId(), mr.getMeterType().getId()))
                 .thenReturn(Optional.empty());
         assertThatExceptionOfType(EntityNotFoundException.class)
@@ -122,8 +132,8 @@ public class MeterTypeReadingServiceImplTest {
     @DisplayName("get meter reading by id when not exists")
     void getMeterReadingByIdWhenNotExists() throws SQLException {
         MeterReading mr = new MeterReading();
-        mr.setId(1);
-        mr.setUserId(100);
+        mr.setId(1L);
+        mr.setUserId(100L);
         MeterType mrType = new MeterType();
         mrType.setType("HEATING");
         mr.setMeterType(mrType);
@@ -138,8 +148,8 @@ public class MeterTypeReadingServiceImplTest {
     @DisplayName("get meter reading by id when exists")
     void getMeterReadingByIdWhenExists() throws EntityNotFoundException, SQLException {
         MeterReading mr = new MeterReading();
-        mr.setId(1);
-        mr.setUserId(100);
+        mr.setId(1L);
+        mr.setUserId(100L);
         MeterType mrType = new MeterType();
         mrType.setType("HEATING");
         mr.setMeterType(mrType);
@@ -153,14 +163,14 @@ public class MeterTypeReadingServiceImplTest {
     @DisplayName("get meter reading by user id and date when exists")
     void getMeterReadingWhenByUserIdAndDateExists() throws EntityNotFoundException, SQLException {
         MeterReading expectedMr = new MeterReading();
-        expectedMr.setUserId(100);
+        expectedMr.setUserId(100L);
         MeterType mrType = new MeterType();
+        mrType.setId(1L);
         mrType.setType("HEATING");
         expectedMr.setMeterType(mrType);
         expectedMr.setDate(LocalDateTime.now());
-        when(mrRepo.findByUserIdAndDateAndMeterType(
-                expectedMr.getUserId(), expectedMr.getDate().toLocalDate(), expectedMr.getMeterType().getId()))
-                .thenReturn(Optional.of(expectedMr));
+        doReturn(Optional.of(expectedMr)).when(mrRepo).findByUserIdAndDateAndMeterType(
+                expectedMr.getUserId(), expectedMr.getDate().toLocalDate(), expectedMr.getMeterType().getId());
         MeterReading actualMr = mrService.getMeterReadingByDateAndMeterType(
                 expectedMr.getUserId(), expectedMr.getDate().toLocalDate(), expectedMr.getMeterType().getId());
         Assertions.assertEquals(expectedMr, actualMr);
@@ -170,12 +180,14 @@ public class MeterTypeReadingServiceImplTest {
     @DisplayName("get meter reading by user id and date when not exists")
     void getMeterReadingWhenByUserIdAndDateNotExists() throws SQLException {
         MeterReading mr = new MeterReading();
-        mr.setId(1);
-        mr.setUserId(100);
+        mr.setId(1L);
+        mr.setUserId(100L);
         MeterType mrType = new MeterType();
         mrType.setType("HEATING");
+        mrType.setId(1L);
         mr.setMeterType(mrType);
         mr.setDate(LocalDateTime.now());
+        mr.setMeterTypeId(mrType.getId());
         when(mrRepo.findByUserIdAndDateAndMeterType(mr.getUserId(),
                 mr.getDate().toLocalDate(),
                 mr.getMeterType().getId()))

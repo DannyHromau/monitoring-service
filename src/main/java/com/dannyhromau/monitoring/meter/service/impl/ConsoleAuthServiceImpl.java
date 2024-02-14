@@ -1,5 +1,6 @@
 package com.dannyhromau.monitoring.meter.service.impl;
 
+import com.dannyhromau.monitoring.meter.annotation.AspectLogging;
 import com.dannyhromau.monitoring.meter.core.util.ErrorMessages;
 import com.dannyhromau.monitoring.meter.exception.DuplicateDataException;
 import com.dannyhromau.monitoring.meter.exception.EntityNotFoundException;
@@ -10,15 +11,17 @@ import com.dannyhromau.monitoring.meter.model.User;
 import com.dannyhromau.monitoring.meter.service.AuthService;
 import com.dannyhromau.monitoring.meter.service.AuthorityService;
 import com.dannyhromau.monitoring.meter.service.UserService;
-import org.apache.logging.log4j.Level;
+import lombok.RequiredArgsConstructor;
+import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-
 
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
+@AspectLogging
+@RequiredArgsConstructor
 public class ConsoleAuthServiceImpl implements AuthService<User> {
     private final UserService userService;
     private final AuthorityService authorityService;
@@ -28,33 +31,25 @@ public class ConsoleAuthServiceImpl implements AuthService<User> {
     private static final String WRONG_AUTH_MESSAGE = ErrorMessages.WRONG_AUTH_MESSAGE.label;
     private static final Logger logger = LogManager.getLogger(ConsoleAuthServiceImpl.class);
 
-    public ConsoleAuthServiceImpl(UserService userService, AuthorityService authorityService) {
-        this.userService = userService;
-        this.authorityService = authorityService;
-    }
 
-    //TODO: implement encoding the password
     @Override
-    public User register(User user) throws DuplicateDataException, InvalidDataException, SQLException {
+    public User register(User user)
+            throws DuplicateDataException, InvalidDataException, SQLException, EntityNotFoundException {
         checkValidData(user);
         List<Authority> authorities = new ArrayList<>();
-        try {
-            Authority authority = authorityService.getAuthorityByName("user");
-            authorities.add(authority);
-        } catch (EntityNotFoundException | SQLException e) {
-            logger.log(Level.ERROR, e.getMessage());
-        }
+        Authority authority = authorityService.getAuthorityByName("user");
+        authorities.add(authority);
         user.setAuthorities(authorities);
         user.setDeleted(false);
+        user.setPassword(DigestUtils.md5Hex(user.getPassword()));
         return userService.add(user);
     }
 
-    //TODO: implement matching the password
     @Override
-    public User authorize(User user) throws UnAuthorizedException, SQLException{
+    public User authorize(User user) throws UnAuthorizedException, SQLException {
         try {
             User authUser = userService.getUserByLogin(user.getLogin());
-            if (authUser.getPassword().matches(user.getPassword())) {
+            if (authUser.getPassword().matches(DigestUtils.md5Hex(user.getPassword()))) {
                 return authUser;
             } else {
                 throw new UnAuthorizedException(WRONG_AUTH_MESSAGE);

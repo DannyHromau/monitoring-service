@@ -9,7 +9,7 @@ import com.dannyhromau.monitoring.meter.model.User;
 import java.sql.SQLException;
 
 public interface AuthService<T> {
-    User register(User user) throws DuplicateDataException, InvalidDataException, SQLException;
+    User register(User user) throws DuplicateDataException, InvalidDataException, SQLException, EntityNotFoundException;
 
     T authorize(User user) throws UnAuthorizedException, SQLException;
 }

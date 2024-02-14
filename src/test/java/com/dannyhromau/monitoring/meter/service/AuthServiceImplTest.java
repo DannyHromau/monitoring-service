@@ -7,6 +7,7 @@ import com.dannyhromau.monitoring.meter.exception.InvalidDataException;
 import com.dannyhromau.monitoring.meter.exception.UnAuthorizedException;
 import com.dannyhromau.monitoring.meter.model.User;
 import com.dannyhromau.monitoring.meter.service.impl.ConsoleAuthServiceImpl;
+import org.apache.commons.codec.digest.DigestUtils;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -39,7 +40,7 @@ public class AuthServiceImplTest {
     @DisplayName("register user when exists")
     void registerUserWhenExists() throws DuplicateDataException, SQLException {
         User user = new User();
-        user.setId(100);
+        user.setId(100L);
         user.setLogin("login");
         user.setPassword("password");
         when(userService.add(user)).thenThrow(new DuplicateDataException(ErrorMessages.DUPLICATED_DATA_MESSAGE.label));
@@ -52,7 +53,7 @@ public class AuthServiceImplTest {
     @DisplayName("register user when invalid login format")
     void registerUserWhenInvalidLoginFormat() {
         User user = new User();
-        user.setId(100);
+        user.setId(100L);
         user.setLogin("lo");
         user.setPassword("password");
         assertThatExceptionOfType(InvalidDataException.class)
@@ -64,7 +65,7 @@ public class AuthServiceImplTest {
     @DisplayName("register user when invalid password format")
     void registerUserWhenInvalidPasswordFormat() {
         User user = new User();
-        user.setId(100);
+        user.setId(100L);
         user.setLogin("login");
         user.setPassword("pass");
         assertThatExceptionOfType(InvalidDataException.class)
@@ -76,7 +77,7 @@ public class AuthServiceImplTest {
     @DisplayName("authorize user when not exists")
     void authorizeUserWhenNotExists() throws EntityNotFoundException, SQLException {
         User user = new User();
-        user.setId(100);
+        user.setId(100L);
         user.setLogin("login");
         user.setPassword("password");
         when(userService.getUserByLogin(user.getLogin())).thenThrow(new EntityNotFoundException(
@@ -90,13 +91,19 @@ public class AuthServiceImplTest {
     @Test
     @DisplayName("authorize user when exists")
     void authorizeUserWhenExists() throws UnAuthorizedException, SQLException, EntityNotFoundException {
+        String password = "password";
+        String login = "login";
+        User authUser = new User();
+        authUser.setId(100L);
+        authUser.setLogin(login);
+        authUser.setPassword(DigestUtils.md5Hex(password));
         User user = new User();
-        user.setId(100);
-        user.setLogin("login");
-        user.setPassword("password");
-        when(userService.getUserByLogin(user.getLogin())).thenReturn(user);
+        user.setId(100L);
+        user.setLogin(login);
+        user.setPassword(password);
+        when(userService.getUserByLogin(authUser.getLogin())).thenReturn(authUser);
         User actualUser = authService.authorize(user);
-        Assertions.assertEquals(user, actualUser);
+        Assertions.assertEquals(authUser, actualUser);
     }
 
 }

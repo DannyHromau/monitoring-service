@@ -1,5 +1,6 @@
 package com.dannyhromau.monitoring.meter.repository.impl.jdbc;
 
+import com.dannyhromau.monitoring.meter.annotation.AspectLogging;
 import com.dannyhromau.monitoring.meter.core.util.JdbcUtil;
 import com.dannyhromau.monitoring.meter.model.Authority;
 import com.dannyhromau.monitoring.meter.repository.AuthorityRepository;
@@ -10,6 +11,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Optional;
 
+@AspectLogging
 @RequiredArgsConstructor
 public class JdbcAuthorityRepository implements AuthorityRepository {
 
@@ -22,10 +24,11 @@ public class JdbcAuthorityRepository implements AuthorityRepository {
         try (Connection connection = jdbcUtil.getConnection();
              PreparedStatement stmt = connection.prepareStatement(sql)) {
             stmt.setLong(1, id);
-            ResultSet rs = stmt.executeQuery();
-            while (rs.next()) {
-                authority = new Authority(rs.getLong("id"),
-                        rs.getString("name"));
+            try (ResultSet rs = stmt.executeQuery()) {
+                while (rs.next()) {
+                    authority = new Authority(rs.getLong("id"),
+                            rs.getString("name"));
+                }
             }
         }
         if (authority != null) {
@@ -42,10 +45,11 @@ public class JdbcAuthorityRepository implements AuthorityRepository {
         try (Connection connection = jdbcUtil.getConnection();
              PreparedStatement stmt = connection.prepareStatement(sql)) {
             stmt.setString(1, name);
-            ResultSet rs = stmt.executeQuery();
-            while (rs.next()) {
-                authority = new Authority(rs.getLong("id"),
-                        rs.getString("name"));
+            try (ResultSet rs = stmt.executeQuery()) {
+                while (rs.next()) {
+                    authority = new Authority(rs.getLong("id"),
+                            rs.getString("name"));
+                }
             }
         }
         if (authority != null) {
@@ -62,9 +66,10 @@ public class JdbcAuthorityRepository implements AuthorityRepository {
              PreparedStatement stmt = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
             stmt.setString(1, authority.getName());
             stmt.executeUpdate();
-            ResultSet generatedKeys = stmt.getGeneratedKeys();
-            if (generatedKeys.next()) {
-                authority.setId((generatedKeys.getLong(1)));
+            try (ResultSet generatedKeys = stmt.getGeneratedKeys()) {
+                if (generatedKeys.next()) {
+                    authority.setId((generatedKeys.getLong(1)));
+                }
             }
             return authority;
         }
@@ -76,11 +81,12 @@ public class JdbcAuthorityRepository implements AuthorityRepository {
         List<Authority> authorities = new LinkedList<>();
         try (Connection connection = jdbcUtil.getConnection();
              PreparedStatement stmt = connection.prepareStatement(sql)) {
-            ResultSet rs = stmt.executeQuery();
-            while (rs.next()) {
-                Authority authority = new Authority(rs.getLong("id"),
-                        rs.getString("name"));
-                authorities.add(authority);
+            try (ResultSet rs = stmt.executeQuery()) {
+                while (rs.next()) {
+                    Authority authority = new Authority(rs.getLong("id"),
+                            rs.getString("name"));
+                    authorities.add(authority);
+                }
             }
         }
         return authorities;

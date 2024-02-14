@@ -1,7 +1,8 @@
 package com.dannyhromau.monitoring.meter.repository.impl.jdbc;
 
+import com.dannyhromau.monitoring.meter.annotation.AspectLogging;
 import com.dannyhromau.monitoring.meter.core.util.JdbcUtil;
-import com.dannyhromau.monitoring.meter.model.JdbcUserAudit;
+import com.dannyhromau.monitoring.meter.model.audit.Audit;
 import com.dannyhromau.monitoring.meter.repository.AuditRepository;
 import lombok.RequiredArgsConstructor;
 
@@ -10,24 +11,27 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Optional;
 
+@AspectLogging
 @RequiredArgsConstructor
-public class JdbcUserAuditRepository implements AuditRepository<JdbcUserAudit> {
+public class JdbcUserAuditRepository implements AuditRepository<Audit> {
     private final JdbcUtil jdbcUtil;
 
     @Override
-    public Optional<JdbcUserAudit> findById(long id) throws SQLException {
+    public Optional<Audit> findById(long id) throws SQLException {
         String sql = "SELECT * FROM ms_audit_user WHERE id = ?";
-        JdbcUserAudit audit = null;
+        Audit audit = null;
         try (Connection connection = jdbcUtil.getConnection();
              PreparedStatement stmt = connection.prepareStatement(sql)) {
             stmt.setLong(1, id);
             stmt.executeUpdate();
             ResultSet rs = stmt.executeQuery();
             while (rs.next()) {
-                audit = new JdbcUserAudit(rs.getLong("id"),
-                        rs.getTimestamp("timestamp").toLocalDateTime(),
-                        rs.getLong("user_id"),
-                        rs.getString("action"));
+                audit = Audit.builder()
+                        .id(rs.getLong("id"))
+                        .timestamp(rs.getTimestamp("timestamp").toLocalDateTime())
+                        .auditingArgs(rs.getString("auditing_args"))
+                        .action(rs.getString("action"))
+                        .build();
             }
         }
         if (audit != null) {
@@ -38,17 +42,19 @@ public class JdbcUserAuditRepository implements AuditRepository<JdbcUserAudit> {
     }
 
     @Override
-    public List<JdbcUserAudit> findAll() throws SQLException {
+    public List<Audit> findAll() throws SQLException {
         String sql = "SELECT * FROM ms_audit_user";
-        List<JdbcUserAudit> audits = new LinkedList<>();
+        List<Audit> audits = new LinkedList<>();
         try (Connection connection = jdbcUtil.getConnection();
              PreparedStatement stmt = connection.prepareStatement(sql)) {
             ResultSet rs = stmt.executeQuery();
             while (rs.next()) {
-                JdbcUserAudit audit = new JdbcUserAudit(rs.getLong("id"),
-                        rs.getTimestamp("timestamp").toLocalDateTime(),
-                        rs.getLong("user_id"),
-                        rs.getString("action"));
+                Audit audit = Audit.builder()
+                        .id(rs.getLong("id"))
+                        .timestamp(rs.getTimestamp("timestamp").toLocalDateTime())
+                        .auditingArgs(rs.getString("auditing_args"))
+                        .action(rs.getString("action"))
+                        .build();
                 audits.add(audit);
             }
         }
@@ -56,12 +62,12 @@ public class JdbcUserAuditRepository implements AuditRepository<JdbcUserAudit> {
     }
 
     @Override
-    public JdbcUserAudit save(JdbcUserAudit audit) throws SQLException {
-        String sql = "INSERT INTO ms_audit_user (timestamp, auditing_entity_id, action) VALUES (?,?,?)";
+    public Audit save(Audit audit) throws SQLException {
+        String sql = "INSERT INTO ms_audit_user (timestamp, auditing_args, action) VALUES (?,?,?)";
         try (Connection connection = jdbcUtil.getConnection();
              PreparedStatement stmt = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
             stmt.setTimestamp(1, Timestamp.valueOf(audit.getTimestamp()));
-            stmt.setLong(2, audit.getAuditingEntityId());
+            stmt.setString(2, audit.getAuditingArgs());
             stmt.setString(3, audit.getAction());
             stmt.executeUpdate();
             ResultSet generatedKeys = stmt.getGeneratedKeys();
