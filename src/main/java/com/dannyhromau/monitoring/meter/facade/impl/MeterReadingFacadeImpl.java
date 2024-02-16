@@ -10,12 +10,14 @@ import com.dannyhromau.monitoring.meter.mapper.MeterReadingMapper;
 import com.dannyhromau.monitoring.meter.model.MeterReading;
 import com.dannyhromau.monitoring.meter.service.MeterReadingService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Component;
 
 import java.sql.SQLException;
 import java.time.LocalDate;
 import java.time.YearMonth;
 import java.util.List;
 
+@Component
 @AspectLogging
 @RequiredArgsConstructor
 public class MeterReadingFacadeImpl implements MeterReadingFacade {

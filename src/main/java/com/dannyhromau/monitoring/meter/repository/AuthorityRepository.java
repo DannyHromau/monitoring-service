@@ -2,11 +2,13 @@ package com.dannyhromau.monitoring.meter.repository;
 
 import com.dannyhromau.monitoring.meter.exception.EntityNotFoundException;
 import com.dannyhromau.monitoring.meter.model.Authority;
+import org.springframework.stereotype.Repository;
 
 import java.sql.SQLException;
 import java.util.List;
 import java.util.Optional;
 
+@Repository
 public interface AuthorityRepository {
 
     Optional<Authority> findById(long id) throws SQLException;

@@ -7,7 +7,7 @@ import org.mapstruct.factory.Mappers;
 
 import java.util.List;
 
-@Mapper
+@Mapper(componentModel = "spring")
 public interface MeterReadingMapper {
     MeterReadingMapper INSTANCE = Mappers.getMapper(MeterReadingMapper.class);
     MeterReading mapToMeterReading(MeterReadingDto dto);

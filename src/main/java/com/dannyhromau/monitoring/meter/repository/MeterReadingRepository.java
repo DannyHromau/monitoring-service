@@ -1,6 +1,7 @@
 package com.dannyhromau.monitoring.meter.repository;
 
 import com.dannyhromau.monitoring.meter.model.MeterReading;
+import org.springframework.stereotype.Repository;
 
 import java.sql.SQLException;
 import java.time.LocalDate;
@@ -8,6 +9,7 @@ import java.time.YearMonth;
 import java.util.List;
 import java.util.Optional;
 
+@Repository
 public interface MeterReadingRepository {
     MeterReading save(MeterReading mr) throws SQLException;
 

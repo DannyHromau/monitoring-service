@@ -4,6 +4,7 @@ import com.dannyhromau.monitoring.meter.exception.DuplicateDataException;
 import com.dannyhromau.monitoring.meter.exception.EntityNotFoundException;
 import com.dannyhromau.monitoring.meter.exception.InvalidDataException;
 import com.dannyhromau.monitoring.meter.exception.UnAuthorizedException;
+import org.springframework.stereotype.Component;
 
 import java.sql.SQLException;
 
@@ -14,6 +15,7 @@ import java.sql.SQLException;
  * dto and entity and mapper's injection
  *
  */
+@Component
 public interface AuthFacade<T> {
     /**
      *
@@ -24,7 +26,8 @@ public interface AuthFacade<T> {
      * @throws InvalidDataException when invalid data references by client
      * @throws EntityNotFoundException when entity doesn't exist in DB
      */
-    T register(T authDto) throws DuplicateDataException, SQLException, InvalidDataException, EntityNotFoundException;
+    Boolean register(T authDto)
+            throws DuplicateDataException, SQLException, InvalidDataException, EntityNotFoundException;
 
     /**
      *

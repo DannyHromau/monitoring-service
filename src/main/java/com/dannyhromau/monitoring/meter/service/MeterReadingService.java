@@ -4,12 +4,14 @@ import com.dannyhromau.monitoring.meter.exception.DuplicateDataException;
 import com.dannyhromau.monitoring.meter.exception.EntityNotFoundException;
 import com.dannyhromau.monitoring.meter.exception.InvalidDataException;
 import com.dannyhromau.monitoring.meter.model.MeterReading;
+import org.springframework.stereotype.Service;
 
 import java.sql.SQLException;
 import java.time.LocalDate;
 import java.time.YearMonth;
 import java.util.List;
 
+@Service
 public interface MeterReadingService {
     MeterReading add(MeterReading mr) throws DuplicateDataException, SQLException, InvalidDataException;
 

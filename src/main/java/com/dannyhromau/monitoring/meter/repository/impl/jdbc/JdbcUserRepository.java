@@ -6,6 +6,7 @@ import com.dannyhromau.monitoring.meter.model.Authority;
 import com.dannyhromau.monitoring.meter.model.User;
 import com.dannyhromau.monitoring.meter.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Repository;
 
 import java.sql.*;
 import java.util.ArrayList;
@@ -13,6 +14,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Optional;
 
+@Repository
 @AspectLogging
 @RequiredArgsConstructor
 public class JdbcUserRepository implements UserRepository {

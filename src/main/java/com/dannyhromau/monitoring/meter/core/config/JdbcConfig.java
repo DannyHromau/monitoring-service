@@ -1,31 +1,31 @@
 package com.dannyhromau.monitoring.meter.core.config;
 
-import com.dannyhromau.monitoring.meter.aspect.ExecutionTimeLoggingAspect;
-import org.apache.logging.log4j.Level;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import lombok.Getter;
+import lombok.Setter;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.PropertySource;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.Properties;
-
+@Getter
+@Setter
+@Configuration
+@PropertySource("classpath:application.yml")
 public class JdbcConfig {
-    public static final String DB_URL = "db.url";
-    public static final String DB_USERNAME = "db.username";
-    public static final String DB_PASSWORD = "db.password";
-    public static final String DB_DRIVER = "db.driverClassName";
-    public static final String DB_CONSOLE_ENABLED = "db.console.enabled";
-    private static Logger logger = LogManager.getLogger(ExecutionTimeLoggingAspect.class);
-    private Properties properties = new Properties();
+    @Value("${spring.datasource.url}")
+    private String url;
+    @Value("${spring.datasource.username}")
+    private String username;
+    @Value("${spring.datasource.password}")
+    private String password;
+    @Value("${spring.datasource.driver-class-name}")
+    private String driverClassName;
 
-    public synchronized String getProperty(String name, String path) {
-        if (properties.isEmpty()) {
-            try (InputStream is = JdbcConfig.class.getClassLoader().getResourceAsStream(path)) {
-                properties.load(is);
-            } catch (IOException ex) {
-                logger.log(Level.ERROR, ex.getMessage());
-            }
-        }
-        return properties.getProperty(name);
-    }
+//    @Bean
+//    public static PropertySourcesPlaceholderConfigurer propertySourcesPlaceholderConfigurer() {
+//        PropertySourcesPlaceholderConfigurer configurer = new PropertySourcesPlaceholderConfigurer();
+//        YamlPropertiesFactoryBean yaml = new YamlPropertiesFactoryBean();
+//        yaml.setResources(new ClassPathResource("application.yml"));
+//        configurer.setProperties(yaml.getObject());
+//        return configurer;
+//    }
 }

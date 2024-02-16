@@ -6,6 +6,7 @@ import com.dannyhromau.monitoring.meter.model.MeterReading;
 import com.dannyhromau.monitoring.meter.model.MeterType;
 import com.dannyhromau.monitoring.meter.repository.MeterReadingRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Repository;
 
 import java.sql.*;
 import java.time.LocalDate;
@@ -15,6 +16,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Optional;
 
+@Repository
 @AspectLogging
 @RequiredArgsConstructor
 public class JdbcMeterReadingRepository implements MeterReadingRepository {

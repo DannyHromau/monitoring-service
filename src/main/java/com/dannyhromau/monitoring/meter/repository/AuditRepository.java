@@ -1,9 +1,12 @@
 package com.dannyhromau.monitoring.meter.repository;
 
+import org.springframework.stereotype.Repository;
+
 import java.sql.SQLException;
 import java.util.List;
 import java.util.Optional;
 
+@Repository
 public interface AuditRepository<T> {
     Optional<T> findById(long id) throws SQLException;
 

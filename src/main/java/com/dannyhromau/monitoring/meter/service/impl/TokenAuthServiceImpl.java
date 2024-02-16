@@ -12,8 +12,8 @@ import com.dannyhromau.monitoring.meter.service.AuthService;
 import com.dannyhromau.monitoring.meter.service.AuthorityService;
 import com.dannyhromau.monitoring.meter.service.UserService;
 import lombok.RequiredArgsConstructor;
-import org.apache.commons.codec.digest.DigestUtils;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.sql.SQLException;
@@ -23,16 +23,15 @@ import java.util.List;
 @Service
 @AspectLogging
 @RequiredArgsConstructor
-@Qualifier("console_service")
-public class ConsoleAuthServiceImpl implements AuthService<User> {
+@Qualifier("token_service")
+public class TokenAuthServiceImpl implements AuthService<User> {
     private final UserService userService;
     private final AuthorityService authorityService;
+    private final BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
     private static final String passwordPatternRegex = "\\S{8,20}";
     private static final String loginRegex = "^[a-zA-Z0-9._-]{3,15}$";
     private static final String WRONG_INPUT_FORMAT_MESSAGE = ErrorMessages.WRONG_INPUT_FORMAT_MESSAGE.label;
     private static final String WRONG_AUTH_MESSAGE = ErrorMessages.WRONG_AUTH_MESSAGE.label;
-
-
 
     @Override
     public User register(User user)
@@ -43,7 +42,7 @@ public class ConsoleAuthServiceImpl implements AuthService<User> {
         authorities.add(authority);
         user.setAuthorities(authorities);
         user.setDeleted(false);
-        user.setPassword(DigestUtils.md5Hex(user.getPassword()));
+        user.setPassword(passwordEncoder.encode(user.getPassword()));
         return userService.add(user);
     }
 
@@ -51,7 +50,7 @@ public class ConsoleAuthServiceImpl implements AuthService<User> {
     public User authorize(User user) throws UnAuthorizedException, SQLException {
         try {
             User authUser = userService.getUserByLogin(user.getLogin());
-            if (authUser.getPassword().matches(DigestUtils.md5Hex(user.getPassword()))) {
+            if (passwordEncoder.matches(user.getPassword(), authUser.getPassword())) {
                 return authUser;
             } else {
                 throw new UnAuthorizedException(WRONG_AUTH_MESSAGE);
@@ -60,7 +59,6 @@ public class ConsoleAuthServiceImpl implements AuthService<User> {
             throw new UnAuthorizedException(WRONG_AUTH_MESSAGE);
         }
     }
-
     private static void checkValidData(User user) throws InvalidDataException {
         if (!user.getLogin().matches(loginRegex) || !user.getPassword().matches(passwordPatternRegex)) {
             throw new InvalidDataException(WRONG_INPUT_FORMAT_MESSAGE);
