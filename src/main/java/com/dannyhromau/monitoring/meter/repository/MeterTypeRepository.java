@@ -2,11 +2,13 @@ package com.dannyhromau.monitoring.meter.repository;
 
 import com.dannyhromau.monitoring.meter.exception.EntityNotFoundException;
 import com.dannyhromau.monitoring.meter.model.MeterType;
+import org.springframework.stereotype.Repository;
 
 import java.sql.SQLException;
 import java.util.List;
 import java.util.Optional;
 
+@Repository
 public interface MeterTypeRepository {
     Optional<MeterType> findById(long id) throws SQLException;
 
@@ -22,3 +24,4 @@ public interface MeterTypeRepository {
 
     void addAll(List<MeterType> meterTypeList) throws SQLException;
 }
+

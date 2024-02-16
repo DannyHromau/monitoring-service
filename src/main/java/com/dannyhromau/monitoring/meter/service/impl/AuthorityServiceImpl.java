@@ -8,11 +8,13 @@ import com.dannyhromau.monitoring.meter.model.Authority;
 import com.dannyhromau.monitoring.meter.repository.AuthorityRepository;
 import com.dannyhromau.monitoring.meter.service.AuthorityService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Service;
 
 import java.sql.SQLException;
 import java.util.List;
 import java.util.Optional;
 
+@Service
 @AspectLogging
 @RequiredArgsConstructor
 public class AuthorityServiceImpl implements AuthorityService {

@@ -9,10 +9,12 @@ import com.dannyhromau.monitoring.meter.mapper.MeterTypeMapper;
 import com.dannyhromau.monitoring.meter.model.MeterType;
 import com.dannyhromau.monitoring.meter.service.MeterTypeService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Component;
 
 import java.sql.SQLException;
 import java.util.List;
 
+@Component
 @AspectLogging
 @RequiredArgsConstructor
 public class MeterTypeFacadeImpl implements MeterTypeFacade {

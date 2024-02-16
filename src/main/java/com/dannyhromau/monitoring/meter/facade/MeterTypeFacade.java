@@ -3,6 +3,7 @@ package com.dannyhromau.monitoring.meter.facade;
 import com.dannyhromau.monitoring.meter.api.dto.MeterTypeDto;
 import com.dannyhromau.monitoring.meter.exception.DuplicateDataException;
 import com.dannyhromau.monitoring.meter.exception.EntityNotFoundException;
+import org.springframework.stereotype.Component;
 
 import java.sql.SQLException;
 import java.util.List;
@@ -14,6 +15,7 @@ import java.util.List;
  * dto and entity and mapper's injection
  *
  */
+@Component
 public interface MeterTypeFacade {
     MeterTypeDto getMeterById(long id) throws EntityNotFoundException, SQLException;
     List<MeterTypeDto> getAll() throws SQLException;

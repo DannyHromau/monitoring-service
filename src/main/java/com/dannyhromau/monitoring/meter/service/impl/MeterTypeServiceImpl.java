@@ -7,11 +7,13 @@ import com.dannyhromau.monitoring.meter.exception.EntityNotFoundException;
 import com.dannyhromau.monitoring.meter.model.MeterType;
 import com.dannyhromau.monitoring.meter.repository.MeterTypeRepository;
 import com.dannyhromau.monitoring.meter.service.MeterTypeService;
+import org.springframework.stereotype.Service;
 
 import java.sql.SQLException;
 import java.util.List;
 import java.util.Optional;
 
+@Service
 @AspectLogging
 public class MeterTypeServiceImpl implements MeterTypeService {
     private final MeterTypeRepository meterTypeRepository;

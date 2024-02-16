@@ -1,31 +1,21 @@
 package com.dannyhromau.monitoring.meter.core.config;
 
-import com.dannyhromau.monitoring.meter.aspect.ExecutionTimeLoggingAspect;
-import org.apache.logging.log4j.Level;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import lombok.Getter;
+import lombok.Setter;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.PropertySource;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.Properties;
+import java.util.List;
 
+@Getter
+@Setter
+@Configuration
+@PropertySource("classpath:application.yml")
 public class LiquibaseConfig {
-    public static final String SCHEMA_SYSTEM = "liquibase.schema.system";
-    public static final String SCHEMA_AUDIT = "liquibase.schema.audit";
-    public static final String SCHEMA_MAIN = "liquibase.schema.application";
-    public static final String MASTER_PATH = "liquibase.changelog.master";
-    private static Logger logger = LogManager.getLogger(ExecutionTimeLoggingAspect.class);
-
-    private Properties properties = new Properties();
-
-    public synchronized String getProperty(String name, String path) {
-        if (properties.isEmpty()) {
-            try (InputStream is = JdbcConfig.class.getClassLoader().getResourceAsStream(path)) {
-                properties.load(is);
-            } catch (IOException ex) {
-                logger.log(Level.ERROR, ex.getMessage());
-            }
-        }
-        return properties.getProperty(name);
-    }
+    private boolean enabled;
+    private boolean dropFirst;
+    private String changeLog;
+    private String defaultSchema;
+    private String liquibaseSchema;
+    private List<String> schemas;
 }

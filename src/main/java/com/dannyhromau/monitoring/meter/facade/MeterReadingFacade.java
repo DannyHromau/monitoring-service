@@ -4,6 +4,7 @@ import com.dannyhromau.monitoring.meter.api.dto.MeterReadingDto;
 import com.dannyhromau.monitoring.meter.exception.DuplicateDataException;
 import com.dannyhromau.monitoring.meter.exception.EntityNotFoundException;
 import com.dannyhromau.monitoring.meter.exception.InvalidDataException;
+import org.springframework.stereotype.Component;
 
 import java.sql.SQLException;
 import java.time.LocalDate;
@@ -17,6 +18,7 @@ import java.util.List;
  * dto and entity and mapper's injection
  *
  */
+@Component
 public interface MeterReadingFacade {
 
     MeterReadingDto add(MeterReadingDto meterReadingDto)
