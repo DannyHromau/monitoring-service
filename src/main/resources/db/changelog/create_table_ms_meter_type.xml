@@ -15,4 +15,21 @@
         </createTable>
     </changeSet>
 
+    <changeSet author="daniil_hromau" id="insert_data_into_ms_meter_type">
+        <insert tableName="ms_meter_type" schemaName="monitoring_service">
+            <column name="type" value="heating"/>
+        </insert>
+    </changeSet>
+
+    <changeSet author="daniil_hromau" id="insert_data_into_ms_meter_type2">
+        <insert tableName="ms_meter_type" schemaName="monitoring_service">
+            <column name="type" value="cold_water"/>
+        </insert>
+    </changeSet>
+
+    <changeSet author="daniil_hromau" id="insert_data_into_ms_meter_type3">
+        <insert tableName="ms_meter_type" schemaName="monitoring_service">
+            <column name="type" value="hot_water"/>
+        </insert>
+    </changeSet>
 </databaseChangeLog>

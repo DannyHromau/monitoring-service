@@ -10,4 +10,4 @@ services:
       POSTGRES_PASSWORD: postgres
       POSTGRES_DB: postgres
     volumes:
-      - D:/Hromau/vol/postgresy:/var/lib/postgresql/data
+      - G:/volumes:/var/lib/postgresql/data

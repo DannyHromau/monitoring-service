@@ -20,12 +20,15 @@ spring:
     password: admin
     driver-class-name: org.postgresql.Driver
 
+  liquibasesource:
+    url: jdbc:postgresql://localhost:5432/postgres?useSSL=false
+    username: admin
+    password: admin
+    driver-class-name: org.postgresql.Driver
+
 permission:
   unauthorized:
-    urls:
-      - /api/v1/auth/*
-      - /swagger-ui/*
-      - /v3/api-docs/**
+    urls: /api/v1/auth/**,/v3/api-docs/**,/v2/api-docs,/configuration/ui,/swagger-resources/**,/configuration/security,/swagger-ui.html,/webjars/**
 
 validator:
   credential:

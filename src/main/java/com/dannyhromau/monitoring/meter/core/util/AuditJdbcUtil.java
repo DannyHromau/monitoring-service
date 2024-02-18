@@ -1,6 +1,6 @@
 package com.dannyhromau.monitoring.meter.core.util;
 
-import com.dannyhromau.monitoring.meter.core.config.AuditJdbcConfig;
+import com.dannyhromau.monitoring.meter.core.config.AppConfig;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
@@ -11,12 +11,13 @@ import java.sql.SQLException;
 @Component
 @RequiredArgsConstructor
 public class AuditJdbcUtil {
-    private final AuditJdbcConfig jdbcConfig;
+    private final AppConfig appConfig;
+
     public Connection getConnection() throws SQLException {
         Connection con = DriverManager.getConnection(
-                jdbcConfig.getUrl(),
-                jdbcConfig.getUsername(),
-                jdbcConfig.getPassword());
+                appConfig.getAuditSourceUrl(),
+                appConfig.getAuditSourceUsername(),
+                appConfig.getAuditSourcePassword());
         return con;
     }
 }

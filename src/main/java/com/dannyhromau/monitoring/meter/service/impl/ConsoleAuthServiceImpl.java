@@ -33,7 +33,6 @@ public class ConsoleAuthServiceImpl implements AuthService<User> {
     private static final String WRONG_AUTH_MESSAGE = ErrorMessages.WRONG_AUTH_MESSAGE.label;
 
 
-
     @Override
     public User register(User user)
             throws DuplicateDataException, InvalidDataException, SQLException, EntityNotFoundException {

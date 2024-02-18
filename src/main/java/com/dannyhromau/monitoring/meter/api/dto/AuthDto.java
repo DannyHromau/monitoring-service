@@ -19,7 +19,7 @@ public class AuthDto {
     @NonNull
     @NotBlank(message = "Password must not be blank")
     private String password;
-        @NotBlank(message = "Boolean value must not be null")
+    @NotBlank(message = "Boolean value must not be null")
     private boolean isDeleted;
     private List<Authority> authorities;
 }

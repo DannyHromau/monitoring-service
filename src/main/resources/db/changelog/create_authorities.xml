@@ -6,10 +6,10 @@
 
     <changeSet author="daniil_hromau" id="create_authorities">
         <insert tableName="ms_authority" schemaName="monitoring_service">
-            <column name="name" value="admin"/>
+            <column name="name" value="ADMIN"/>
         </insert>
         <insert tableName="ms_authority" schemaName="monitoring_service">
-            <column name="name" value="user"/>
+            <column name="name" value="USER"/>
         </insert>
     </changeSet>
 

@@ -1,13 +1,10 @@
-package com.dannyhromau.monitoring.meter.security.provider.custom;
+package com.dannyhromau.monitoring.meter.security.oauth2.provider.custom;
 
-import com.dannyhromau.monitoring.meter.security.common.SecurityUrlConfig;
+import com.dannyhromau.monitoring.meter.core.config.AppConfig;
 import com.nimbusds.jose.JWSAlgorithm;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.Profile;
-import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -21,20 +18,18 @@ import java.nio.charset.StandardCharsets;
 @Configuration
 @EnableWebSecurity
 @RequiredArgsConstructor
-@Profile({"test", "local", "prod"})
-@ComponentScan(basePackages = "com.dannyhromau.monitoring.meter.security.provider.custom")
-public class CustomSecurityConfig {
-    private final SecurityUrlConfig securityUrlConfig;
+public class SecurityConfig {
+    private final AppConfig appConfig;
     private static final String SPEC_KEY = "SecretSpecialKeyOauth2.0Jwt256Bites";
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-        String[] patternsArr = securityUrlConfig.getUrls().toArray(new String[0]);
-        http.oauth2Login(Customizer.withDefaults());
+        String[] patternsArr = appConfig.getUrls().toArray(new String[0]);
         http
                 .csrf().disable()
                 .authorizeRequests()
-                .antMatchers("/*").permitAll()
+                .antMatchers(patternsArr).permitAll()
+                .antMatchers("/api/v1/meter/reading/all").hasAuthority("SCOPE_ADMIN")
                 .anyRequest()
                 .authenticated()
                 .and()
@@ -43,16 +38,11 @@ public class CustomSecurityConfig {
                 .clearAuthentication(true)
                 .invalidateHttpSession(true)
                 .and()
-                .oauth2ResourceServer().jwt().decoder(jwtDecoder());
+                .oauth2ResourceServer().jwt()
+                .decoder(jwtDecoder())
+        ;
         return http.build();
     }
-
-//    @Bean
-//    protected LogoutSuccessHandler getLogoutSuccessHandler() {
-//        return (httpServletRequest, httpServletResponse, authentication) -> {
-//            httpServletResponse.setStatus(HttpServletResponse.SC_OK);
-//        };
-//    }
 
     @Bean
     public JwtDecoder jwtDecoder() {

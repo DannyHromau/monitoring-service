@@ -11,6 +11,7 @@ import org.springframework.context.annotation.PropertySource;
 @PropertySource("classpath:application.yml")
 public class ValidatorConfig {
     private Credential credential;
+
     public static class Credential {
         private String emailPattern;
         private String passwordPattern;

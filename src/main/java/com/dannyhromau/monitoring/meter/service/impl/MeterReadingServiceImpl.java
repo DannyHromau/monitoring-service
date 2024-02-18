@@ -38,7 +38,7 @@ public class MeterReadingServiceImpl implements MeterReadingService {
                 mr.getUserId(), yearMonth, mr.getMeterTypeId());
         try {
             MeterReading actual = getActualMeterReading(mr.getUserId(), mr.getMeterTypeId());
-            if (actual.getValue() > mr.getValue()){
+            if (actual.getValue() > mr.getValue()) {
                 throw new InvalidDataException(String.format(WRONG_VALUE_MESSAGE, mr.getValue()));
             }
         } catch (EntityNotFoundException e) {

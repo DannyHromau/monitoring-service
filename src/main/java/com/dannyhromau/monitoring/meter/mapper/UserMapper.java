@@ -10,9 +10,13 @@ import org.mapstruct.factory.Mappers;
 @Mapper(componentModel = "spring", uses = {AuthorityMapper.class})
 public interface UserMapper {
     UserMapper INSTANCE = Mappers.getMapper(UserMapper.class);
+
     User mapToUser(UserDto userDto);
+
     UserDto mapToDto(User user);
+
     @Mapping(target = "password", ignore = true)
     AuthDto mapToAuthDto(User user);
+
     User mapToUserFromAuth(AuthDto authDto);
 }
