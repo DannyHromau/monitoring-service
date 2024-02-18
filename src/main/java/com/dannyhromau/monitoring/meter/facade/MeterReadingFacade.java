@@ -13,23 +13,27 @@ import java.util.List;
 
 /**
  * @author Daniil Hromau
- *
+ * <p>
  * Facade is using as converting layer between controller and service to separate the logic of working with
  * dto and entity and mapper's injection
- *
  */
 @Component
 public interface MeterReadingFacade {
 
     MeterReadingDto add(MeterReadingDto meterReadingDto)
             throws DuplicateDataException, SQLException, InvalidDataException;
+
     List<MeterReadingDto> getAll() throws SQLException;
+
     List<MeterReadingDto> getByUserId(long userId) throws SQLException;
+
     List<MeterReadingDto> getByUserIdAndMeterType(long userId, long mrTypeId) throws SQLException;
+
     MeterReadingDto getById(long id) throws EntityNotFoundException, SQLException;
 
     /**
      * getting actual meter reading
+     *
      * @param userId
      * @param mrTypeId meter type id
      * @return last posted meter reading
@@ -40,8 +44,9 @@ public interface MeterReadingFacade {
 
     /**
      * getting meter reading by date
+     *
      * @param userId
-     * @param date LocalDate standard form
+     * @param date     LocalDate standard form
      * @param mrTypeId meter type id
      * @return meter reading
      * @throws EntityNotFoundException when data don't exist
@@ -52,6 +57,7 @@ public interface MeterReadingFacade {
 
     /**
      * getting meter reading by year and month
+     *
      * @param userId
      * @param yearMonth format
      * @param mrTypeId

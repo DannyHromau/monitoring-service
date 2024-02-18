@@ -1,7 +1,6 @@
 package com.dannyhromau.monitoring.meter.controller.impl;
 
 import com.dannyhromau.monitoring.meter.annotation.AspectLogging;
-import com.dannyhromau.monitoring.meter.annotation.Auditable;
 import com.dannyhromau.monitoring.meter.api.dto.MeterReadingDto;
 import com.dannyhromau.monitoring.meter.controller.MeterReadingController;
 import com.dannyhromau.monitoring.meter.exception.DuplicateDataException;
@@ -19,13 +18,13 @@ import java.time.LocalDate;
 import java.time.YearMonth;
 import java.util.List;
 
+//TODO: add advice controller for catching exceptions
 @AspectLogging
 @RestController
 @RequiredArgsConstructor
 public class MeterReadingControllerImpl implements MeterReadingController {
 
     private final MeterReadingFacade meterReadingFacade;
-
 
     @Override
     public ResponseEntity<MeterReadingDto> add(@NonNull MeterReadingDto mr) {
@@ -40,7 +39,6 @@ public class MeterReadingControllerImpl implements MeterReadingController {
         }
     }
 
-    @Auditable
     @Override
     public ResponseEntity<List<MeterReadingDto>> getAll() {
         try {
@@ -50,7 +48,6 @@ public class MeterReadingControllerImpl implements MeterReadingController {
         }
     }
 
-    @Auditable
     @Override
     public ResponseEntity<List<MeterReadingDto>> getByUserId(long userId) {
         try {
@@ -60,7 +57,6 @@ public class MeterReadingControllerImpl implements MeterReadingController {
         }
     }
 
-    @Auditable
     @Override
     public ResponseEntity<List<MeterReadingDto>> getByUserIdAndMeterType(long userId, long meterTypeId) {
         try {
@@ -70,7 +66,6 @@ public class MeterReadingControllerImpl implements MeterReadingController {
         }
     }
 
-    @Auditable
     @Override
     public ResponseEntity<MeterReadingDto> getById(long id) {
         try {
@@ -82,7 +77,6 @@ public class MeterReadingControllerImpl implements MeterReadingController {
         }
     }
 
-    @Auditable
     @Override
     public ResponseEntity<MeterReadingDto> getActualMeterReading(long userId, long mrTypeId) {
         try {
@@ -94,7 +88,6 @@ public class MeterReadingControllerImpl implements MeterReadingController {
         }
     }
 
-    @Auditable
     @Override
     public ResponseEntity<MeterReadingDto> getMeterReadingByDateAndMeterType(
             long userId, LocalDate date, long mrTypeId) {
@@ -107,7 +100,6 @@ public class MeterReadingControllerImpl implements MeterReadingController {
         }
     }
 
-    @Auditable
     @Override
     public ResponseEntity<MeterReadingDto> getMeterReadingByMonthAndMeterType(
             long userId, YearMonth yearMonth, long mrTypeId) {

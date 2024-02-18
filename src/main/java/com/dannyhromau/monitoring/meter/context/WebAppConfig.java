@@ -1,5 +1,6 @@
-package com.dannyhromau.monitoring.meter.config;
+package com.dannyhromau.monitoring.meter.context;
 
+import com.dannyhromau.monitoring.meter.core.config.SwaggerConfig;
 import org.springframework.beans.factory.config.YamlPropertiesFactoryBean;
 import org.springframework.context.annotation.*;
 import org.springframework.context.support.PropertySourcesPlaceholderConfigurer;
@@ -8,6 +9,7 @@ import org.springframework.http.converter.HttpMessageConverter;
 import org.springframework.http.converter.json.Jackson2ObjectMapperBuilder;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
+import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 import org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerMapping;
 
@@ -18,7 +20,8 @@ import java.util.List;
 @EnableAspectJAutoProxy
 @PropertySource("classpath:application.yml")
 @ComponentScan(basePackages = {"com.dannyhromau.monitoring.meter"})
-public class AppConfig implements WebMvcConfigurer {
+@Import(SwaggerConfig.class)
+public class WebAppConfig implements WebMvcConfigurer {
     @Override
     public void configureMessageConverters(List<HttpMessageConverter<?>> converters) {
         Jackson2ObjectMapperBuilder builder = new Jackson2ObjectMapperBuilder()
@@ -42,4 +45,15 @@ public class AppConfig implements WebMvcConfigurer {
         configurer.setProperties(yaml.getObject());
         return configurer;
     }
+
+    @Override
+    public void addResourceHandlers(ResourceHandlerRegistry registry) {
+        registry.addResourceHandler("swagger-ui.html")
+                .addResourceLocations("classpath:/META-INF/resources/");
+
+        registry.addResourceHandler("/webjars/**")
+                .addResourceLocations("classpath:/META-INF/resources/webjars/");
+    }
+
+
 }

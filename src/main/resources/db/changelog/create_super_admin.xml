@@ -6,21 +6,21 @@
 
     <changeSet author="daniil_hromau" id="add_initial_users" runOnChange="true">
         <preConditions onFail="CONTINUE">
-            <sqlCheck expectedResult="0">SELECT COUNT(*) FROM monitoring_service.ms_user WHERE login = 'admin'</sqlCheck>
+            <sqlCheck expectedResult="0">SELECT COUNT(*) FROM monitoring_service.ms_user WHERE login = 'ADMIN'</sqlCheck>
         </preConditions>
 
         <insert tableName="ms_user" schemaName="monitoring_service">
             <column name="login" value="admin"/>
-            <column name="password" value="21232f297a57a5a743894a0e4a801fc3"/>
+            <column name="password" value="$2a$10$AONYw1rDV2.vYmQmvkSM6evtoHZy/7TT781xqPQg1ZrPurXVdWtsO"/>
             <column name="is_deleted" valueBoolean="false"/>
         </insert>
         <insert tableName="ms_user_authority" schemaName="monitoring_service">
             <column name="user_id" valueComputed="(SELECT id FROM monitoring_service.ms_user WHERE login='admin')"/>
-            <column name="authority_id" valueComputed="(SELECT id FROM monitoring_service.ms_authority WHERE name='admin')"/>
+            <column name="authority_id" valueComputed="(SELECT id FROM monitoring_service.ms_authority WHERE name='ADMIN')"/>
         </insert>
         <insert tableName="ms_user_authority" schemaName="monitoring_service">
             <column name="user_id" valueComputed="(SELECT id FROM monitoring_service.ms_user WHERE login='admin')"/>
-            <column name="authority_id" valueComputed="(SELECT id FROM monitoring_service.ms_authority WHERE name='user')"/>
+            <column name="authority_id" valueComputed="(SELECT id FROM monitoring_service.ms_authority WHERE name='USER')"/>
         </insert>
     </changeSet>
 </databaseChangeLog>

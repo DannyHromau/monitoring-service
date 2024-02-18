@@ -10,15 +10,17 @@ import java.util.List;
 
 /**
  * @author Daniil Hromau
- *
+ * <p>
  * Facade is using as converting layer between controller and service to separate the logic of working with
  * dto and entity and mapper's injection
- *
  */
 @Component
 public interface MeterTypeFacade {
     MeterTypeDto getMeterById(long id) throws EntityNotFoundException, SQLException;
+
     List<MeterTypeDto> getAll() throws SQLException;
+
     MeterTypeDto add(MeterTypeDto meterType) throws DuplicateDataException, SQLException;
+
     MeterTypeDto getMeterByType(String type) throws EntityNotFoundException, SQLException;
 }

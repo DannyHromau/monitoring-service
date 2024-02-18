@@ -25,7 +25,7 @@ public class MeterReading {
     public String toString() {
         return "MeterReading{" +
                 "meter's type = " + meterType.getType() +
-                ", date = " + date.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm"))+
+                ", date = " + date.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm")) +
                 ", value = " + value +
                 '}';
     }

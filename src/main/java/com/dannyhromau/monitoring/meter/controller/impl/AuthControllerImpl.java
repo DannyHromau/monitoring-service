@@ -3,12 +3,14 @@ package com.dannyhromau.monitoring.meter.controller.impl;
 import com.dannyhromau.monitoring.meter.annotation.AspectLogging;
 import com.dannyhromau.monitoring.meter.annotation.Auditable;
 import com.dannyhromau.monitoring.meter.api.dto.AuthDto;
+import com.dannyhromau.monitoring.meter.api.dto.TokenDto;
 import com.dannyhromau.monitoring.meter.controller.AuthController;
 import com.dannyhromau.monitoring.meter.exception.DuplicateDataException;
 import com.dannyhromau.monitoring.meter.exception.EntityNotFoundException;
 import com.dannyhromau.monitoring.meter.exception.InvalidDataException;
 import com.dannyhromau.monitoring.meter.exception.UnAuthorizedException;
 import com.dannyhromau.monitoring.meter.facade.AuthFacade;
+import io.swagger.annotations.Api;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -20,10 +22,10 @@ import java.sql.SQLException;
 @AspectLogging
 @RestController
 @RequiredArgsConstructor
-public class AuthControllerImpl implements AuthController<AuthDto> {
-    private final AuthFacade<AuthDto> authFacade;
+public class AuthControllerImpl implements AuthController<TokenDto> {
+    private final AuthFacade<TokenDto> authFacade;
 
-    @Auditable
+
     @Override
     public ResponseEntity<Boolean> register(@NonNull AuthDto authDto) {
         try {
@@ -39,9 +41,9 @@ public class AuthControllerImpl implements AuthController<AuthDto> {
         }
     }
 
-    @Auditable
+
     @Override
-    public ResponseEntity<AuthDto> authorize(@NonNull AuthDto authDto) {
+    public ResponseEntity<TokenDto> authorize(@NonNull AuthDto authDto) {
         try {
             return ResponseEntity.ok(authFacade.authorize(authDto));
         } catch (UnAuthorizedException e) {
