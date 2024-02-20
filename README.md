@@ -10,11 +10,11 @@
 * PostgreSQL
 * Docker
 * Lombok
-* Servlet
-* AspectJ
 * MapStruct
 * RESTful API
-* Jackson
+* Sring framework (mvc, security, AOP)
+* Oauth2 + JWT
+* Swagger
 
 # Building:
 1. Go to project folder and run command `mvn clean install`
@@ -24,9 +24,9 @@
 # Admin settings:
 For adding the list of meter types create file `meters.txt` in target directory and write types according the example:
 
-Heating  
-Cold water  
-Hot water  
+heating  
+cold_water  
+hot_water  
 
 # Docker:
 `docker-compose` file located in root directory. For starting the container use command ` docker-compose up -d`
