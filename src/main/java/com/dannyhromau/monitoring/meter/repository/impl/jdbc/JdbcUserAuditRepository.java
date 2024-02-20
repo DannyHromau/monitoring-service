@@ -1,20 +1,22 @@
 package com.dannyhromau.monitoring.meter.repository.impl.jdbc;
 
 import com.dannyhromau.monitoring.meter.annotation.AspectLogging;
-import com.dannyhromau.monitoring.meter.core.util.JdbcUtil;
+import com.dannyhromau.monitoring.meter.core.util.AuditJdbcUtil;
 import com.dannyhromau.monitoring.meter.model.audit.Audit;
 import com.dannyhromau.monitoring.meter.repository.AuditRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Repository;
 
 import java.sql.*;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Optional;
 
+@Repository
 @AspectLogging
 @RequiredArgsConstructor
 public class JdbcUserAuditRepository implements AuditRepository<Audit> {
-    private final JdbcUtil jdbcUtil;
+    private final AuditJdbcUtil jdbcUtil;
 
     @Override
     public Optional<Audit> findById(long id) throws SQLException {

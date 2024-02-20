@@ -28,15 +28,15 @@
         <projectlombok.lombok.mapstruct.binding.version>0.2.0</projectlombok.lombok.mapstruct.binding.version>
         <org.mapstruct.mapstruct.version>1.5.5.Final</org.mapstruct.mapstruct.version>
         <commons.codec.version>1.15</commons.codec.version>
-        <javax.servlet.api.version>4.0.1</javax.servlet.api.version>
-        <org.eclipse.jetty.server.version>9.3.7.v20160115</org.eclipse.jetty.server.version>
-        <org.eclipse.jetty.webapp.version>9.4.33.v20201020</org.eclipse.jetty.webapp.version>
-        <javax.xml.bind.jaxb.api.version>2.2.11</javax.xml.bind.jaxb.api.version>
-        <com.fasterxml.jackson.databind.version>2.12.5</com.fasterxml.jackson.databind.version>
         <maven.war.plugin.version>3.4.0</maven.war.plugin.version>
         <org.eclipse.jetty.maven.version>10.0.7</org.eclipse.jetty.maven.version>
         <org.aspectj.aspectjrt.version>1.9.7</org.aspectj.aspectjrt.version>
-
+        <spring.security.jwt.version>1.1.1.RELEASE</spring.security.jwt.version>
+        <jakarta.xml.bind.version>4.0.0</jakarta.xml.bind.version>
+        <com.fasterxml.jackson.databind.version>2.13.5</com.fasterxml.jackson.databind.version>
+        <org.spring.security.version>5.8.0</org.spring.security.version>
+        <org.springframework.version>5.3.13</org.springframework.version>
+        <io.rest-assured.version>5.3.0</io.rest-assured.version>
     </properties>
 
     <build>
@@ -56,19 +56,6 @@
                     </resources>
                 </configuration>
             </plugin>
-<!--            <plugin>-->
-<!--                <artifactId>maven-assembly-plugin</artifactId>-->
-<!--                <configuration>-->
-<!--                    <archive>-->
-<!--                        <manifest>-->
-<!--                            <mainClass>com/dannyhromau/monitoring/meter/Application</mainClass>-->
-<!--                        </manifest>-->
-<!--                    </archive>-->
-<!--                    <descriptorRefs>-->
-<!--                        <descriptorRef>jar-with-dependencies</descriptorRef>-->
-<!--                    </descriptorRefs>-->
-<!--                </configuration>-->
-<!--            </plugin>-->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
@@ -76,10 +63,6 @@
                 <configuration>
                     <source>${maven.compiler.source}</source>
                     <target>${maven.compiler.target}</target>
-                        <compilerArgs>
-                            <arg>-d</arg>
-                            <arg>${project.build.directory}/unwoven-classes</arg>
-                        </compilerArgs>
                     <annotationProcessorPaths>
                         <path>
                             <groupId>org.mapstruct</groupId>
@@ -109,36 +92,15 @@
                 <artifactId>jetty-maven-plugin</artifactId>
                 <version>${org.eclipse.jetty.maven.version}</version>
             </plugin>
-            <plugin>
-                <groupId>org.codehaus.mojo</groupId>
-                <artifactId>aspectj-maven-plugin</artifactId>
-                <version>1.14.0</version>
-                <configuration>
-                    <complianceLevel>16</complianceLevel>
-                    <source>16</source>
-                    <target>16</target>
-                    <showWeaveInfo>true</showWeaveInfo>
-                    <verbose>false</verbose>
-                    <Xlint>ignore</Xlint>
-                    <encoding>UTF-8</encoding>
-                    <forceAjcCompile>true</forceAjcCompile>
-                    <sources/>
-                    <weaveDirectories>
-                        <weaveDirectory>${project.build.directory}/unwoven-classes</weaveDirectory>
-                    </weaveDirectories>
-                </configuration>
-                <executions>
-                    <execution>
-                        <goals>
-                            <goal>compile</goal>
-                        </goals>
-                    </execution>
-                </executions>
-            </plugin>
         </plugins>
     </build>
 
     <dependencies>
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-webmvc</artifactId>
+            <version>${org.springframework.version}</version>
+        </dependency>
         <dependency>
             <groupId>org.junit.jupiter</groupId>
             <artifactId>junit-jupiter-api</artifactId>
@@ -209,23 +171,13 @@
         <dependency>
             <groupId>javax.servlet</groupId>
             <artifactId>javax.servlet-api</artifactId>
-            <version>${javax.servlet.api.version}</version>
+            <version>4.0.1</version>
             <scope>provided</scope>
         </dependency>
         <dependency>
-            <groupId>org.eclipse.jetty</groupId>
-            <artifactId>jetty-server</artifactId>
-            <version>${org.eclipse.jetty.server.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.eclipse.jetty</groupId>
-            <artifactId>jetty-webapp</artifactId>
-            <version>${org.eclipse.jetty.webapp.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>javax.xml.bind</groupId>
-            <artifactId>jaxb-api</artifactId>
-            <version>${javax.xml.bind.jaxb.api.version}</version>
+            <groupId>jakarta.xml.bind</groupId>
+            <artifactId>jakarta.xml.bind-api</artifactId>
+            <version>${jakarta.xml.bind.version}</version>
         </dependency>
         <dependency>
             <groupId>com.fasterxml.jackson.core</groupId>
@@ -233,9 +185,70 @@
             <version>${com.fasterxml.jackson.databind.version}</version>
         </dependency>
         <dependency>
+            <groupId>com.fasterxml.jackson.datatype</groupId>
+            <artifactId>jackson-datatype-jsr310</artifactId>
+            <version>2.14.2</version>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-aop</artifactId>
+            <version>${org.springframework.version}</version>
+        </dependency>
+        <dependency>
             <groupId>org.aspectj</groupId>
             <artifactId>aspectjrt</artifactId>
-            <version>${org.aspectj.aspectjrt.version}</version>
+            <version>1.9.7</version>
+        </dependency>
+        <dependency>
+            <groupId>org.aspectj</groupId>
+            <artifactId>aspectjweaver</artifactId>
+            <version>1.9.7</version>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.security</groupId>
+            <artifactId>spring-security-web</artifactId>
+            <version>${org.spring.security.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.security</groupId>
+            <artifactId>spring-security-config</artifactId>
+            <version>${org.spring.security.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.security</groupId>
+            <artifactId>spring-security-oauth2-resource-server</artifactId>
+            <version>${org.spring.security.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.security</groupId>
+            <artifactId>spring-security-oauth2-jose</artifactId>
+            <version>${org.spring.security.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.security</groupId>
+            <artifactId>spring-security-jwt</artifactId>
+            <version>${spring.security.jwt.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.yaml</groupId>
+            <artifactId>snakeyaml</artifactId>
+            <version>1.30</version>
+            <scope>runtime</scope>
+        </dependency>
+        <dependency>
+            <groupId>io.springfox</groupId>
+            <artifactId>springfox-swagger2</artifactId>
+            <version>2.9.2</version>
+        </dependency>
+        <dependency>
+            <groupId>io.springfox</groupId>
+            <artifactId>springfox-swagger-ui</artifactId>
+            <version>2.9.2</version>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-jdbc</artifactId>
+            <version>${org.springframework.version}</version>
         </dependency>
     </dependencies>
 </project>

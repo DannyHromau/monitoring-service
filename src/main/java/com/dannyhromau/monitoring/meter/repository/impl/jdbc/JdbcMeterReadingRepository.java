@@ -6,15 +6,16 @@ import com.dannyhromau.monitoring.meter.model.MeterReading;
 import com.dannyhromau.monitoring.meter.model.MeterType;
 import com.dannyhromau.monitoring.meter.repository.MeterReadingRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Repository;
 
 import java.sql.*;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.time.YearMonth;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Optional;
 
+@Repository
 @AspectLogging
 @RequiredArgsConstructor
 public class JdbcMeterReadingRepository implements MeterReadingRepository {
@@ -44,7 +45,7 @@ public class JdbcMeterReadingRepository implements MeterReadingRepository {
         List<MeterReading> mrList = new LinkedList<>();
         try (Connection connection = jdbcUtil.getConnection();
              PreparedStatement stmt = connection.prepareStatement(sql);
-            ResultSet rs = stmt.executeQuery()) {
+             ResultSet rs = stmt.executeQuery()) {
             while (rs.next()) {
                 MeterReading meterReading = new MeterReading(rs.getLong("id"),
                         new MeterType(),
@@ -159,7 +160,7 @@ public class JdbcMeterReadingRepository implements MeterReadingRepository {
     @Override
     public Optional<MeterReading> findByUserIdAndMonthAndMeterType(long userId, YearMonth yearMonth, long meterTypeId)
             throws SQLException {
-        String sql =  "SELECT * " +
+        String sql = "SELECT * " +
                 "FROM ms_meter_reading " +
                 "WHERE user_id = ? " +
                 "AND extract(year from date) = ? " +

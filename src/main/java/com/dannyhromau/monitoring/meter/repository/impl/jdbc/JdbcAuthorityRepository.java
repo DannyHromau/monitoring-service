@@ -5,16 +5,17 @@ import com.dannyhromau.monitoring.meter.core.util.JdbcUtil;
 import com.dannyhromau.monitoring.meter.model.Authority;
 import com.dannyhromau.monitoring.meter.repository.AuthorityRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Repository;
 
 import java.sql.*;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Optional;
 
+@Repository
 @AspectLogging
 @RequiredArgsConstructor
 public class JdbcAuthorityRepository implements AuthorityRepository {
-
     private final JdbcUtil jdbcUtil;
 
     @Override

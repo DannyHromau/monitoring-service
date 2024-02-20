@@ -7,10 +7,13 @@ import org.mapstruct.factory.Mappers;
 
 import java.util.List;
 
-@Mapper
+@Mapper(componentModel = "spring")
 public interface MeterTypeMapper {
     MeterTypeMapper INSTANCE = Mappers.getMapper(MeterTypeMapper.class);
+
     MeterType mapToMeterType(MeterTypeDto dto);
+
     MeterTypeDto mapToDto(MeterType meterType);
+
     List<MeterTypeDto> mapToListDto(List<MeterType> meterTypes);
 }

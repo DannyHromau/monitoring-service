@@ -3,10 +3,12 @@ package com.dannyhromau.monitoring.meter.service;
 import com.dannyhromau.monitoring.meter.exception.DuplicateDataException;
 import com.dannyhromau.monitoring.meter.exception.EntityNotFoundException;
 import com.dannyhromau.monitoring.meter.model.User;
+import org.springframework.stereotype.Service;
 
 import java.sql.SQLException;
 import java.util.List;
 
+@Service
 public interface UserService {
     User getUserById(long id) throws EntityNotFoundException, SQLException, DuplicateDataException;
 

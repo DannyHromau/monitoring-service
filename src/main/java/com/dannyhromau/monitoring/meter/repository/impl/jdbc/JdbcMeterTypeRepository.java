@@ -5,12 +5,14 @@ import com.dannyhromau.monitoring.meter.core.util.JdbcUtil;
 import com.dannyhromau.monitoring.meter.model.MeterType;
 import com.dannyhromau.monitoring.meter.repository.MeterTypeRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Repository;
 
 import java.sql.*;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Optional;
 
+@Repository
 @AspectLogging
 @RequiredArgsConstructor
 public class JdbcMeterTypeRepository implements MeterTypeRepository {
@@ -44,7 +46,7 @@ public class JdbcMeterTypeRepository implements MeterTypeRepository {
         List<MeterType> meterTypes = new LinkedList<>();
         try (Connection connection = jdbcUtil.getConnection();
              PreparedStatement stmt = connection.prepareStatement(sql);
-            ResultSet rs = stmt.executeQuery()) {
+             ResultSet rs = stmt.executeQuery()) {
             while (rs.next()) {
                 MeterType meterType = new MeterType(rs.getLong("id"),
                         rs.getString("type"));
@@ -110,8 +112,8 @@ public class JdbcMeterTypeRepository implements MeterTypeRepository {
 
     @Override
     public void addAll(List<MeterType> meterTypeList) throws SQLException {
-        for (MeterType meterType : meterTypeList){
-            if (findMeterTypeByType(meterType.getType()).isEmpty()){
+        for (MeterType meterType : meterTypeList) {
+            if (findMeterTypeByType(meterType.getType()).isEmpty()) {
                 save(meterType);
             }
         }

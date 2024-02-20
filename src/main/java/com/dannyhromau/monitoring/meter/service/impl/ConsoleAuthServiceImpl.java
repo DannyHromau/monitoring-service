@@ -13,15 +13,17 @@ import com.dannyhromau.monitoring.meter.service.AuthorityService;
 import com.dannyhromau.monitoring.meter.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.codec.digest.DigestUtils;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.stereotype.Service;
 
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
+@Service
 @AspectLogging
 @RequiredArgsConstructor
+@Qualifier("console_service")
 public class ConsoleAuthServiceImpl implements AuthService<User> {
     private final UserService userService;
     private final AuthorityService authorityService;
@@ -29,7 +31,6 @@ public class ConsoleAuthServiceImpl implements AuthService<User> {
     private static final String loginRegex = "^[a-zA-Z0-9._-]{3,15}$";
     private static final String WRONG_INPUT_FORMAT_MESSAGE = ErrorMessages.WRONG_INPUT_FORMAT_MESSAGE.label;
     private static final String WRONG_AUTH_MESSAGE = ErrorMessages.WRONG_AUTH_MESSAGE.label;
-    private static final Logger logger = LogManager.getLogger(ConsoleAuthServiceImpl.class);
 
 
     @Override
@@ -57,7 +58,6 @@ public class ConsoleAuthServiceImpl implements AuthService<User> {
         } catch (EntityNotFoundException | UnAuthorizedException e) {
             throw new UnAuthorizedException(WRONG_AUTH_MESSAGE);
         }
-
     }
 
     private static void checkValidData(User user) throws InvalidDataException {

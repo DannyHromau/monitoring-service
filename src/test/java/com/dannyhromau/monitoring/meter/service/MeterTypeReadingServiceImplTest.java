@@ -26,6 +26,8 @@ import java.util.List;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.when;
 
@@ -62,7 +64,10 @@ public class MeterTypeReadingServiceImplTest {
             doReturn(Optional.empty())
                     .when(mrRepo)
                     .findByUserIdAndMonthAndMeterType(
-                            mr.getUserId(), yearMonth, mr.getMeterType().getId());
+                            eq(mr.getUserId()),
+                            any(YearMonth.class),
+                            eq(mr.getMeterType().getId())
+                    );
             when(mrRepo.save(mr)).thenReturn(mr);
             mrService.add(mr);
             mrList.add(mr);
