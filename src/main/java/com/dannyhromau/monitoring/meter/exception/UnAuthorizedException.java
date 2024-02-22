@@ -1,6 +1,6 @@
 package com.dannyhromau.monitoring.meter.exception;
 
-public class UnAuthorizedException extends Exception {
+public class UnAuthorizedException extends RuntimeException {
     public UnAuthorizedException(String message) {
         super(message);
     }

@@ -5,6 +5,7 @@ import lombok.*;
 import org.apache.logging.log4j.core.config.plugins.validation.constraints.NotBlank;
 
 import java.util.List;
+import java.util.UUID;
 
 //TODO: retype id to UUID in all dto and entity
 @Getter
@@ -12,7 +13,7 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 public class AuthDto {
-    private Long id;
+    private UUID id;
     @NonNull
     @NotBlank(message = "Login must not be blank")
     private String login;

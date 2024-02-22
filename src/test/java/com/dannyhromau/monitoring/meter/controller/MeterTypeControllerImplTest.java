@@ -18,6 +18,7 @@ import org.springframework.http.ResponseEntity;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.when;
@@ -35,9 +36,9 @@ class MeterTypeControllerImplTest {
     @Test
     @DisplayName("Get meter type by id when exists")
     void getMeterTypeByIDWhenExists() throws EntityNotFoundException, SQLException {
-        long id = 1L;
+        UUID id = UUID.randomUUID();
         MeterTypeDto meterTypeDto = new MeterTypeDto();
-        when(meterTypeFacade.getMeterById(id)).thenReturn(meterTypeDto);
+        when(meterTypeFacade.getMeterById(UUID.randomUUID())).thenReturn(meterTypeDto);
         ResponseEntity<MeterTypeDto> response = meterTypeController.getMeterById(id);
         assertEquals(HttpStatus.OK, response.getStatusCode());
         assertEquals(meterTypeDto, response.getBody());

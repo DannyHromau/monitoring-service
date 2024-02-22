@@ -1,19 +1,18 @@
 package com.dannyhromau.monitoring.meter.service;
 
-import com.dannyhromau.monitoring.meter.exception.EntityNotFoundException;
 import com.dannyhromau.monitoring.meter.model.audit.Audit;
 import org.springframework.stereotype.Service;
 
-import java.sql.SQLException;
 import java.util.List;
+import java.util.UUID;
 
 @Service
 public interface AuditService {
-    Audit getById(long id) throws EntityNotFoundException, SQLException;
+    Audit getById(UUID id);
 
-    List<Audit> getAll() throws SQLException;
+    List<Audit> getAll();
 
-    Audit add(Audit audit) throws SQLException;
+    Audit add(Audit audit);
 
-    long deleteById(long id) throws SQLException, EntityNotFoundException;
+    UUID deleteById(UUID id);
 }

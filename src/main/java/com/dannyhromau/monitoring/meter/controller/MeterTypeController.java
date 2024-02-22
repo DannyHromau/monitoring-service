@@ -2,63 +2,45 @@ package com.dannyhromau.monitoring.meter.controller;
 
 
 import com.dannyhromau.monitoring.meter.api.dto.MeterTypeDto;
-import io.swagger.annotations.*;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.NonNull;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.UUID;
 
 //TODO: add advice controller for catching exceptions
 //TODO: rename entity as system
 @RestController
 @RequestMapping("/api/v1/system")
-@Api(description = "This API is for working with meter system types", hidden = true)
+@Tag(name = "Meter reading service", description = "This API is for working with meter system types")
+@ApiResponse(responseCode = "200", description = "Successful operation")
+@ApiResponse(responseCode = "400", description = "Bad request", content = @Content)
+@ApiResponse(responseCode = "404", description = "Not found")
+@ApiResponse(responseCode = "401", description = "Unauthorized")
+@ApiResponse(responseCode = "503", description = "Service unavailable")
+@ApiResponse(responseCode = "409", description = "Duplicate data")
 public interface MeterTypeController {
 
 
-    @ApiResponses(value = {
-            @ApiResponse(code = 200, message = "Successfully retrieved meter type by ID"),
-            @ApiResponse(code = 404, message = "Meter type not found"),
-            @ApiResponse(code = 500, message = "Internal server error")
-
-    })
-    @ApiOperation(value = "getMeterById", authorizations = {
-            @Authorization(value = "JWT Bearer Token")
-    })
+    @PreAuthorize("isAuthenticated()")
     @GetMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
-    ResponseEntity<MeterTypeDto> getMeterById(@PathVariable long id);
+    ResponseEntity<MeterTypeDto> getMeterById(@PathVariable UUID id);
 
-    @ApiResponses(value = {
-            @ApiResponse(code = 200, message = "Successfully retrieved all meter types"),
-            @ApiResponse(code = 500, message = "Internal server error")
-    })
-    @ApiOperation(value = "getAll", authorizations = {
-            @Authorization(value = "JWT Bearer Token")
-    })
+    @PreAuthorize("isAuthenticated()")
     @GetMapping(value = "/all", produces = MediaType.APPLICATION_JSON_VALUE)
     ResponseEntity<List<MeterTypeDto>> getAll();
 
-    @ApiResponses(value = {
-            @ApiResponse(code = 200, message = "Successfully added meter type"),
-            @ApiResponse(code = 409, message = "Duplicate data"),
-            @ApiResponse(code = 500, message = "Internal server error")
-    })
-    @ApiOperation(value = "add", authorizations = {
-            @Authorization(value = "JWT Bearer Token")
-    })
+    @PreAuthorize("isAuthenticated()")
     @PostMapping(produces = MediaType.APPLICATION_JSON_VALUE)
     ResponseEntity<MeterTypeDto> add(@RequestBody @NonNull MeterTypeDto meterType);
 
-    @ApiResponses(value = {
-            @ApiResponse(code = 200, message = "Successfully retrieved meter type by type"),
-            @ApiResponse(code = 404, message = "Meter type not found"),
-            @ApiResponse(code = 500, message = "Internal server error")
-    })
-    @ApiOperation(value = "getMeterByType", authorizations = {
-            @Authorization(value = "JWT Bearer Token")
-    })
+    @PreAuthorize("isAuthenticated()")
     @GetMapping(value = "/type/{type}", produces = MediaType.APPLICATION_JSON_VALUE)
     ResponseEntity<MeterTypeDto> getMeterByType(@PathVariable @NonNull String type);
 }

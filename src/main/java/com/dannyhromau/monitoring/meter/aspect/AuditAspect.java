@@ -31,8 +31,8 @@ public class AuditAspect {
         String action = "Method called: " + methodName;
         Audit audit = Audit.builder()
                 .auditingArgs(auditingArgsBuilder.toString())
-                .action(action)
-                .timestamp(LocalDateTime.now())
+                .audit_action(action)
+                .audit_time(LocalDateTime.now())
                 .build();
         try {
             auditService.add(audit);

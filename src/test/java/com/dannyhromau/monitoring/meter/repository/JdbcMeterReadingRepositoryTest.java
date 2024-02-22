@@ -1,8 +1,6 @@
 package com.dannyhromau.monitoring.meter.repository;
 
-import com.dannyhromau.monitoring.meter.core.util.JdbcUtil;
 import com.dannyhromau.monitoring.meter.model.MeterReading;
-import com.dannyhromau.monitoring.meter.repository.impl.jdbc.JdbcMeterReadingRepository;
 import org.junit.jupiter.api.*;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
@@ -11,13 +9,12 @@ import org.testcontainers.containers.PostgreSQLContainer;
 import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
 
-import java.sql.*;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
+import java.sql.Statement;
 import java.time.LocalDateTime;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Optional;
-
-import static org.mockito.Mockito.*;
+import java.util.*;
 
 @Testcontainers
 @ExtendWith({MockitoExtension.class})
@@ -25,12 +22,9 @@ import static org.mockito.Mockito.*;
 class JdbcMeterReadingRepositoryTest {
 
     @Mock
-    private JdbcUtil jdbcUtil;
-
-    @Mock
     private Connection connection;
 
-    private JdbcMeterReadingRepository meterReadingRepository;
+    private MeterReadingRepository meterReadingRepository;
 
     @Container
     private static final PostgreSQLContainer<?> postgreSQLContainer =
@@ -51,14 +45,6 @@ class JdbcMeterReadingRepositoryTest {
 
     @BeforeEach
     void setUp() throws SQLException {
-        when(jdbcUtil.getConnection())
-                .thenReturn(DriverManager
-                        .getConnection(
-                                postgreSQLContainer.getJdbcUrl(),
-                                postgreSQLContainer.getUsername(),
-                                postgreSQLContainer.getPassword()));
-        meterReadingRepository = new JdbcMeterReadingRepository(jdbcUtil);
-        connection = jdbcUtil.getConnection();
         String createUserSql = "CREATE TABLE IF NOT EXISTS ms_user (id BIGSERIAL PRIMARY KEY, name VARCHAR(255))";
         String insertUserSql = "INSERT INTO ms_user (id, name) VALUES (1, 'user')";
         String createTypeSql = "CREATE TABLE IF NOT EXISTS ms_meter_type (id BIGSERIAL PRIMARY KEY, type VARCHAR(255))";
@@ -86,14 +72,6 @@ class JdbcMeterReadingRepositoryTest {
     }
     @AfterEach
     void clearTables() throws SQLException {
-        when(jdbcUtil.getConnection())
-                .thenReturn(DriverManager
-                        .getConnection(
-                                postgreSQLContainer.getJdbcUrl(),
-                                postgreSQLContainer.getUsername(),
-                                postgreSQLContainer.getPassword()));
-        meterReadingRepository = new JdbcMeterReadingRepository(jdbcUtil);
-        connection = jdbcUtil.getConnection();
         try (Statement statement = connection.createStatement()) {
             String deleteTableSql = "DELETE FROM ms_meter_reading";
             String clearTableUserSql = "DELETE FROM ms_meter_type";
@@ -111,8 +89,8 @@ class JdbcMeterReadingRepositoryTest {
         int expectedValue = 1000;
         meterReading.setDate(LocalDateTime.now());
         meterReading.setValue(expectedValue);
-        meterReading.setUserId(1L);
-        meterReading.setMeterTypeId(1L);
+        meterReading.setUserId(UUID.randomUUID());
+        meterReading.setMeterTypeId(UUID.randomUUID());
         MeterReading result = meterReadingRepository.save(meterReading);
         int actualValue = result.getValue();
         Assertions.assertEquals(expectedValue, actualValue);
@@ -124,19 +102,14 @@ class JdbcMeterReadingRepositoryTest {
         MeterReading meterReading = new MeterReading();
         meterReading.setDate(LocalDateTime.now());
         meterReading.setValue(100);
-        meterReading.setUserId(1L);
-        meterReading.setMeterTypeId(1L);
+        meterReading.setUserId(UUID.randomUUID());
+        meterReading.setMeterTypeId(UUID.randomUUID());
         meterReadingRepository.save(meterReading);
-        when(jdbcUtil.getConnection())
-                .thenReturn(DriverManager
-                        .getConnection(
-                                postgreSQLContainer.getJdbcUrl(),
-                                postgreSQLContainer.getUsername(),
-                                postgreSQLContainer.getPassword()));
-        meterReadingRepository = new JdbcMeterReadingRepository(jdbcUtil);
-        List<MeterReading> result = meterReadingRepository.findAll();
+        Iterable<MeterReading> result = meterReadingRepository.findAll();
+        List<MeterReading> actual = new ArrayList<>();
+        result.forEach(actual::add);
         int expectedSize = 1;
-        int actualSize = result.size();
+        int actualSize = actual.size();
         Assertions.assertEquals(expectedSize, actualSize);
     }
 
@@ -146,17 +119,11 @@ class JdbcMeterReadingRepositoryTest {
         MeterReading meterReading = new MeterReading();
         meterReading.setDate(LocalDateTime.now());
         meterReading.setValue(1000);
-        meterReading.setUserId(1L);
-        meterReading.setMeterTypeId(1L);
+        meterReading.setUserId(UUID.randomUUID());
+        meterReading.setMeterTypeId(UUID.randomUUID());
         meterReadingRepository.save(meterReading);
         List<MeterReading> expectedList = new LinkedList<>();
         expectedList.add(new MeterReading());
-        when(jdbcUtil.getConnection())
-                .thenReturn(DriverManager
-                        .getConnection(
-                                postgreSQLContainer.getJdbcUrl(),
-                                postgreSQLContainer.getUsername(),
-                                postgreSQLContainer.getPassword()));
         List<MeterReading> result = meterReadingRepository.findByUserId(meterReading.getUserId());
         Assertions.assertEquals(expectedList.size(), result.size());
     }
@@ -168,15 +135,9 @@ class JdbcMeterReadingRepositoryTest {
         MeterReading meterReading = new MeterReading();
         meterReading.setDate(LocalDateTime.now());
         meterReading.setValue(expectedValue);
-        meterReading.setUserId(1L);
-        meterReading.setMeterTypeId(1L);
+        meterReading.setUserId(UUID.randomUUID());
+        meterReading.setMeterTypeId(UUID.randomUUID());
         meterReadingRepository.save(meterReading);
-        when(jdbcUtil.getConnection())
-                .thenReturn(DriverManager
-                        .getConnection(
-                                postgreSQLContainer.getJdbcUrl(),
-                                postgreSQLContainer.getUsername(),
-                                postgreSQLContainer.getPassword()));
         Optional<MeterReading> meterReadingOpt = meterReadingRepository
                 .findFirstByOrderByDateDesc(meterReading.getUserId(), meterReading.getMeterTypeId());
         int actualValue = meterReadingOpt.get().getValue();

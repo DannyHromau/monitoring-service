@@ -15,6 +15,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.sql.SQLException;
 import java.util.Optional;
+import java.util.UUID;
 
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.mockito.Mockito.when;
@@ -36,10 +37,10 @@ public class UserServiceImplTest {
     @DisplayName("add user when exists")
     void addUserWhenExists() throws SQLException {
         User user = new User();
-        user.setId(100L);
+        user.setId(UUID.randomUUID());
         user.setLogin("login");
         user.setPassword("password");
-        when(userRepository.findUserByLogin(user.getLogin()))
+        when(userRepository.findByLogin(user.getLogin()))
                 .thenReturn(Optional.of(user));
         assertThatExceptionOfType(DuplicateDataException.class)
                 .isThrownBy(() -> userService.add(user))
@@ -49,10 +50,10 @@ public class UserServiceImplTest {
     @Test
     @DisplayName("get user by id when not exists")
     void getUserByIdWhenNotExists() throws SQLException {
-        when(userRepository.findById(1))
+        when(userRepository.findById(UUID.randomUUID()))
                 .thenReturn(Optional.empty());
         assertThatExceptionOfType(EntityNotFoundException.class)
-                .isThrownBy(() -> userService.getUserById(1))
+                .isThrownBy(() -> userService.getUserById(UUID.randomUUID()))
                 .withMessage(ErrorMessages.ENTITY_NOT_FOUND_MESSAGE.label, "id", 1);
     }
 
@@ -60,7 +61,7 @@ public class UserServiceImplTest {
     @DisplayName("get user by login when not exists")
     void getUserByLoginWhenNotExists() throws SQLException {
         String login = "login";
-        when(userRepository.findUserByLogin(login))
+        when(userRepository.findByLogin(login))
                 .thenReturn(Optional.empty());
         assertThatExceptionOfType(EntityNotFoundException.class)
                 .isThrownBy(() -> userService.getUserByLogin(login))

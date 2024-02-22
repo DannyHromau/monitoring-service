@@ -1,33 +1,34 @@
 package com.dannyhromau.monitoring.meter.repository;
 
 import com.dannyhromau.monitoring.meter.model.MeterReading;
+import org.springframework.data.jdbc.repository.query.Query;
+import org.springframework.data.repository.ListCrudRepository;
 import org.springframework.stereotype.Repository;
 
-import java.sql.SQLException;
 import java.time.LocalDate;
 import java.time.YearMonth;
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 
 @Repository
-public interface MeterReadingRepository {
-    MeterReading save(MeterReading mr) throws SQLException;
+public interface MeterReadingRepository extends ListCrudRepository<MeterReading, UUID> {
 
-    List<MeterReading> findAll() throws SQLException;
+    List<MeterReading> findByUserId(UUID userId);
 
-    List<MeterReading> findByUserId(long userId) throws SQLException;
+    List<MeterReading> findByUserIdAndMeterTypeId(UUID userId, UUID meterTypeId);
 
-    List<MeterReading> findByUserIdAndMeterType(long userId, long meterTypeId) throws SQLException;
+    Optional<MeterReading> findByUserIdAndDateAndMeterTypeId(
+            UUID userId, LocalDate date, UUID meterTypeId);
 
-    Optional<MeterReading> findById(long id) throws SQLException;
+    @Query(value = "SELECT mr " +
+            "FROM MeterReading mr " +
+            "WHERE mr.user_id=:userId " +
+            "and extract(year from date)=:yearMonth.getYear() " +
+            "and extract(month from DATE )=:yearMonth.getMonth() " +
+            "and mr.meter_type_id=:meterTypeId")
+    Optional<MeterReading> findByUserIdAndMonthAndMeterTypeId(
+            UUID userId, YearMonth yearMonth, UUID meterTypeId);
 
-    Optional<MeterReading> findByUserIdAndDateAndMeterType(
-            long userId, LocalDate date, long meterTypeId) throws SQLException;
-
-    Optional<MeterReading> findByUserIdAndMonthAndMeterType(
-            long userId, YearMonth yearMonth, long meterTypeId) throws SQLException;
-
-    void deleteAll();
-
-    Optional<MeterReading> findFirstByOrderByDateDesc(long userId, long meterTypeId) throws SQLException;
+    Optional<MeterReading> findFirstByOrderByDateDesc(UUID userId, UUID meterTypeId);
 }

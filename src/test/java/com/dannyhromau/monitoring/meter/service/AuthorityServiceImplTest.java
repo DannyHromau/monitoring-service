@@ -15,6 +15,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.sql.SQLException;
 import java.util.Optional;
+import java.util.UUID;
 
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.mockito.Mockito.when;
@@ -47,10 +48,10 @@ public class AuthorityServiceImplTest {
     @Test
     @DisplayName("get authority by id when not exists")
     void getAuthorityByIdWhenNotExists() throws SQLException {
-        when(authorityRepository.findById(1))
+        when(authorityRepository.findById(UUID.randomUUID()))
                 .thenReturn(Optional.empty());
         assertThatExceptionOfType(EntityNotFoundException.class)
-                .isThrownBy(() -> authorityService.getById(1))
+                .isThrownBy(() -> authorityService.getById(UUID.randomUUID()))
                 .withMessage(ErrorMessages.ENTITY_NOT_FOUND_MESSAGE.label, "id", 1);
     }
 

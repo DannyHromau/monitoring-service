@@ -1,23 +1,21 @@
 package com.dannyhromau.monitoring.meter.repository;
 
-import com.dannyhromau.monitoring.meter.core.util.JdbcUtil;
 import com.dannyhromau.monitoring.meter.model.Authority;
-import com.dannyhromau.monitoring.meter.repository.impl.jdbc.JdbcAuthorityRepository;
 import org.junit.jupiter.api.*;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.testcontainers.containers.PostgreSQLContainer;
 import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
 
-import java.sql.*;
+import java.sql.Connection;
+import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.List;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.mockito.Mockito.when;
 
 @Testcontainers
 @ExtendWith({MockitoExtension.class})
@@ -29,8 +27,6 @@ public class JdbcAuthorityRepositoryTest {
                     .withDatabaseName("postgres")
                     .withUsername("postgres")
                     .withPassword("postgres");
-    @Mock
-    private JdbcUtil jdbcUtil;
     private AuthorityRepository authorityRepository;
     private Connection connection;
     private static String propertyFilePath = "db/jdbc.properties";
@@ -48,14 +44,6 @@ public class JdbcAuthorityRepositoryTest {
 
     @BeforeEach
     void setUp() throws SQLException {
-        when(jdbcUtil.getConnection())
-                .thenReturn(DriverManager
-                        .getConnection(
-                                postgreSQLContainer.getJdbcUrl(),
-                                postgreSQLContainer.getUsername(),
-                                postgreSQLContainer.getPassword()));
-        authorityRepository = new JdbcAuthorityRepository(jdbcUtil);
-        connection = jdbcUtil.getConnection();
         try (Statement statement = connection.createStatement()) {
             String createTableSql = "CREATE TABLE IF NOT EXISTS ms_authority (id BIGSERIAL, name VARCHAR(255))";
             statement.executeUpdate(createTableSql);
@@ -83,12 +71,6 @@ public class JdbcAuthorityRepositoryTest {
         Authority authority = new Authority();
         authority.setName(expectedName);
         authorityRepository.save(authority);
-        when(jdbcUtil.getConnection())
-                .thenReturn(DriverManager
-                        .getConnection(
-                                postgreSQLContainer.getJdbcUrl(),
-                                postgreSQLContainer.getUsername(),
-                                postgreSQLContainer.getPassword()));
         Optional<Authority> optionalAuthority = authorityRepository.findById(authority.getId());
         assertTrue(optionalAuthority.isPresent());
         String actualName = optionalAuthority.get().getName();
@@ -102,12 +84,6 @@ public class JdbcAuthorityRepositoryTest {
         Authority authority = new Authority();
         authority.setName(expectedName);
         authorityRepository.save(authority);
-        when(jdbcUtil.getConnection())
-                .thenReturn(DriverManager
-                        .getConnection(
-                                postgreSQLContainer.getJdbcUrl(),
-                                postgreSQLContainer.getUsername(),
-                                postgreSQLContainer.getPassword()));
         Optional<Authority> optionalAuthority = authorityRepository.findByName(authority.getName());
         assertTrue(optionalAuthority.isPresent());
         String actualName = optionalAuthority.get().getName();
@@ -122,19 +98,7 @@ public class JdbcAuthorityRepositoryTest {
         Authority authority2 = new Authority();
         authority2.setName("user");
         authorityRepository.save(authority1);
-        when(jdbcUtil.getConnection())
-                .thenReturn(DriverManager
-                        .getConnection(
-                                postgreSQLContainer.getJdbcUrl(),
-                                postgreSQLContainer.getUsername(),
-                                postgreSQLContainer.getPassword()));
         authorityRepository.save(authority2);
-        when(jdbcUtil.getConnection())
-                .thenReturn(DriverManager
-                        .getConnection(
-                                postgreSQLContainer.getJdbcUrl(),
-                                postgreSQLContainer.getUsername(),
-                                postgreSQLContainer.getPassword()));
         List<Authority> authorities = authorityRepository.findAll();
         assertEquals(2, authorities.size());
     }

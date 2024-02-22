@@ -6,3 +6,4 @@ create schema "audit";
 alter schema "audit" owner to "admin";
 create schema "settings";
 alter schema "settings" owner to "admin";
+CREATE EXTENSION "uuid-ossp";

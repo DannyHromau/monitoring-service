@@ -5,10 +5,12 @@ import lombok.NonNull;
 import lombok.Setter;
 import org.apache.logging.log4j.core.config.plugins.validation.constraints.NotBlank;
 
+import java.util.UUID;
+
 @Getter
 @Setter
 public class AuthorityDto {
-    private Long id;
+    private UUID id;
     @NonNull
     @NotBlank(message = "Name must not be blank")
     private String name;

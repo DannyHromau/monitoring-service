@@ -25,8 +25,7 @@ public interface AuthFacade<T> {
      * @throws InvalidDataException    when invalid data references by client
      * @throws EntityNotFoundException when entity doesn't exist in DB
      */
-    Boolean register(AuthDto authDto)
-            throws DuplicateDataException, SQLException, InvalidDataException, EntityNotFoundException;
+    Boolean register(AuthDto authDto);
 
     /**
      * @param authDto dto with credentials
@@ -34,5 +33,5 @@ public interface AuthFacade<T> {
      * @throws SQLException          if something goes wrong when it's working with DB
      * @throws UnAuthorizedException when referenced credentials are invalid
      */
-    T authorize(AuthDto authDto) throws SQLException, UnAuthorizedException;
+    T authorize(AuthDto authDto);
 }

@@ -1,10 +1,11 @@
 package com.dannyhromau.monitoring.meter.security.oauth2.provider.custom;
 
-import com.dannyhromau.monitoring.meter.core.config.AppConfig;
 import com.nimbusds.jose.JWSAlgorithm;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
+import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -19,28 +20,21 @@ import java.nio.charset.StandardCharsets;
 @EnableWebSecurity
 @RequiredArgsConstructor
 public class SecurityConfig {
-    private final AppConfig appConfig;
+    private final PermissionConfig permissionConfig;
     private static final String SPEC_KEY = "SecretSpecialKeyOauth2.0Jwt256Bites";
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-        String[] patternsArr = appConfig.getUrls().toArray(new String[0]);
+        String[] unAuthUrls = permissionConfig.getUnauthorized().getUrls().toArray(new String[0]);
+        String[] adminUrls = permissionConfig.getAdmin().getUrls().toArray(new String[0]);
         http
                 .csrf().disable()
-                .authorizeRequests()
-                .antMatchers(patternsArr).permitAll()
-                .antMatchers("/api/v1/meter/reading/all").hasAuthority("SCOPE_ADMIN")
-                .anyRequest()
-                .authenticated()
-                .and()
-                .logout()
-                .logoutSuccessUrl("/")
-                .clearAuthentication(true)
-                .invalidateHttpSession(true)
-                .and()
-                .oauth2ResourceServer().jwt()
-                .decoder(jwtDecoder())
-        ;
+                .authorizeHttpRequests((authorize) -> authorize
+                        .requestMatchers(unAuthUrls).permitAll()
+                        .requestMatchers(adminUrls).hasAuthority("SCOPE_ADMIN")
+                        .anyRequest().authenticated())
+                .oauth2ResourceServer((oauth2) -> oauth2
+                        .jwt(Customizer.withDefaults()));
         return http.build();
     }
 

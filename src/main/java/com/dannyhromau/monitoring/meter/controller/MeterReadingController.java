@@ -2,109 +2,67 @@ package com.dannyhromau.monitoring.meter.controller;
 
 
 import com.dannyhromau.monitoring.meter.api.dto.MeterReadingDto;
-import io.swagger.annotations.*;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.NonNull;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
 import java.time.YearMonth;
 import java.util.List;
+import java.util.UUID;
 
 @RestController
 @RequestMapping("/api/v1/meter/reading")
-@Api(description = "This API is for working with meter readings", hidden = true)
+@Tag(name = "Meter reading service", description = "This API is for working with meter readings")
+@ApiResponse(responseCode = "200", description = "Successful operation")
+@ApiResponse(responseCode = "400", description = "Bad request", content = @Content)
+@ApiResponse(responseCode = "404", description = "Not found")
+@ApiResponse(responseCode = "401", description = "Unauthorized")
+@ApiResponse(responseCode = "503", description = "Service unavailable")
+@ApiResponse(responseCode = "409", description = "Duplicate data")
 public interface MeterReadingController {
 
-    @ApiResponses(value = {
-            @ApiResponse(code = 200, message = "Successfully added meter reading"),
-            @ApiResponse(code = 400, message = "Invalid data"),
-            @ApiResponse(code = 409, message = "Duplicate data"),
-            @ApiResponse(code = 500, message = "Internal server error")
-    })
-    @ApiOperation(value = "add", authorizations = {
-            @Authorization(value = "JWT Bearer Token")
-    })
+    @PreAuthorize("isAuthenticated()")
     @PostMapping(produces = MediaType.APPLICATION_JSON_VALUE)
     ResponseEntity<MeterReadingDto> add(@RequestBody @NonNull MeterReadingDto mr);
 
-    @ApiResponses(value = {
-            @ApiResponse(code = 200, message = "Successfully retrieved all meter readings"),
-            @ApiResponse(code = 500, message = "Internal server error")
-    })
-    @ApiOperation(value = "getAll", authorizations = {
-            @Authorization(value = "JWT Bearer Token")
-    })
+    @PreAuthorize("hasAuthority('SCOPE_ADMIN')")
     @GetMapping(value = "/all", produces = MediaType.APPLICATION_JSON_VALUE)
     ResponseEntity<List<MeterReadingDto>> getAll();
 
-    @ApiResponses(value = {
-            @ApiResponse(code = 200, message = "Successfully retrieved meter readings by user ID"),
-            @ApiResponse(code = 500, message = "Internal server error")
-    })
-    @ApiOperation(value = "getByUserId", authorizations = {
-            @Authorization(value = "JWT Bearer Token")
-    })
+    @PreAuthorize("isAuthenticated()")
     @GetMapping(value = "/user/{userId}", produces = MediaType.APPLICATION_JSON_VALUE)
-    ResponseEntity<List<MeterReadingDto>> getByUserId(@PathVariable long userId);
+    ResponseEntity<List<MeterReadingDto>> getByUserId(@PathVariable UUID userId);
 
-    @ApiResponses(value = {
-            @ApiResponse(code = 200, message = "Successfully retrieved meter readings by user ID and meter type ID"),
-            @ApiResponse(code = 500, message = "Internal server error")
-    })
-    @ApiOperation(value = "getByUserIdAndMeterType", authorizations = {
-            @Authorization(value = "JWT Bearer Token")
-    })
+    @PreAuthorize("isAuthenticated()")
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
     ResponseEntity<List<MeterReadingDto>> getByUserIdAndMeterType(
-            @RequestParam long userId,
-            @RequestParam long meterTypeId);
+            @RequestParam UUID userId,
+            @RequestParam UUID meterTypeId);
 
-    @ApiResponses(value = {
-            @ApiResponse(code = 200, message = "Successfully retrieved meter reading by ID"),
-            @ApiResponse(code = 404, message = "Meter reading not found"),
-            @ApiResponse(code = 500, message = "Internal server error")
-    })
-    @ApiOperation(value = "getById", authorizations = {
-            @Authorization(value = "JWT Bearer Token")
-    })
+    @PreAuthorize("isAuthenticated()")
     @GetMapping(value = "{id}", produces = MediaType.APPLICATION_JSON_VALUE)
-    ResponseEntity<MeterReadingDto> getById(@PathVariable long id);
+    ResponseEntity<MeterReadingDto> getById(@PathVariable UUID id);
 
-    @ApiResponses(value = {
-            @ApiResponse(code = 200, message = "Successfully retrieved actual meter reading"),
-            @ApiResponse(code = 404, message = "Meter reading not found"),
-            @ApiResponse(code = 500, message = "Internal server error")
-    })
-    @ApiOperation(value = "getActualMeterReading", authorizations = {
-            @Authorization(value = "JWT Bearer Token")
-    })
+    @PreAuthorize("isAuthenticated()")
     @GetMapping(value = "/actual", produces = MediaType.APPLICATION_JSON_VALUE)
-    ResponseEntity<MeterReadingDto> getActualMeterReading(@RequestParam long userId, @RequestParam long meterTypeId);
+    ResponseEntity<MeterReadingDto> getActualMeterReading(@RequestParam UUID userId, @RequestParam UUID meterTypeId);
 
-    @ApiResponses(value = {
-            @ApiResponse(code = 200, message = "Successfully retrieved meter reading by date and meter type"),
-            @ApiResponse(code = 404, message = "Meter reading not found"),
-            @ApiResponse(code = 500, message = "Internal server error")
-    })
-    @ApiOperation(value = "getMeterReadingByDateAndMeterType", authorizations = {
-            @Authorization(value = "JWT Bearer Token")
-    })
+    @PreAuthorize("isAuthenticated()")
     @GetMapping(value = "/date", produces = MediaType.APPLICATION_JSON_VALUE)
-    ResponseEntity<MeterReadingDto> getMeterReadingByDateAndMeterType(@RequestParam long userId,
+    ResponseEntity<MeterReadingDto> getMeterReadingByDateAndMeterType(@RequestParam UUID userId,
                                                                       @RequestParam LocalDate date,
-                                                                      @RequestParam long meterTypeId);
+                                                                      @RequestParam UUID meterTypeId);
 
-    @ApiResponses(value = {
-            @ApiResponse(code = 200, message = "Successfully retrieved meter reading by month and meter type"),
-            @ApiResponse(code = 404, message = "Meter reading not found"),
-            @ApiResponse(code = 500, message = "Internal server error")
-    })
-    @ApiOperation(value = "getMeterReadingByMonthAndMeterType", authorizations = {
-            @Authorization(value = "JWT Bearer Token")
-    })
+    @PreAuthorize("isAuthenticated()")
+    @Operation(description = "Getting user details. This endpoint requires a JWT token in the Authorization header")
     @GetMapping(value = "/month", produces = MediaType.APPLICATION_JSON_VALUE)
     ResponseEntity<MeterReadingDto> getMeterReadingByMonthAndMeterType
-            (@RequestParam long userId, @RequestParam YearMonth yearMonth, @RequestParam long meterTypeId);
+            (@RequestParam UUID userId, @RequestParam YearMonth yearMonth, @RequestParam UUID meterTypeId);
 }

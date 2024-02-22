@@ -5,18 +5,18 @@ import com.dannyhromau.monitoring.meter.exception.EntityNotFoundException;
 import com.dannyhromau.monitoring.meter.model.Authority;
 import org.springframework.stereotype.Service;
 
-import java.sql.SQLException;
 import java.util.List;
+import java.util.UUID;
 
 @Service
 public interface AuthorityService {
-    Authority getById(long id) throws EntityNotFoundException, SQLException;
+    Authority getById(UUID id);
 
-    List<Authority> getAll() throws SQLException;
+    List<Authority> getAll();
 
-    Authority add(Authority authority) throws DuplicateDataException, SQLException;
+    Authority add(Authority authority);
 
-    long deleteById(long id) throws SQLException, EntityNotFoundException;
+    UUID deleteById(UUID id);
 
-    Authority getAuthorityByName(String name) throws EntityNotFoundException, SQLException;
+    Authority getAuthorityByName(String name);
 }

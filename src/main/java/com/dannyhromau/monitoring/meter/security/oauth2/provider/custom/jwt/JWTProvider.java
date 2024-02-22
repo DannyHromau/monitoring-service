@@ -13,6 +13,7 @@ import javax.crypto.SecretKey;
 import javax.crypto.spec.SecretKeySpec;
 import java.time.ZonedDateTime;
 import java.util.List;
+import java.util.UUID;
 
 @Component
 @RequiredArgsConstructor
@@ -30,7 +31,7 @@ public class JWTProvider {
         return new NimbusJwtEncoder(immutableSecret);
     }
 
-    public String createToken(Long userId, String login, List<String> authorities) {
+    public String createToken(UUID userId, String login, List<String> authorities) {
         int expiration = jwtConfig.getAccessExpiration() == 0 ?
                 defaultExpirationMinute : jwtConfig.getAccessExpiration();
         JwtClaimsSet jwtClaimsSet = JwtClaimsSet.builder()
@@ -47,7 +48,7 @@ public class JWTProvider {
 
     }
 
-    public String refreshToken(Long userId) {
+    public String refreshToken(UUID userId) {
         int expiration = jwtConfig.getRefreshExpiration() == 0 ?
                 defaultExpirationRefreshHour : jwtConfig.getRefreshExpiration();
         JwtClaimsSet jwtClaimsSet = JwtClaimsSet.builder()

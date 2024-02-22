@@ -1,15 +1,14 @@
 package com.dannyhromau.monitoring.meter.facade;
 
 import com.dannyhromau.monitoring.meter.api.dto.MeterReadingDto;
-import com.dannyhromau.monitoring.meter.exception.DuplicateDataException;
 import com.dannyhromau.monitoring.meter.exception.EntityNotFoundException;
-import com.dannyhromau.monitoring.meter.exception.InvalidDataException;
 import org.springframework.stereotype.Component;
 
 import java.sql.SQLException;
 import java.time.LocalDate;
 import java.time.YearMonth;
 import java.util.List;
+import java.util.UUID;
 
 /**
  * @author Daniil Hromau
@@ -20,16 +19,15 @@ import java.util.List;
 @Component
 public interface MeterReadingFacade {
 
-    MeterReadingDto add(MeterReadingDto meterReadingDto)
-            throws DuplicateDataException, SQLException, InvalidDataException;
+    MeterReadingDto add(MeterReadingDto meterReadingDto);
 
-    List<MeterReadingDto> getAll() throws SQLException;
+    List<MeterReadingDto> getAll();
 
-    List<MeterReadingDto> getByUserId(long userId) throws SQLException;
+    List<MeterReadingDto> getByUserId(UUID userId);
 
-    List<MeterReadingDto> getByUserIdAndMeterType(long userId, long mrTypeId) throws SQLException;
+    List<MeterReadingDto> getByUserIdAndMeterType(UUID userId, UUID mrTypeId);
 
-    MeterReadingDto getById(long id) throws EntityNotFoundException, SQLException;
+    MeterReadingDto getById(UUID id);
 
     /**
      * getting actual meter reading
@@ -40,7 +38,7 @@ public interface MeterReadingFacade {
      * @throws EntityNotFoundException when data don't exist
      * @throws SQLException
      */
-    MeterReadingDto getActualMeterReading(long userId, long mrTypeId) throws EntityNotFoundException, SQLException;
+    MeterReadingDto getActualMeterReading(UUID userId, UUID mrTypeId);
 
     /**
      * getting meter reading by date
@@ -52,8 +50,7 @@ public interface MeterReadingFacade {
      * @throws EntityNotFoundException when data don't exist
      * @throws SQLException
      */
-    MeterReadingDto getMeterReadingByDateAndMeterType(long userId, LocalDate date, long mrTypeId)
-            throws EntityNotFoundException, SQLException;
+    MeterReadingDto getMeterReadingByDateAndMeterType(UUID userId, LocalDate date, UUID mrTypeId);
 
     /**
      * getting meter reading by year and month
@@ -65,6 +62,5 @@ public interface MeterReadingFacade {
      * @throws EntityNotFoundException
      * @throws SQLException
      */
-    MeterReadingDto getMeterReadingByMonthAndMeterType(long userId, YearMonth yearMonth, long mrTypeId)
-            throws EntityNotFoundException, SQLException;
+    MeterReadingDto getMeterReadingByMonthAndMeterType(UUID userId, YearMonth yearMonth, UUID mrTypeId);
 }

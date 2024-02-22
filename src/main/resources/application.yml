@@ -6,21 +6,8 @@ spring:
     change-log: db/changelog/database-monitoring-service-changelog.xml
     default-schema: monitoring_service
     liquibase-schema: settings
-    schemas: audit
 
   datasource:
-    url: jdbc:postgresql://localhost:5432/postgres?useSSL=false&currentSchema=monitoring_service
-    username: admin
-    password: admin
-    driver-class-name: org.postgresql.Driver
-
-  auditsource:
-    url: jdbc:postgresql://localhost:5432/postgres?useSSL=false&currentSchema=audit
-    username: admin
-    password: admin
-    driver-class-name: org.postgresql.Driver
-
-  liquibasesource:
     url: jdbc:postgresql://localhost:5432/postgres?useSSL=false
     username: admin
     password: admin
@@ -28,9 +15,20 @@ spring:
 
 permission:
   unauthorized:
-    urls: /api/v1/auth/**,/v3/api-docs/**,/v2/api-docs,/configuration/ui,/swagger-resources/**,/configuration/security,/swagger-ui.html,/webjars/**
+    urls:
+      - /api/v1/auth/register
+      - /api/v1/auth/login
+      - /swagger-ui/*
+      - /v3/api-docs/**
+  admin:
+    urls:
+      - /api/v1/meter/reading/all
 
 validator:
   credential:
-    emailPattern: ^[a-zA-Z0-9_!#$%&'*+/=?`{|}~^.-]+@[a-zA-Z0-9.-]+$
+    loginPattern: ^[a-zA-Z0-9._-]{3,15}$
     passwordPattern: ^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[!@#&()–[{}]:;',?/*~$^+=<>]).{8,20}$
+
+meter:
+  system:
+    path:

@@ -1,33 +1,28 @@
 package com.dannyhromau.monitoring.meter.service;
 
-import com.dannyhromau.monitoring.meter.exception.DuplicateDataException;
-import com.dannyhromau.monitoring.meter.exception.EntityNotFoundException;
-import com.dannyhromau.monitoring.meter.exception.InvalidDataException;
 import com.dannyhromau.monitoring.meter.model.MeterReading;
 import org.springframework.stereotype.Service;
 
-import java.sql.SQLException;
 import java.time.LocalDate;
 import java.time.YearMonth;
 import java.util.List;
+import java.util.UUID;
 
 @Service
 public interface MeterReadingService {
-    MeterReading add(MeterReading mr) throws DuplicateDataException, SQLException, InvalidDataException;
+    MeterReading add(MeterReading mr);
 
-    List<MeterReading> getAll() throws SQLException;
+    List<MeterReading> getAll();
 
-    List<MeterReading> getByUserId(long userId) throws SQLException;
+    List<MeterReading> getByUserId(UUID userId);
 
-    List<MeterReading> getByUserIdAndMeterType(long userId, long mrTypeId) throws SQLException;
+    List<MeterReading> getByUserIdAndMeterType(UUID userId, UUID mrTypeId);
 
-    MeterReading getById(long id) throws EntityNotFoundException, SQLException;
+    MeterReading getById(UUID id);
 
-    MeterReading getActualMeterReading(long userId, long mrTypeId) throws EntityNotFoundException, SQLException;
+    MeterReading getActualMeterReading(UUID userId, UUID mrTypeId);
 
-    MeterReading getMeterReadingByDateAndMeterType(long userId, LocalDate date, long mrTypeId)
-            throws EntityNotFoundException, SQLException;
+    MeterReading getMeterReadingByDateAndMeterType(UUID userId, LocalDate date, UUID mrTypeId);
 
-    MeterReading getMeterReadingByMonthAndMeterType(long userId, YearMonth yearMonth, long mrTypeId)
-            throws EntityNotFoundException, SQLException;
+    MeterReading getMeterReadingByMonthAndMeterType(UUID userId, YearMonth yearMonth, UUID mrTypeId);
 }

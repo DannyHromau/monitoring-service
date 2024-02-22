@@ -1,24 +1,15 @@
 package com.dannyhromau.monitoring.meter.repository;
 
 import com.dannyhromau.monitoring.meter.model.User;
+import org.springframework.data.jdbc.repository.query.Query;
+import org.springframework.data.repository.ListCrudRepository;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
-import java.sql.SQLException;
-import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 
 @Repository
-public interface UserRepository {
-
-    Optional<User> findById(long id) throws SQLException;
-
-    List<User> findAll() throws SQLException;
-
-    User save(User user) throws SQLException;
-
-    void deleteById(long id);
-
-    Optional<User> findUserByLogin(String login) throws SQLException;
-
-    void deleteAll();
+public interface UserRepository extends ListCrudRepository<User, UUID> {
+    Optional<User> findByLogin(@Param("login") String login);
 }

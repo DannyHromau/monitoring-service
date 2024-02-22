@@ -1,15 +1,20 @@
 package com.dannyhromau.monitoring.meter.model;
 
-import lombok.AllArgsConstructor;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.springframework.data.annotation.Id;
+import org.springframework.data.relational.core.mapping.Column;
+import org.springframework.data.relational.core.mapping.Table;
+
+import java.util.UUID;
 
 @Getter
 @Setter
-@NoArgsConstructor
-@AllArgsConstructor
+@Table(schema = "monitoring_service", value = "ms_meter_type")
 public class MeterType {
-    private Long id;
+    @Id
+    @Column("id")
+    private UUID id;
+    @Column("type")
     private String type;
 }

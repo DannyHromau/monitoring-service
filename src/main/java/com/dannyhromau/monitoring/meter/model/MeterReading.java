@@ -1,32 +1,28 @@
 package com.dannyhromau.monitoring.meter.model;
 
-import lombok.AllArgsConstructor;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.springframework.data.annotation.Id;
+import org.springframework.data.relational.core.mapping.Column;
+import org.springframework.data.relational.core.mapping.Table;
 
 import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
+import java.util.UUID;
 
 @Getter
 @Setter
-@NoArgsConstructor
-@AllArgsConstructor
+@Table(schema = "monitoring_service", value = "ms_meter_reading")
 public class MeterReading {
-    private Long id;
-    //TODO: implement getting meterType from db
-    private MeterType meterType;
+    @Id
+    @Column("id")
+    private UUID id;
+    @Column("date")
     private LocalDateTime date;
+    @Column("value")
     private int value;
-    private Long userId;
-    private Long meterTypeId;
+    @Column("user_id")
+    private UUID userId;
+    @Column("meter_type_id")
+    private UUID meterTypeId;
 
-    @Override
-    public String toString() {
-        return "MeterReading{" +
-                "meter's type = " + meterType.getType() +
-                ", date = " + date.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm")) +
-                ", value = " + value +
-                '}';
-    }
 }

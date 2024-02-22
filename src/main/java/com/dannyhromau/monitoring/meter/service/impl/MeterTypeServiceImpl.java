@@ -7,36 +7,45 @@ import com.dannyhromau.monitoring.meter.exception.EntityNotFoundException;
 import com.dannyhromau.monitoring.meter.model.MeterType;
 import com.dannyhromau.monitoring.meter.repository.MeterTypeRepository;
 import com.dannyhromau.monitoring.meter.service.MeterTypeService;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.log4j.Log4j2;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
-import java.sql.SQLException;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 
+@Log4j2
 @Service
+@Transactional
 @AspectLogging
+@RequiredArgsConstructor
 public class MeterTypeServiceImpl implements MeterTypeService {
     private final MeterTypeRepository meterTypeRepository;
     private static final String ENTITY_NOT_FOUND_MESSAGE = ErrorMessages.ENTITY_NOT_FOUND_MESSAGE.label;
     private static final String DUPLICATE_DATA_MESSAGE = ErrorMessages.DUPLICATED_DATA_MESSAGE.label;
-
-    public MeterTypeServiceImpl(MeterTypeRepository meterTypeRepository) {
-        this.meterTypeRepository = meterTypeRepository;
-    }
+    @Value("${meter.system.path}")
+    private String fileTypesPath;
 
     @Override
-    public MeterType getMeterById(long id) throws EntityNotFoundException, SQLException {
+    public MeterType getMeterById(UUID id) {
         return meterTypeRepository.findById(id).orElseThrow(
                 () -> new EntityNotFoundException(String.format(ENTITY_NOT_FOUND_MESSAGE, "id", id)));
     }
 
     @Override
-    public List<MeterType> getAll() throws SQLException {
+    public List<MeterType> getAll() {
         return meterTypeRepository.findAll();
     }
 
     @Override
-    public MeterType add(MeterType meterType) throws DuplicateDataException, SQLException {
+    public MeterType add(MeterType meterType) {
         Optional<MeterType> meterOpt = meterTypeRepository.findMeterTypeByType(meterType.getType());
         if (meterOpt.isPresent()) {
             throw new DuplicateDataException(DUPLICATE_DATA_MESSAGE);
@@ -47,14 +56,35 @@ public class MeterTypeServiceImpl implements MeterTypeService {
     }
 
     @Override
-    public long deleteMeter(long id) throws SQLException, EntityNotFoundException {
+    public UUID deleteMeter(UUID id) {
         meterTypeRepository.deleteById(id);
         return id;
     }
 
     @Override
-    public MeterType getMeterByType(String type) throws EntityNotFoundException, SQLException {
+    public MeterType getMeterByType(String type) {
         return meterTypeRepository.findMeterTypeByType(type).orElseThrow(
                 () -> new EntityNotFoundException(String.format(ENTITY_NOT_FOUND_MESSAGE, "type", type)));
+    }
+
+    public boolean loadMeterTypesFromFile() {
+        boolean result = false;
+        if (fileTypesPath.isBlank() || fileTypesPath == null) {
+            fileTypesPath = "meters.txt";
+        }
+        try {
+            List<String> linesFromFile = Files.readAllLines(Path.of(fileTypesPath));
+            List<MeterType> meterTypes = new ArrayList<>();
+            for (String meterTypeStr : linesFromFile) {
+                MeterType meterType = new MeterType();
+                meterType.setType(meterTypeStr);
+                meterTypes.add(meterType);
+            }
+            meterTypeRepository.saveAll(meterTypes);
+            result = true;
+        } catch (IOException e) {
+            log.error(e.getMessage());
+        }
+        return result;
     }
 }

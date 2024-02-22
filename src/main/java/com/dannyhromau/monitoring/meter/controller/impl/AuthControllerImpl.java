@@ -1,23 +1,14 @@
 package com.dannyhromau.monitoring.meter.controller.impl;
 
 import com.dannyhromau.monitoring.meter.annotation.AspectLogging;
-import com.dannyhromau.monitoring.meter.annotation.Auditable;
 import com.dannyhromau.monitoring.meter.api.dto.AuthDto;
 import com.dannyhromau.monitoring.meter.api.dto.TokenDto;
 import com.dannyhromau.monitoring.meter.controller.AuthController;
-import com.dannyhromau.monitoring.meter.exception.DuplicateDataException;
-import com.dannyhromau.monitoring.meter.exception.EntityNotFoundException;
-import com.dannyhromau.monitoring.meter.exception.InvalidDataException;
-import com.dannyhromau.monitoring.meter.exception.UnAuthorizedException;
 import com.dannyhromau.monitoring.meter.facade.AuthFacade;
-import io.swagger.annotations.Api;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RestController;
-
-import java.sql.SQLException;
 
 @AspectLogging
 @RestController
@@ -25,33 +16,14 @@ import java.sql.SQLException;
 public class AuthControllerImpl implements AuthController<TokenDto> {
     private final AuthFacade<TokenDto> authFacade;
 
-
     @Override
     public ResponseEntity<Boolean> register(@NonNull AuthDto authDto) {
-        try {
-            return ResponseEntity.ok(authFacade.register(authDto));
-        } catch (InvalidDataException e) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
-        } catch (DuplicateDataException e) {
-            return ResponseEntity.status(HttpStatus.CONFLICT).build();
-        } catch (SQLException e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
-        } catch (EntityNotFoundException e) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
-        }
+        return ResponseEntity.ok(authFacade.register(authDto));
     }
 
 
     @Override
     public ResponseEntity<TokenDto> authorize(@NonNull AuthDto authDto) {
-        try {
-            return ResponseEntity.ok(authFacade.authorize(authDto));
-        } catch (UnAuthorizedException e) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
-        } catch (SQLException e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
-        }
+        return ResponseEntity.ok(authFacade.authorize(authDto));
     }
-
-
 }

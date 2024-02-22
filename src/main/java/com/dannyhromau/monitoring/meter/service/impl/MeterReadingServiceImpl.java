@@ -10,16 +10,18 @@ import com.dannyhromau.monitoring.meter.repository.MeterReadingRepository;
 import com.dannyhromau.monitoring.meter.service.MeterReadingService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
-import java.sql.SQLException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.YearMonth;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 
 @Service
+@Transactional
 @AspectLogging
 @RequiredArgsConstructor
 public class MeterReadingServiceImpl implements MeterReadingService {
@@ -31,10 +33,10 @@ public class MeterReadingServiceImpl implements MeterReadingService {
 
 
     @Override
-    public MeterReading add(MeterReading mr) throws DuplicateDataException, SQLException, InvalidDataException {
+    public MeterReading add(MeterReading mr) {
         mr.setDate(LocalDateTime.now());
         YearMonth yearMonth = YearMonth.of(mr.getDate().getYear(), mr.getDate().getMonth());
-        Optional<MeterReading> mrOpt = mrRepo.findByUserIdAndMonthAndMeterType(
+        Optional<MeterReading> mrOpt = mrRepo.findByUserIdAndMonthAndMeterTypeId(
                 mr.getUserId(), yearMonth, mr.getMeterTypeId());
         try {
             MeterReading actual = getActualMeterReading(mr.getUserId(), mr.getMeterTypeId());
@@ -53,45 +55,42 @@ public class MeterReadingServiceImpl implements MeterReadingService {
     }
 
     @Override
-    public List<MeterReading> getAll() throws SQLException {
+    public List<MeterReading> getAll() {
         return mrRepo.findAll();
     }
 
     @Override
-    public List<MeterReading> getByUserId(long userId) throws SQLException {
+    public List<MeterReading> getByUserId(UUID userId) {
         return mrRepo.findByUserId(userId);
     }
 
     @Override
-    public List<MeterReading> getByUserIdAndMeterType(long userId, long meterTypeId) throws SQLException {
-        return mrRepo.findByUserIdAndMeterType(userId, meterTypeId);
+    public List<MeterReading> getByUserIdAndMeterType(UUID userId, UUID meterTypeId) {
+        return mrRepo.findByUserIdAndMeterTypeId(userId, meterTypeId);
     }
 
     @Override
-    public MeterReading getById(long id) throws EntityNotFoundException, SQLException {
+    public MeterReading getById(UUID id) {
         return mrRepo.findById(id).orElseThrow(
                 () -> new EntityNotFoundException(String.format(ENTITY_NOT_FOUND_MESSAGE, "id", id)));
     }
 
     @Override
-    public MeterReading getActualMeterReading(long userId, long mrTypeId) throws EntityNotFoundException,
-            SQLException {
+    public MeterReading getActualMeterReading(UUID userId, UUID mrTypeId) {
         Optional<MeterReading> mrOpt = mrRepo.findFirstByOrderByDateDesc(userId, mrTypeId);
         return mrOpt.orElseThrow(() -> new EntityNotFoundException(NO_ACTUAL_METER_READING_MESSAGE));
     }
 
     @Override
-    public MeterReading getMeterReadingByDateAndMeterType(long userId, LocalDate date, long mrTypeId)
-            throws EntityNotFoundException, SQLException {
-        Optional<MeterReading> mrOpt = mrRepo.findByUserIdAndDateAndMeterType(userId, date, mrTypeId);
+    public MeterReading getMeterReadingByDateAndMeterType(UUID userId, LocalDate date, UUID mrTypeId) {
+        Optional<MeterReading> mrOpt = mrRepo.findByUserIdAndDateAndMeterTypeId(userId, date, mrTypeId);
         return mrOpt.orElseThrow(
                 () -> new EntityNotFoundException(String.format(ENTITY_NOT_FOUND_MESSAGE, "date", date)));
     }
 
     @Override
-    public MeterReading getMeterReadingByMonthAndMeterType(long userId, YearMonth yearMonth, long mrTypeId)
-            throws EntityNotFoundException, SQLException {
-        Optional<MeterReading> mrOpt = mrRepo.findByUserIdAndMonthAndMeterType(userId, yearMonth, mrTypeId);
+    public MeterReading getMeterReadingByMonthAndMeterType(UUID userId, YearMonth yearMonth, UUID mrTypeId) {
+        Optional<MeterReading> mrOpt = mrRepo.findByUserIdAndMonthAndMeterTypeId(userId, yearMonth, mrTypeId);
         return mrOpt.orElseThrow(
                 () -> new EntityNotFoundException(String.format(ENTITY_NOT_FOUND_MESSAGE, "date",
                         yearMonth.format(DateTimeFormatter.ofPattern("yyyy-MM")))));

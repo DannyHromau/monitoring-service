@@ -1,12 +1,10 @@
 package com.dannyhromau.monitoring.meter.facade;
 
 import com.dannyhromau.monitoring.meter.api.dto.MeterTypeDto;
-import com.dannyhromau.monitoring.meter.exception.DuplicateDataException;
-import com.dannyhromau.monitoring.meter.exception.EntityNotFoundException;
 import org.springframework.stereotype.Component;
 
-import java.sql.SQLException;
 import java.util.List;
+import java.util.UUID;
 
 /**
  * @author Daniil Hromau
@@ -16,11 +14,11 @@ import java.util.List;
  */
 @Component
 public interface MeterTypeFacade {
-    MeterTypeDto getMeterById(long id) throws EntityNotFoundException, SQLException;
+    MeterTypeDto getMeterById(UUID id);
 
-    List<MeterTypeDto> getAll() throws SQLException;
+    List<MeterTypeDto> getAll();
 
-    MeterTypeDto add(MeterTypeDto meterType) throws DuplicateDataException, SQLException;
+    MeterTypeDto add(MeterTypeDto meterType);
 
-    MeterTypeDto getMeterByType(String type) throws EntityNotFoundException, SQLException;
+    MeterTypeDto getMeterByType(String type);
 }

@@ -2,9 +2,9 @@ package com.dannyhromau.monitoring.meter.controller;
 
 
 import com.dannyhromau.monitoring.meter.api.dto.AuthDto;
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiResponse;
-import io.swagger.annotations.ApiResponses;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.NonNull;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -13,26 +13,20 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-//TODO: add advice controller for catching exceptions
 @RestController
 @RequestMapping("/api/v1/auth")
-@Api(description = "This API is for authorization and authentication processes", hidden = true)
+@Tag(name = "Authorization service", description = "This API is for authorization and authentication processes")
+@ApiResponse(responseCode = "200", description = "Successful operation")
+@ApiResponse(responseCode = "400", description = "Bad request", content = @Content)
+@ApiResponse(responseCode = "404", description = "Not found")
+@ApiResponse(responseCode = "401", description = "Unauthorized")
+@ApiResponse(responseCode = "503", description = "Service unavailable")
+@ApiResponse(responseCode = "409", description = "Duplicate data")
 public interface AuthController<T> {
 
-    @ApiResponses(value = {
-            @ApiResponse(code = 200, message = "Successful registration"),
-            @ApiResponse(code = 400, message = "Invalid data"),
-            @ApiResponse(code = 409, message = "Duplicate data"),
-            @ApiResponse(code = 500, message = "Internal server error"),
-            @ApiResponse(code = 404, message = "Entity not found")})
     @PostMapping(value = "/register", produces = MediaType.APPLICATION_JSON_VALUE)
     ResponseEntity<Boolean> register(@RequestBody @NonNull AuthDto user);
 
-    @ApiResponses(value = {
-            @ApiResponse(code = 200, message = "Successful authorization"),
-            @ApiResponse(code = 401, message = "Unauthorized"),
-            @ApiResponse(code = 500, message = "Internal server error")
-    })
     @PostMapping(value = "/login", produces = MediaType.APPLICATION_JSON_VALUE)
     ResponseEntity<T> authorize(@RequestBody @NonNull AuthDto user);
 }

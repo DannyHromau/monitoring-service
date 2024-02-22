@@ -9,12 +9,14 @@ import com.dannyhromau.monitoring.meter.repository.UserRepository;
 import com.dannyhromau.monitoring.meter.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
-import java.sql.SQLException;
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 
 @Service
+@Transactional
 @AspectLogging
 @RequiredArgsConstructor
 public class UserServiceImpl implements UserService {
@@ -24,19 +26,19 @@ public class UserServiceImpl implements UserService {
 
 
     @Override
-    public User getUserById(long id) throws EntityNotFoundException, SQLException {
+    public User getUserById(UUID id) {
         return userRepository.findById(id).orElseThrow(
                 () -> new EntityNotFoundException(String.format(ENTITY_NOT_FOUND_MESSAGE, "id", id)));
     }
 
     @Override
-    public List<User> getAll() throws SQLException {
+    public List<User> getAll() {
         return userRepository.findAll();
     }
 
     @Override
-    public User add(User user) throws DuplicateDataException, SQLException {
-        Optional<User> userOpt = userRepository.findUserByLogin(user.getLogin());
+    public User add(User user) {
+        Optional<User> userOpt = userRepository.findByLogin(user.getLogin());
         if (userOpt.isPresent()) {
             throw new DuplicateDataException(DUPLICATE_DATA_MESSAGE);
         } else {
@@ -46,14 +48,14 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public long deleteUser(long id) {
+    public UUID deleteUser(UUID id) {
         userRepository.deleteById(id);
         return id;
     }
 
     @Override
-    public User getUserByLogin(String login) throws EntityNotFoundException, SQLException {
-        return userRepository.findUserByLogin(login).orElseThrow(
+    public User getUserByLogin(String login) {
+        return userRepository.findByLogin(login).orElseThrow(
                 () -> new EntityNotFoundException(String.format(ENTITY_NOT_FOUND_MESSAGE, "login", login)));
     }
 }

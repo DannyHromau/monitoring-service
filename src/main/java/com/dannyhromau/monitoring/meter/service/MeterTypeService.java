@@ -1,22 +1,20 @@
 package com.dannyhromau.monitoring.meter.service;
 
-import com.dannyhromau.monitoring.meter.exception.DuplicateDataException;
-import com.dannyhromau.monitoring.meter.exception.EntityNotFoundException;
 import com.dannyhromau.monitoring.meter.model.MeterType;
 import org.springframework.stereotype.Service;
 
-import java.sql.SQLException;
 import java.util.List;
+import java.util.UUID;
 
 @Service
 public interface MeterTypeService {
-    MeterType getMeterById(long id) throws EntityNotFoundException, SQLException;
+    MeterType getMeterById(UUID id);
 
-    List<MeterType> getAll() throws SQLException;
+    List<MeterType> getAll();
 
-    MeterType add(MeterType meterType) throws DuplicateDataException, SQLException;
+    MeterType add(MeterType meterType);
 
-    long deleteMeter(long id) throws SQLException, EntityNotFoundException;
+    UUID deleteMeter(UUID id);
 
-    MeterType getMeterByType(String type) throws EntityNotFoundException, SQLException;
+    MeterType getMeterByType(String type);
 }

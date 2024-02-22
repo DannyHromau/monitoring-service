@@ -3,10 +3,12 @@
                    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
                    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
                                        http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.5.xsd">
+    <property name="uuid_type" value="uuid" dbms="postgresql"/>
+    <property name="uuid_function" value="uuid_generate_v4()" dbms="postgresql"/>
 
     <changeSet author="daniil_hromau" id="create_table_ms_meter_reading">
         <createTable tableName="ms_meter_reading" schemaName="monitoring_service">
-            <column name="id" type="SERIAL">
+            <column name="id" type="${uuid_type}" defaultValueComputed="${uuid_function}">
                 <constraints primaryKey="true" nullable="false"/>
             </column>
             <column name="date" type="TIMESTAMP">
@@ -15,10 +17,10 @@
             <column name="value" type="INT">
                 <constraints nullable="false"/>
             </column>
-            <column name="user_id" type="BIGINT">
+            <column name="user_id" type="uuid">
                 <constraints nullable="false"/>
             </column>
-            <column name="meter_type_id" type="BIGINT">
+            <column name="meter_type_id" type="uuid">
                 <constraints nullable="false"/>
             </column>
         </createTable>
