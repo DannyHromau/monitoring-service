@@ -1,6 +1,7 @@
 package com.dannyhromau.monitoring.meter.controller.impl;
 
-import com.dannyhromau.monitoring.meter.annotation.AspectLogging;
+
+import com.dannyhromau.audit.module.annotation.AspectLogging;
 import com.dannyhromau.monitoring.meter.api.dto.AuthDto;
 import com.dannyhromau.monitoring.meter.api.dto.TokenDto;
 import com.dannyhromau.monitoring.meter.controller.AuthController;

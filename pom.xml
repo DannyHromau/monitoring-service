@@ -9,6 +9,7 @@
     <version>1.0-SNAPSHOT</version>
 
 
+
     <properties>
         <maven.compiler.source>17</maven.compiler.source>
         <maven.compiler.target>17</maven.compiler.target>
@@ -32,10 +33,18 @@
     </properties>
 
     <build>
+        <pluginManagement>
         <plugins>
             <plugin>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>repackage</goal>
+                        </goals>
+                    </execution>
+                </executions>
             </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
@@ -91,6 +100,7 @@
                 </configuration>
             </plugin>
         </plugins>
+        </pluginManagement>
     </build>
 
     <parent>
@@ -187,6 +197,12 @@
             <artifactId>postgresql</artifactId>
             <version>${org.postgresql.version}</version>
             <scope>runtime</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.dannyhromau</groupId>
+            <artifactId>audit-logging-starter</artifactId>
+            <version>1.0-SNAPSHOT</version>
+            <scope>compile</scope>
         </dependency>
     </dependencies>
 </project>

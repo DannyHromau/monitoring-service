@@ -1,10 +1,9 @@
-package com.dannyhromau.monitoring.meter.aspect;
+package com.dannyhromau.audit.module.aspect;
 
-import com.dannyhromau.monitoring.meter.model.audit.Audit;
-import com.dannyhromau.monitoring.meter.service.AuditService;
+import com.dannyhromau.audit.module.model.Audit;
+import com.dannyhromau.audit.module.service.AuditService;
 import lombok.RequiredArgsConstructor;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import lombok.extern.log4j.Log4j2;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
@@ -12,15 +11,14 @@ import org.springframework.stereotype.Component;
 
 import java.time.LocalDateTime;
 
-//TODO: refactor logAround logic
 @Component
 @Aspect
 @RequiredArgsConstructor
+@Log4j2
 public class AuditAspect {
-    private static final Logger logger = LogManager.getLogger(AuditAspect.class);
     private final AuditService auditService;
 
-    @Around("@annotation(com.dannyhromau.monitoring.meter.annotation.Auditable)")
+    @Around("@annotation(com.dannyhromau.audit.module.annotation.Auditable)")
     public Object logAround(ProceedingJoinPoint joinPoint) throws Throwable {
         String methodName = joinPoint.getSignature().getName();
         StringBuilder auditingArgsBuilder = new StringBuilder();
@@ -37,9 +35,8 @@ public class AuditAspect {
         try {
             auditService.add(audit);
         } catch (Exception e) {
-            logger.error("Error adding audit record: " + e.getMessage());
+            log.error("Error adding audit record: " + e.getMessage());
         }
         return joinPoint.proceed();
     }
 }
-

@@ -1,6 +1,6 @@
 package com.dannyhromau.monitoring.meter.facade.impl;
 
-import com.dannyhromau.monitoring.meter.annotation.AspectLogging;
+import com.dannyhromau.audit.module.annotation.AspectLogging;
 import com.dannyhromau.monitoring.meter.api.dto.MeterTypeDto;
 import com.dannyhromau.monitoring.meter.facade.MeterTypeFacade;
 import com.dannyhromau.monitoring.meter.mapper.MeterTypeMapper;

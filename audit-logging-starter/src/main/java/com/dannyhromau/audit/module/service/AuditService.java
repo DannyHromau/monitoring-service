@@ -1,6 +1,6 @@
-package com.dannyhromau.monitoring.meter.service;
+package com.dannyhromau.audit.module.service;
 
-import com.dannyhromau.monitoring.meter.model.audit.Audit;
+import com.dannyhromau.audit.module.model.Audit;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -8,8 +8,6 @@ import java.util.UUID;
 
 @Service
 public interface AuditService {
-    Audit getById(UUID id);
-
     List<Audit> getAll();
 
     Audit add(Audit audit);

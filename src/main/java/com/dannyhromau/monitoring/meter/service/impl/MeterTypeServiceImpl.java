@@ -1,6 +1,6 @@
 package com.dannyhromau.monitoring.meter.service.impl;
 
-import com.dannyhromau.monitoring.meter.annotation.AspectLogging;
+import com.dannyhromau.audit.module.annotation.AspectLogging;
 import com.dannyhromau.monitoring.meter.core.util.ErrorMessages;
 import com.dannyhromau.monitoring.meter.exception.DuplicateDataException;
 import com.dannyhromau.monitoring.meter.exception.EntityNotFoundException;

@@ -1,32 +1,33 @@
-package com.dannyhromau.monitoring.meter.aspect;
+package com.dannyhromau.audit.module.aspect;
 
-import org.apache.logging.log4j.Level;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import lombok.extern.log4j.Log4j2;
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.annotation.After;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Before;
+import org.springframework.context.annotation.EnableAspectJAutoProxy;
 import org.springframework.stereotype.Component;
 
 @Aspect
 @Component
+@Log4j2
+@EnableAspectJAutoProxy
 public class ExecutionTimeLoggingAspect {
 
-    private static Logger logger = LogManager.getLogger(ExecutionTimeLoggingAspect.class);
     private long startTime;
 
-    @Before("@annotation(com.dannyhromau.monitoring.meter.annotation.AspectLogging)")
+    @Before("@annotation(com.dannyhromau.audit.module.annotation.AspectLogging)")
     public void logBefore(JoinPoint joinPoint) {
         startTime = System.currentTimeMillis();
     }
 
-    @After("@annotation(com.dannyhromau.monitoring.meter.annotation.AspectLogging)")
+    @After("@annotation(com.dannyhromau.audit.module.annotation.AspectLogging)")
     public void logAfter(JoinPoint joinPoint) {
         long endTime = System.currentTimeMillis();
         long executionTime = endTime - startTime;
         String methodName = joinPoint.getSignature().getName();
         String logMessage = String.format("Method %s executed in %d ms", methodName, executionTime);
-        logger.log(Level.INFO, logMessage);
+        log.info(logMessage);
     }
 }
+

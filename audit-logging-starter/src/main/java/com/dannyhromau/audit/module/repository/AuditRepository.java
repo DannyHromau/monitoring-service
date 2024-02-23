@@ -1,6 +1,6 @@
-package com.dannyhromau.monitoring.meter.repository;
+package com.dannyhromau.audit.module.repository;
 
-import com.dannyhromau.monitoring.meter.model.audit.Audit;
+import com.dannyhromau.audit.module.model.Audit;
 import org.springframework.data.repository.ListCrudRepository;
 import org.springframework.stereotype.Repository;
 
