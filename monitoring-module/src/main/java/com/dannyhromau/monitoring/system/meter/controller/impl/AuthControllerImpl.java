@@ -1,7 +1,6 @@
 package com.dannyhromau.monitoring.system.meter.controller.impl;
 
 
-import com.dannyhromau.audit.module.annotation.AspectLogging;
 import com.dannyhromau.monitoring.system.meter.api.dto.AuthDto;
 import com.dannyhromau.monitoring.system.meter.api.dto.TokenDto;
 import com.dannyhromau.monitoring.system.meter.controller.AuthController;
@@ -11,7 +10,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RestController;
 
-@AspectLogging
+
 @RestController
 @RequiredArgsConstructor
 public class AuthControllerImpl implements AuthController<TokenDto> {

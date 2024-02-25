@@ -19,7 +19,8 @@
 
     <loggers>
         <root level="info">
-            <appender-ref ref="common_register"/>
+            <appender-ref ref="common_register" level="warn"/>
+            <appender-ref ref="console"/>
         </root>
         <logger name="com.dannyhromau.monitoring.system.meter.controller.impl.AuthControllerImpl" level="debug">
             <appender-ref ref="security_register"/>

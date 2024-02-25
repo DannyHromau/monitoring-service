@@ -1,7 +1,7 @@
 package com.dannyhromau.audit.module.model;
 
-import lombok.Builder;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.relational.core.mapping.Column;
@@ -12,7 +12,7 @@ import java.util.UUID;
 
 @Getter
 @Setter
-@Builder
+@NoArgsConstructor
 @Table(schema = "audit", value = "ms_audit_user")
 public class Audit {
     @Id
@@ -24,4 +24,10 @@ public class Audit {
     private String auditingArgs;
     @Column("audit_action")
     private String audit_action;
+
+    public Audit(LocalDateTime audit_time, String auditingArgs, String audit_action) {
+        this.audit_time = audit_time;
+        this.auditingArgs = auditingArgs;
+        this.audit_action = audit_action;
+    }
 }

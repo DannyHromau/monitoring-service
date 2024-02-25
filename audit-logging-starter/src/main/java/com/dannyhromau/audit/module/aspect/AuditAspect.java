@@ -27,11 +27,7 @@ public class AuditAspect {
             auditingArgsBuilder.append(arg.toString()).append(" ");
         }
         String action = "Method called: " + methodName;
-        Audit audit = Audit.builder()
-                .auditingArgs(auditingArgsBuilder.toString())
-                .audit_action(action)
-                .audit_time(LocalDateTime.now())
-                .build();
+        Audit audit = new Audit(LocalDateTime.now(), auditingArgsBuilder.toString(), action);
         try {
             auditService.add(audit);
         } catch (Exception e) {

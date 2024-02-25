@@ -10,8 +10,7 @@
     </parent>
 
     <artifactId>audit-logging-starter</artifactId>
-    <version>1.0.0</version>
-    <packaging>jar</packaging>
+
     <properties>
         <maven.compiler.source>17</maven.compiler.source>
         <maven.compiler.target>17</maven.compiler.target>

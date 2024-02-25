@@ -1,6 +1,5 @@
 package com.dannyhromau.monitoring.system.meter.controller.impl;
 
-import com.dannyhromau.audit.module.annotation.AspectLogging;
 import com.dannyhromau.monitoring.system.meter.api.dto.MeterTypeDto;
 import com.dannyhromau.monitoring.system.meter.controller.MeterTypeController;
 import com.dannyhromau.monitoring.system.meter.facade.MeterTypeFacade;
@@ -14,7 +13,7 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.List;
 import java.util.UUID;
 
-@AspectLogging
+
 @RestController
 @RequiredArgsConstructor
 public class MeterTypeControllerImpl implements MeterTypeController {

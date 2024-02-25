@@ -1,6 +1,5 @@
 package com.dannyhromau.monitoring.system.meter.controller.impl;
 
-import com.dannyhromau.audit.module.annotation.AspectLogging;
 import com.dannyhromau.monitoring.system.meter.api.dto.MeterReadingDto;
 import com.dannyhromau.monitoring.system.meter.controller.MeterReadingController;
 import com.dannyhromau.monitoring.system.meter.facade.MeterReadingFacade;
@@ -17,7 +16,7 @@ import java.time.YearMonth;
 import java.util.List;
 import java.util.UUID;
 
-@AspectLogging
+
 @RestController
 @RequiredArgsConstructor
 public class MeterReadingControllerImpl implements MeterReadingController {

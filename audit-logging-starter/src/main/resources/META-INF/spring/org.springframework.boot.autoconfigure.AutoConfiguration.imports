@@ -1,1 +1,3 @@
+com.dannyhromau.audit.module.config.LoggingAspectAutoConfiguration
 com.dannyhromau.audit.module.config.AuditableAutoConfiguration
+

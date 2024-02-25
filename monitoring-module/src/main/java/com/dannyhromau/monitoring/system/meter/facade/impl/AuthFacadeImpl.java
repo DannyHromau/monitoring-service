@@ -1,6 +1,5 @@
 package com.dannyhromau.monitoring.system.meter.facade.impl;
 
-import com.dannyhromau.audit.module.annotation.AspectLogging;
 import com.dannyhromau.audit.module.annotation.Auditable;
 import com.dannyhromau.monitoring.system.meter.api.dto.AuthDto;
 import com.dannyhromau.monitoring.system.meter.api.dto.TokenDto;
@@ -14,7 +13,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
 @Component
-@AspectLogging
 @RequiredArgsConstructor
 public class AuthFacadeImpl implements AuthFacade<TokenDto> {
     private final AuthService<JWToken> authService;

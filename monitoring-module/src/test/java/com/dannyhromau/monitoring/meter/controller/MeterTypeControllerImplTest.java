@@ -1,17 +1,17 @@
 package com.dannyhromau.monitoring.meter.controller;
 
-import com.dannyhromau.monitoring.meter.api.dto.MeterTypeDto;
-import com.dannyhromau.monitoring.meter.controller.impl.MeterTypeControllerImpl;
-import com.dannyhromau.monitoring.meter.core.util.ErrorMessages;
-import com.dannyhromau.monitoring.meter.exception.DuplicateDataException;
-import com.dannyhromau.monitoring.meter.exception.EntityNotFoundException;
-import com.dannyhromau.monitoring.meter.facade.MeterTypeFacade;
+import com.dannyhromau.monitoring.system.meter.Application;
+import com.dannyhromau.monitoring.system.meter.api.dto.MeterTypeDto;
+import com.dannyhromau.monitoring.system.meter.controller.impl.MeterTypeControllerImpl;
+import com.dannyhromau.monitoring.system.meter.core.util.ErrorMessages;
+import com.dannyhromau.monitoring.system.meter.exception.DuplicateDataException;
+import com.dannyhromau.monitoring.system.meter.exception.EntityNotFoundException;
+import com.dannyhromau.monitoring.system.meter.facade.MeterTypeFacade;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
@@ -20,10 +20,11 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
+import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.when;
 
-@ExtendWith({MockitoExtension.class})
+@SpringBootTest(classes = Application.class)
 @DisplayName("Testing of meter_type_controller")
 class MeterTypeControllerImplTest {
     @InjectMocks
@@ -35,10 +36,10 @@ class MeterTypeControllerImplTest {
 
     @Test
     @DisplayName("Get meter type by id when exists")
-    void getMeterTypeByIDWhenExists() throws EntityNotFoundException, SQLException {
+    void getMeterTypeByIDWhenExists() throws EntityNotFoundException {
         UUID id = UUID.randomUUID();
         MeterTypeDto meterTypeDto = new MeterTypeDto();
-        when(meterTypeFacade.getMeterById(UUID.randomUUID())).thenReturn(meterTypeDto);
+        when(meterTypeFacade.getMeterById(id)).thenReturn(meterTypeDto);
         ResponseEntity<MeterTypeDto> response = meterTypeController.getMeterById(id);
         assertEquals(HttpStatus.OK, response.getStatusCode());
         assertEquals(meterTypeDto, response.getBody());
@@ -70,7 +71,8 @@ class MeterTypeControllerImplTest {
         MeterTypeDto meterTypeDto = new MeterTypeDto();
         when(meterTypeFacade.add(meterTypeDto))
                 .thenThrow(new DuplicateDataException(ErrorMessages.DUPLICATED_DATA_MESSAGE.label));
-        ResponseEntity<MeterTypeDto> response = meterTypeController.add(meterTypeDto);
-        assertEquals(HttpStatus.CONFLICT, response.getStatusCode());
+        assertThatExceptionOfType(DuplicateDataException.class)
+                .isThrownBy(() -> meterTypeFacade.add(meterTypeDto))
+                .withMessage(ErrorMessages.DUPLICATED_DATA_MESSAGE.label);
     }
 }

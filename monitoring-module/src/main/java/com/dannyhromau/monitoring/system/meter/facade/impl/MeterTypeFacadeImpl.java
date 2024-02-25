@@ -1,6 +1,5 @@
 package com.dannyhromau.monitoring.system.meter.facade.impl;
 
-import com.dannyhromau.audit.module.annotation.AspectLogging;
 import com.dannyhromau.monitoring.system.meter.api.dto.MeterTypeDto;
 import com.dannyhromau.monitoring.system.meter.facade.MeterTypeFacade;
 import com.dannyhromau.monitoring.system.meter.mapper.MeterTypeMapper;
@@ -13,7 +12,6 @@ import java.util.List;
 import java.util.UUID;
 
 @Component
-@AspectLogging
 @RequiredArgsConstructor
 public class MeterTypeFacadeImpl implements MeterTypeFacade {
     private final MeterTypeService service;

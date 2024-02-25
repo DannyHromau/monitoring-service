@@ -8,13 +8,13 @@ import lombok.extern.log4j.Log4j2;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 import java.sql.SQLException;
 
 @Log4j2
-@ControllerAdvice
+@RestControllerAdvice
 public class RestExceptionHandler {
     @ExceptionHandler({EntityNotFoundException.class})
     protected ResponseEntity<ErrorMessageDto> notFoundHandler(Exception e) {

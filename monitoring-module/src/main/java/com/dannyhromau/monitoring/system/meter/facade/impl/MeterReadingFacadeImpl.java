@@ -1,6 +1,5 @@
 package com.dannyhromau.monitoring.system.meter.facade.impl;
 
-import com.dannyhromau.audit.module.annotation.AspectLogging;
 import com.dannyhromau.audit.module.annotation.Auditable;
 import com.dannyhromau.monitoring.system.meter.api.dto.MeterReadingDto;
 import com.dannyhromau.monitoring.system.meter.facade.MeterReadingFacade;
@@ -16,7 +15,6 @@ import java.util.List;
 import java.util.UUID;
 
 @Component
-@AspectLogging
 @RequiredArgsConstructor
 public class MeterReadingFacadeImpl implements MeterReadingFacade {
 

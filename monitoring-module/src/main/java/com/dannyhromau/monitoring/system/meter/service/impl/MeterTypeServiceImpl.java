@@ -1,6 +1,5 @@
 package com.dannyhromau.monitoring.system.meter.service.impl;
 
-import com.dannyhromau.audit.module.annotation.AspectLogging;
 import com.dannyhromau.monitoring.system.meter.core.util.ErrorMessages;
 import com.dannyhromau.monitoring.system.meter.exception.DuplicateDataException;
 import com.dannyhromau.monitoring.system.meter.exception.EntityNotFoundException;
@@ -24,7 +23,6 @@ import java.util.UUID;
 @Log4j2
 @Service
 @Transactional
-@AspectLogging
 @RequiredArgsConstructor
 public class MeterTypeServiceImpl implements MeterTypeService {
     private final MeterTypeRepository meterTypeRepository;

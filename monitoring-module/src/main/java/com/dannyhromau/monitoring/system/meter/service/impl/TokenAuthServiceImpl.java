@@ -1,6 +1,5 @@
 package com.dannyhromau.monitoring.system.meter.service.impl;
 
-import com.dannyhromau.audit.module.annotation.AspectLogging;
 import com.dannyhromau.monitoring.system.meter.core.config.ValidatorConfig;
 import com.dannyhromau.monitoring.system.meter.core.util.ErrorMessages;
 import com.dannyhromau.monitoring.system.meter.exception.EntityNotFoundException;
@@ -16,7 +15,6 @@ import com.dannyhromau.monitoring.system.meter.service.AuthService;
 import com.dannyhromau.monitoring.system.meter.service.AuthorityService;
 import com.dannyhromau.monitoring.system.meter.service.UserService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -25,10 +23,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Service
-@AspectLogging
-@RequiredArgsConstructor
-@Qualifier("token_service")
 @Transactional
+@RequiredArgsConstructor
 public class TokenAuthServiceImpl implements AuthService<JWToken> {
     private final UserService userService;
     private final AuthorityService authorityService;

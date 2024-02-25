@@ -1,34 +1,32 @@
 package com.dannyhromau.monitoring.meter.service;
 
 
-import com.dannyhromau.monitoring.meter.core.util.ErrorMessages;
-import com.dannyhromau.monitoring.meter.exception.DuplicateDataException;
-import com.dannyhromau.monitoring.meter.exception.EntityNotFoundException;
-import com.dannyhromau.monitoring.meter.exception.InvalidDataException;
-import com.dannyhromau.monitoring.meter.model.MeterReading;
-import com.dannyhromau.monitoring.meter.model.MeterType;
-import com.dannyhromau.monitoring.meter.repository.MeterReadingRepository;
-import com.dannyhromau.monitoring.meter.service.impl.MeterReadingServiceImpl;
+import com.dannyhromau.monitoring.system.meter.Application;
+import com.dannyhromau.monitoring.system.meter.core.util.ErrorMessages;
+import com.dannyhromau.monitoring.system.meter.exception.DuplicateDataException;
+import com.dannyhromau.monitoring.system.meter.exception.EntityNotFoundException;
+import com.dannyhromau.monitoring.system.meter.exception.InvalidDataException;
+import com.dannyhromau.monitoring.system.meter.model.MeterReading;
+import com.dannyhromau.monitoring.system.meter.model.MeterType;
+import com.dannyhromau.monitoring.system.meter.repository.MeterReadingRepository;
+import com.dannyhromau.monitoring.system.meter.service.MeterReadingService;
+import com.dannyhromau.monitoring.system.meter.service.impl.MeterReadingServiceImpl;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
-import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.boot.test.context.SpringBootTest;
 
-import java.sql.SQLException;
 import java.time.LocalDateTime;
 import java.time.YearMonth;
 import java.util.*;
 
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.when;
 
-@ExtendWith({MockitoExtension.class})
+@SpringBootTest(classes = Application.class)
 @DisplayName("Testing of console_meter_reading_service")
 public class MeterTypeReadingServiceImplTest {
 
@@ -44,7 +42,7 @@ public class MeterTypeReadingServiceImplTest {
 
     @Test
     @DisplayName("add meter readings when not exist")
-    void addMeterReadingsWhenNotExist() throws DuplicateDataException, SQLException, InvalidDataException {
+    void addMeterReadingsWhenNotExist() throws DuplicateDataException, InvalidDataException {
         int expectedSize = 5;
         List<MeterReading> mrList = new LinkedList<>();
         LocalDateTime date = LocalDateTime.now();
@@ -58,10 +56,10 @@ public class MeterTypeReadingServiceImplTest {
             YearMonth yearMonth = YearMonth.of(mr.getDate().getYear(), mr.getDate().getMonth());
             doReturn(Optional.empty())
                     .when(mrRepo)
-                    .findByUserIdAndMonthAndMeterTypeId(
-                            eq(mr.getUserId()),
-                            any(YearMonth.class),
-                            eq(mrType.getId()));
+                    .findByUserIdAndYearAndMonthAndMeterTypeId(UUID.randomUUID(),
+                            yearMonth.getYear(),
+                            yearMonth.getMonth().getValue(),
+                            mrType.getId());
             when(mrRepo.save(mr)).thenReturn(mr);
             mrService.add(mr);
             mrList.add(mr);
@@ -74,7 +72,7 @@ public class MeterTypeReadingServiceImplTest {
 
     @Test
     @DisplayName("add meter reading when exists")
-    void addMeterReadingWhenExists() throws SQLException {
+    void addMeterReadingWhenExists() {
         MeterReading mr = new MeterReading();
         mr.setUserId(UUID.randomUUID());
         MeterType mrType = new MeterType();
@@ -82,8 +80,8 @@ public class MeterTypeReadingServiceImplTest {
         mr.setDate(LocalDateTime.now());
         mr.setMeterTypeId(mrType.getId());
         YearMonth yearMonth = YearMonth.of(mr.getDate().getYear(), mr.getDate().getMonth());
-        when(mrRepo.findByUserIdAndMonthAndMeterTypeId(
-                mr.getUserId(), yearMonth, mrType.getId()))
+        when(mrRepo.findByUserIdAndYearAndMonthAndMeterTypeId(
+                mr.getUserId(), yearMonth.getYear(), yearMonth.getMonth().getValue(), mrType.getId()))
                 .thenReturn(Optional.of(mr));
         when(mrRepo.findFirstByOrderByDateDesc(mr.getUserId(), mr.getMeterTypeId())).thenReturn(Optional.of(mr));
         assertThatExceptionOfType(DuplicateDataException.class)
@@ -93,7 +91,7 @@ public class MeterTypeReadingServiceImplTest {
 
     @Test
     @DisplayName("get meter readings by user id when exist")
-    void getMeterReadingsByUserIdWhenExist() throws SQLException {
+    void getMeterReadingsByUserIdWhenExist() {
         MeterReading mr = new MeterReading();
         mr.setUserId(UUID.randomUUID());
         mr.setDate(LocalDateTime.now());
@@ -105,7 +103,7 @@ public class MeterTypeReadingServiceImplTest {
 
     @Test
     @DisplayName("get actual meter reading when not exists")
-    void getActualMeterReadingWhenNotExists() throws SQLException {
+    void getActualMeterReadingWhenNotExists() {
         MeterReading mr = new MeterReading();
         mr.setId(UUID.randomUUID());
         mr.setUserId(UUID.randomUUID());
@@ -122,7 +120,7 @@ public class MeterTypeReadingServiceImplTest {
 
     @Test
     @DisplayName("get meter reading by id when not exists")
-    void getMeterReadingByIdWhenNotExists() throws SQLException {
+    void getMeterReadingByIdWhenNotExists() {
         MeterReading mr = new MeterReading();
         mr.setId(UUID.randomUUID());
         mr.setUserId(UUID.randomUUID());
@@ -135,7 +133,7 @@ public class MeterTypeReadingServiceImplTest {
 
     @Test
     @DisplayName("get meter reading by id when exists")
-    void getMeterReadingByIdWhenExists() throws EntityNotFoundException, SQLException {
+    void getMeterReadingByIdWhenExists() throws EntityNotFoundException {
         MeterReading mr = new MeterReading();
         mr.setId(UUID.randomUUID());
         mr.setUserId(UUID.randomUUID());
@@ -147,7 +145,7 @@ public class MeterTypeReadingServiceImplTest {
 
     @Test
     @DisplayName("get meter reading by user id and date when exists")
-    void getMeterReadingWhenByUserIdAndDateExists() throws EntityNotFoundException, SQLException {
+    void getMeterReadingWhenByUserIdAndDateExists() throws EntityNotFoundException {
         MeterReading expectedMr = new MeterReading();
         expectedMr.setUserId(UUID.randomUUID());
         MeterType mrType = new MeterType();
@@ -162,7 +160,7 @@ public class MeterTypeReadingServiceImplTest {
 
     @Test
     @DisplayName("get meter reading by user id and date when not exists")
-    void getMeterReadingWhenByUserIdAndDateNotExists() throws SQLException {
+    void getMeterReadingWhenByUserIdAndDateNotExists() {
         MeterReading mr = new MeterReading();
         mr.setId(UUID.randomUUID());
         mr.setUserId(UUID.randomUUID());
