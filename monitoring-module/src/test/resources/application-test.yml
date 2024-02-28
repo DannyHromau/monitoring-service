@@ -1,0 +1,17 @@
+server:
+  port: 8080
+
+spring:
+
+  liquibase:
+    enabled: true
+    drop-first: false
+    change-log: /db/changelog/database-monitoring-test-changelog.xml
+    default-schema: public
+    liquibase-schema: public
+
+  datasource:
+    url: jdbc:postgresql://localhost:5432/postgres?useSSL=false
+    username: admin
+    password: admin
+    driver-class-name: org.postgresql.Driver

@@ -18,7 +18,7 @@
 
 # Building:
 1. Go to project folder and run command `mvn clean install`
-2. create system environment `METERS_FILE_PATH` with `meters.txt` file location 
+2. create system environment `METERS_FILE_PATH` with `meters.txt` file location
 3. go to target folder `cd target` (if you haven't target folder check the correct result of step 1 and 2)
 
 # Admin settings:
@@ -26,12 +26,12 @@ For adding the list of meter types create file `meters.txt` in target directory 
 
 heating  
 cold_water  
-hot_water  
+hot_water
 
 # Docker:
 `docker-compose` file located in root directory. For starting the container use command ` docker-compose up -d`
 
-# DB settings: 
+# DB settings:
 * after successful starting the postgres container start prepare data from file `init.sql`
 * connection config located in jdbc.properties files (`db` folder)
 * db entities description located in `ddl.sql` file
@@ -40,7 +40,7 @@ hot_water
 1. Open project in IntelliJ, it will create an `.idea`.
 2. Use *File* > *Project Structure* to confirm Java 17 is used.
 3. Create *Edit Configuration* (if not exist Add new *Maven* configuration) or check build and run options(must be specified Java 17 SDK for 'monitoring-service' module).
-4. 4. Use the *Maven* tools window to:
+4. Use the *Maven* tools window to:
    * *Toggle "Skip Tests" Mode* (if You won't to testing the application)
    * *Execute Maven Goal*: `clean install`
    * check the target directory (You should see an archive there named *monitoring-service-1.0-SNAPSHOT.war*)
