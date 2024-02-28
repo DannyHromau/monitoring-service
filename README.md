@@ -12,7 +12,7 @@
 * Lombok
 * MapStruct
 * RESTful API
-* Sring framework (mvc, security, AOP)
+* Sring framework (boot, mvc, security, AOP, test)
 * Oauth2 + JWT
 * Swagger
 
@@ -43,12 +43,8 @@ hot_water
 4. Use the *Maven* tools window to:
    * *Toggle "Skip Tests" Mode* (if You won't to testing the application)
    * *Execute Maven Goal*: `clean install`
-   * check the target directory (You should see an archive there named *monitoring-service-1.0-SNAPSHOT.war*)
-   * Start the app with command *jetty:run*
+   * check the target directory in `monitoring-module` module (You should see an archive there named *monitoring-module-1.0.jar*)
+   * Start the app with command *java -jar monitoring-module-1.0.jar*
 
-# Deploying with Apache Tomcat:
-1. Go to target folder and find *monitoring-service-1.0-SNAPSHOT.war*
-2. Copy *monitoring-service-1.0-SNAPSHOT.war* to *webapps* folder in Tomcat
-3. Configure Tomcat with Java 17
-4. Restart tomcat
+
 
