@@ -1,0 +1,239 @@
+openapi: "3.0.1"
+info:
+  title: "OpenAPI definition"
+  version: "v0"
+servers:
+  - url: "http://localhost:8080"
+    description: "Generated server url"
+paths:
+  /file/upload:
+    post:
+      tags:
+        - "file"
+      summary: "Add a new file to the store"
+      description: "Save a new file"
+      operationId: "addFile"
+      requestBody:
+        content:
+          multipart/form-data:
+            schema:
+              required:
+                - "file"
+              type: "object"
+              properties:
+                file:
+                  type: "string"
+                  description: "file detail"
+                  format: "binary"
+      responses:
+        "409":
+          description: "Duplicated data"
+          content:
+            text/plain:
+              schema:
+                type: "string"
+        "404":
+          description: "Not found"
+          content:
+            text/plain:
+              schema:
+                type: "string"
+        "401":
+          description: "Unauthorized"
+          content:
+            text/plain:
+              schema:
+                type: "string"
+        "403":
+          description: "Forbidden"
+          content:
+            text/plain:
+              schema:
+                type: "string"
+        "400":
+          description: "Bad request"
+          content:
+            text/plain:
+              schema:
+                type: "string"
+        "200":
+          description: "Successful operation"
+          content:
+            text/plain:
+              schema:
+                type: "string"
+        "500":
+          description: "Internal server error"
+          content:
+            text/plain:
+              schema:
+                type: "string"
+  /file/upload/batch:
+    post:
+      tags:
+        - "file"
+      summary: "Add a collection of new files to the store"
+      description: "Save a batch of new files"
+      operationId: "addFiles"
+      requestBody:
+        content:
+          multipart/form-data:
+            schema:
+              type: "object"
+              properties:
+                files:
+                  type: "array"
+                  items:
+                    type: "string"
+                    format: "binary"
+      responses:
+        "200":
+          description: "Successful operation"
+        "400":
+          description: "Bad request"
+        "404":
+          description: "Not found"
+        "409":
+          description: "Duplicated data"
+        "403":
+          description: "Forbidden"
+        "500":
+          description: "Internal server error"
+        "401":
+          description: "Unauthorized"
+  /file/download/batch:
+    post:
+      tags:
+        - "file"
+      summary: "Get files"
+      description: "Get files by paths"
+      operationId: "getFiles"
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/DownloadBatchBody"
+        required: true
+      responses:
+        "409":
+          description: "Duplicated data"
+          content:
+            application/octet-stream:
+              schema:
+                type: "string"
+                format: "binary"
+        "403":
+          description: "Forbidden"
+          content:
+            application/octet-stream:
+              schema:
+                type: "string"
+                format: "binary"
+        "401":
+          description: "Unauthorized"
+          content:
+            application/octet-stream:
+              schema:
+                type: "string"
+                format: "binary"
+        "200":
+          description: "Successful operation"
+          content:
+            application/octet-stream:
+              schema:
+                type: "string"
+                format: "binary"
+        "500":
+          description: "Internal server error"
+          content:
+            application/octet-stream:
+              schema:
+                type: "string"
+                format: "binary"
+        "400":
+          description: "Bad request"
+          content:
+            application/octet-stream:
+              schema:
+                type: "string"
+                format: "binary"
+        "404":
+          description: "Not found"
+          content:
+            application/octet-stream:
+              schema:
+                type: "string"
+                format: "binary"
+  /file/download:
+    get:
+      tags:
+        - "file"
+      summary: "Get a file by path to storage"
+      description: "Get a file by path to S3"
+      operationId: "getFile"
+      parameters:
+        - name: "path"
+          in: "query"
+          description: "Absolute path to the storage"
+          required: true
+          schema:
+            type: "string"
+      responses:
+        "409":
+          description: "Duplicated data"
+          content:
+            application/octet-stream:
+              schema:
+                type: "string"
+                format: "binary"
+        "403":
+          description: "Forbidden"
+          content:
+            application/octet-stream:
+              schema:
+                type: "string"
+                format: "binary"
+        "401":
+          description: "Unauthorized"
+          content:
+            application/octet-stream:
+              schema:
+                type: "string"
+                format: "binary"
+        "200":
+          description: "Successful operation"
+          content:
+            application/octet-stream:
+              schema:
+                type: "string"
+                format: "binary"
+        "500":
+          description: "Internal server error"
+          content:
+            application/octet-stream:
+              schema:
+                type: "string"
+                format: "binary"
+        "400":
+          description: "Bad request"
+          content:
+            application/octet-stream:
+              schema:
+                type: "string"
+                format: "binary"
+        "404":
+          description: "Not found"
+          content:
+            application/octet-stream:
+              schema:
+                type: "string"
+                format: "binary"
+components:
+  schemas:
+    DownloadBatchBody:
+      type: "object"
+      properties:
+        filenames:
+          type: "array"
+          items:
+            type: "string"
